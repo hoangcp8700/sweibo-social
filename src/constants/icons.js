@@ -4,8 +4,8 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 import ChatIcon from "@mui/icons-material/Chat";
 import EditIcon from "@mui/icons-material/Edit";
 
-import AlignHorizontalLeftIcon from "@mui/icons-material/AlignHorizontalLeft";
-import AlignHorizontalRightIcon from "@mui/icons-material/AlignHorizontalRight";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
@@ -16,12 +16,18 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import DeleteIcon from "@mui/icons-material/Clear";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import LogoutIcon from "@mui/icons-material/Logout";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
+import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
+import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 
 export default {
   HomeOutlineIcon: <HomeOutlinedIcon />,
   RemoveIcon: <RemoveIcon />,
-  ShowSidebarIcon: <AlignHorizontalRightIcon />,
-  HideSidebarIcon: <AlignHorizontalLeftIcon />,
+  ArrowRightIcon: <ArrowForwardIosIcon />,
+  ArrowLeftIcon: <ArrowBackIosNewIcon />,
   AddIcon: <AddIcon />,
   SettingIcon: <SettingsOutlinedIcon />,
   SearchIcon: <SearchOutlinedIcon />,
@@ -34,4 +40,10 @@ export default {
   ArrowDropUpIcon: <ArrowDropUpIcon />,
   Brightness4Icon: <Brightness4Icon />,
   LogoutIcon: <LogoutIcon />,
+  MoreHorizIcon: <MoreHorizIcon />,
+
+  LikeIcon: <ThumbUpIcon />,
+  CommentIcon: <ChatBubbleOutlineOutlinedIcon />,
+  ShareIcon: <ShareOutlinedIcon />,
+  HeartIcon: <FavoriteOutlinedIcon />,
 };

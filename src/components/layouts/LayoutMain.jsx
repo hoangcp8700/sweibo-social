@@ -1,22 +1,27 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Header from "../Header";
-import { Paper } from "@mui/material";
+import { Paper, Box } from "@mui/material";
 
 const Main = () => {
   return (
-    <div>
+    <Box>
       <Header />
       <Paper
         sx={{
           minHeight: "100vh",
           bgcolor: "background.main",
           overflow: "hidden",
+          borderRadius: 0,
+          py: 2,
+          px: 3,
         }}
       >
-        <Outlet />
+        <Box sx={{ maxWidth: (theme) => theme.sizes.fullWidth, m: "auto" }}>
+          <Outlet />
+        </Box>
       </Paper>
-    </div>
+    </Box>
   );
 };
 

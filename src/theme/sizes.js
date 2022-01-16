@@ -1,6 +1,7 @@
 // ----------------------------------------------------------------------
 
 const sizes = {
+  minBase: 4,
   base: 8,
   radius: 16,
   padding: 24,
@@ -11,7 +12,7 @@ const sizes = {
   sidebarRight: 320,
   sidebarRight2: 300,
   header: 60,
-  logo: 40,
+  fullWidth: 1900,
 };
 
 export default sizes;

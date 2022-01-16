@@ -2,7 +2,7 @@ import { Suspense, lazy } from "react";
 import { Navigate, useRoutes } from "react-router-dom";
 
 // layouts
-import MainLayout from "components/layouts/Main";
+import MainLayout from "components/layouts/LayoutMain";
 
 // guards
 // import GuestGuard from 'guards/GuestGuard'

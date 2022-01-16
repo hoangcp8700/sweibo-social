@@ -44,120 +44,149 @@ const Header = () => {
   };
 
   return (
-    <Paper sx={{ px: 3, py: 1, bgcolor: "background.navbar" }}>
-      {/* menu header */}
-      <MenuHeader
-        anchor={isSettingRef}
-        open={openMenu.isSetting}
-        name="isSetting"
-        handleClose={handleToggleAction}
-      />
-      <MenuHeaderNotification
-        anchor={isSettingRef}
-        open={openMenu.isNotification}
-        name="isNotification"
-        handleClose={handleToggleAction}
-      />
-      <MenuHeaderMessage
-        anchor={isMessageRef}
-        open={openMenu.isMessage}
-        name="isMessage"
-        handleClose={handleToggleAction}
-      />
-      {/* content */}
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <Typography
-            variant="h6"
-            color="primary"
-            component={Link}
-            to={PATH_PAGE.home.path}
+    <>
+      <Paper
+        sx={{
+          px: 3,
+          py: 1,
+          borderRadius: 0,
+          bgcolor: "background.navbar",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 10,
+          height: (theme) => theme.sizes.header,
+        }}
+      >
+        <Stack
+          sx={{
+            maxWidth: (theme) => theme.sizes.fullWidth,
+            height: "100%",
+            m: "auto",
+          }}
+          justifyContent="center"
+        >
+          {/* menu header */}
+          <MenuHeader
+            anchor={isSettingRef}
+            open={openMenu.isSetting}
+            name="isSetting"
+            handleClose={handleToggleAction}
+          />
+          <MenuHeaderNotification
+            anchor={isSettingRef}
+            open={openMenu.isNotification}
+            name="isNotification"
+            handleClose={handleToggleAction}
+          />
+          <MenuHeaderMessage
+            anchor={isMessageRef}
+            open={openMenu.isMessage}
+            name="isMessage"
+            handleClose={handleToggleAction}
+          />
+          {/* content */}
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
           >
-            WeiboSocial
-          </Typography>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Typography
+                variant="h6"
+                color="primary"
+                component={Link}
+                to={PATH_PAGE.home.path}
+              >
+                WeiboSocial
+              </Typography>
 
-          <Box>
-            <TextField
-              sx={{
-                "& input": { py: 1, fontSize: 14 },
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: (theme) => theme.sizes.radius,
-                },
-              }}
-              placeholder="Tìm kiếm trong Weibo"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconButton sx={{ "& svg": { fontSize: 20 } }}>
-                      {icons.SearchIcon}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Box>
-        </Stack>
+              <Box>
+                <TextField
+                  sx={{
+                    "& input": { py: 1, fontSize: 14 },
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: (theme) => theme.sizes.radius,
+                    },
+                  }}
+                  placeholder="Tìm kiếm trong Weibo"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconButton sx={{ "& svg": { fontSize: 20 } }}>
+                          {icons.SearchIcon}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
+            </Stack>
 
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <Box
-            sx={[
-              (theme) => ({
-                [theme.breakpoints.down("md")]: {
-                  display: "none",
-                },
-              }),
-              {
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 1,
-                py: 0.5,
-                px: 2,
-                cursor: "pointer",
-                transition: "background 300ms",
-                borderRadius: (theme) => theme.sizes.radius,
-                "&:hover": {
-                  bgcolor: "grey.200",
-                  "& .MuiTypography-root": {
-                    color: (theme) =>
-                      theme.palette.mode === "dark"
-                        ? "background.navbar"
-                        : "text.primary",
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Box
+                sx={[
+                  (theme) => ({
+                    [theme.breakpoints.down("md")]: {
+                      display: "none",
+                    },
+                  }),
+                  {
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 1,
+                    py: 0.5,
+                    px: 2,
+                    cursor: "pointer",
+                    transition: "background 300ms",
+                    borderRadius: (theme) => theme.sizes.radius,
+                    "&:hover": {
+                      bgcolor: "grey.200",
+                      "& .MuiTypography-root": {
+                        color: (theme) =>
+                          theme.palette.mode === "dark"
+                            ? "background.navbar"
+                            : "text.primary",
+                      },
+                    },
                   },
-                },
-              },
-            ]}
-          >
-            <Avatar sx={{ width: 32, height: 32 }} />
-            <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
-              Hoàng
-            </Typography>
-          </Box>
-          <Badge badgeContent={4} color="primary">
-            <IconButtonStyle
-              ref={isMessageRef}
-              onClick={() => handleToggleAction("isMessage")}
-            >
-              {icons.ChatIcon}
-            </IconButtonStyle>
-          </Badge>
-          <Badge badgeContent={4} color="primary">
-            <IconButtonStyle
-              ref={isNotificationRef}
-              onClick={() => handleToggleAction("isNotification")}
-            >
-              {icons.NotificationIcon}
-            </IconButtonStyle>
-          </Badge>
-          <IconButtonStyle
-            ref={isSettingRef}
-            onClick={() => handleToggleAction("isSetting")}
-          >
-            {icons.ArrowDropDownIcon}
-          </IconButtonStyle>
+                ]}
+              >
+                <Avatar sx={{ width: 32, height: 32 }} />
+                <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
+                  Hoàng
+                </Typography>
+              </Box>
+              <Badge badgeContent={4} color="primary">
+                <IconButtonStyle
+                  ref={isMessageRef}
+                  onClick={() => handleToggleAction("isMessage")}
+                >
+                  {icons.ChatIcon}
+                </IconButtonStyle>
+              </Badge>
+              <Badge badgeContent={4} color="primary">
+                <IconButtonStyle
+                  ref={isNotificationRef}
+                  onClick={() => handleToggleAction("isNotification")}
+                >
+                  {icons.NotificationIcon}
+                </IconButtonStyle>
+              </Badge>
+              <IconButtonStyle
+                ref={isSettingRef}
+                onClick={() => handleToggleAction("isSetting")}
+              >
+                {icons.ArrowDropDownIcon}
+              </IconButtonStyle>
+            </Stack>
+          </Stack>
         </Stack>
-      </Stack>
-    </Paper>
+      </Paper>
+      <Box sx={{ height: (theme) => theme.sizes.header, width: "100%" }} />
+    </>
   );
 };
 
