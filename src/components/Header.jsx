@@ -9,6 +9,8 @@ import {
   InputAdornment,
   Badge,
   Paper,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { icons } from "constants";
 import { styled } from "@mui/styles";
@@ -27,6 +29,7 @@ const IconButtonStyle = styled(IconButton)(({ theme }) => ({
 }));
 
 const Header = () => {
+  const theme = useTheme();
   const isSettingRef = useRef(null);
   const isNotificationRef = useRef(null);
   const isMessageRef = useRef(null);
@@ -35,6 +38,7 @@ const Header = () => {
     isNotification: false,
     isMessage: false,
   });
+  const isMobileRes = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleToggleAction = (name) => {
     setOpenMenu({
@@ -61,7 +65,7 @@ const Header = () => {
       >
         <Stack
           sx={{
-            maxWidth: (theme) => theme.sizes.fullWidth,
+            maxWidth: (theme) => theme.breakpoints.values.xl,
             height: "100%",
             m: "auto",
           }}
@@ -92,7 +96,11 @@ const Header = () => {
             alignItems="center"
             justifyContent="space-between"
           >
-            <Stack direction="row" alignItems="center" spacing={2}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              sx={{ gap: !isMobileRes ? 2 : 1 }}
+            >
               <Typography
                 variant="h6"
                 color="primary"
@@ -103,24 +111,30 @@ const Header = () => {
               </Typography>
 
               <Box>
-                <TextField
-                  sx={{
-                    "& input": { py: 1, fontSize: 14 },
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: (theme) => theme.sizes.radius,
-                    },
-                  }}
-                  placeholder="Tìm kiếm trong Weibo"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <IconButton sx={{ "& svg": { fontSize: 20 } }}>
-                          {icons.SearchIcon}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+                {!isMobileRes ? (
+                  <TextField
+                    sx={{
+                      "& input": { py: 1, fontSize: 14 },
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: (theme) => theme.sizes.radius,
+                      },
+                    }}
+                    placeholder="Tìm kiếm trong Weibo"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <IconButton sx={{ "& svg": { fontSize: 20 } }}>
+                            {icons.SearchIcon}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                ) : (
+                  <IconButton sx={{ "& svg": { fontSize: 20 } }}>
+                    {icons.SearchIcon}
+                  </IconButton>
+                )}
               </Box>
             </Stack>
 

@@ -23,6 +23,12 @@ import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutline
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 
+import CakeIcon from "@mui/icons-material/Cake";
+import WbSunnyIcon from "@mui/icons-material/WbSunny";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+
 export default {
   HomeOutlineIcon: <HomeOutlinedIcon />,
   RemoveIcon: <RemoveIcon />,
@@ -46,4 +52,10 @@ export default {
   CommentIcon: <ChatBubbleOutlineOutlinedIcon />,
   ShareIcon: <ShareOutlinedIcon />,
   HeartIcon: <FavoriteOutlinedIcon />,
+  CakeIcon: <CakeIcon />,
+  PeopleAltIcon: <PeopleAltIcon />,
+
+  WbSunnyIcon: <WbSunnyIcon />,
+  BookmarkBorderOutlinedIcon: <BookmarkBorderOutlinedIcon />,
+  PersonAddIcon: <PersonAddIcon />,
 };

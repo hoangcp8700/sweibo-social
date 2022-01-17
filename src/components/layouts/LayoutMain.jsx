@@ -7,9 +7,10 @@ const Main = () => {
   return (
     <Box>
       <Header />
+
       <Paper
         sx={{
-          minHeight: "100vh",
+          minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
           bgcolor: "background.main",
           overflow: "hidden",
           borderRadius: 0,
@@ -17,7 +18,12 @@ const Main = () => {
           px: 3,
         }}
       >
-        <Box sx={{ maxWidth: (theme) => theme.sizes.fullWidth, m: "auto" }}>
+        <Box
+          sx={{
+            maxWidth: (theme) => theme.breakpoints.values.xl,
+            m: "auto",
+          }}
+        >
           <Outlet />
         </Box>
       </Paper>

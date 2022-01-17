@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isShowSidebarLeft: true,
   isShowSidebarRight: true,
-  darkMode: true,
+  darkMode: false,
 };
 
 const slice = createSlice({

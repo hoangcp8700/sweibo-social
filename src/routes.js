@@ -9,14 +9,14 @@ import MainLayout from "components/layouts/LayoutMain";
 // import AuthGuard from 'guards/AuthGuard'
 
 // components
-// import LoadingScreen from 'components/LoadingScreen'
+import { LoadingPage } from "components";
 
 // ----------------------------------------------------------------------
 import { PATH_PAGE } from "constants/paths";
 
 const Loadable = (Component) => (props) => {
   return (
-    <Suspense fallback={<>LOADING</>}>
+    <Suspense fallback={<LoadingPage />}>
       <Component {...props} />
     </Suspense>
   );

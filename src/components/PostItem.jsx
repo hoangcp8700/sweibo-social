@@ -8,9 +8,11 @@ import {
   Button,
   Divider,
   Box,
+  useTheme,
 } from "@mui/material";
 import { styled } from "@mui/styles";
 import { icons } from "constants";
+import { lineClampStyle } from "utils/lineClampStyle";
 
 const ButtonStyle = styled(Button)(({ theme }) => ({
   color: theme.palette.text.secondary,
@@ -21,6 +23,13 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
     backgroundColor: "transparent",
     color: theme.palette.text.primary,
   },
+  [theme.breakpoints.down("480")]: {
+    fontSize: 12,
+    padding: theme.spacing(0.5, 0),
+    "& svg": {
+      fontSize: `14px!important`,
+    },
+  },
 }));
 
 const EmojiButtonStyle = styled(IconButton)(({ theme }) => ({
@@ -28,9 +37,28 @@ const EmojiButtonStyle = styled(IconButton)(({ theme }) => ({
   padding: 0,
 }));
 
+const TypographyCustom = ({ children }) => {
+  return (
+    <Typography
+      variant="body2"
+      sx={[
+        { ...lineClampStyle(1), color: "text.secondary" },
+        (theme) => ({
+          [theme.breakpoints.down("480")]: { fontSize: 12 },
+        }),
+      ]}
+    >
+      {children}
+    </Typography>
+  );
+};
 const PostItem = (props) => {
+  const theme = useTheme();
+  const isMobileRes = theme.breakpoints.down("sm");
+
   return (
     <Paper
+      elevation={5}
       sx={{
         borderRadius: (theme) => theme.sizes.minBase,
         bgcolor: "background.navbar",
@@ -89,24 +117,16 @@ const PostItem = (props) => {
             >
               {icons.HeartIcon}
             </EmojiButtonStyle>
-            <Box sx={{ ml: 2 }}>
-              <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                Phạm thanh tùng và 20k người khác
-              </Typography>
+            <Box sx={{ ml: !isMobileRes ? 2 : 1 }}>
+              <TypographyCustom>
+                {!isMobileRes ? `Phạm thanh tùng và 20k người khác` : 2321}
+              </TypographyCustom>
             </Box>
           </Stack>
 
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Box>
-              <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                388 bình luận
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                22 chia sẽ
-              </Typography>
-            </Box>
+            <TypographyCustom>388 bình luận</TypographyCustom>
+            <TypographyCustom>22 chia sẽ</TypographyCustom>
           </Stack>
         </Stack>
 
