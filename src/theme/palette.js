@@ -113,7 +113,12 @@ const COMMON = {
 const palette = {
   light: {
     ...COMMON,
-    text: { primary: GREY[800], secondary: GREY[600], disabled: GREY[500] },
+    text: {
+      primary: GREY[800],
+      secondary: GREY[600],
+      disabled: GREY[500],
+      reverse: "#fff",
+    },
     background: {
       paper: "#fff",
       default: "#fff",
@@ -126,7 +131,12 @@ const palette = {
   },
   dark: {
     ...COMMON,
-    text: { primary: "#fff", secondary: GREY[500], disabled: GREY[600] },
+    text: {
+      primary: "#fff",
+      secondary: GREY[500],
+      disabled: GREY[600],
+      reverse: GREY[800],
+    },
     background: {
       paper: GREY[800],
       default: GREY[900],

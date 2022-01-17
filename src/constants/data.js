@@ -9,4 +9,11 @@ const sidebarHome = [
   { ...PATH_PAGE.save, icon: icons.BookmarkBorderOutlinedIcon },
 ];
 
-export default { sidebarHome };
+const sidebarFriend = [
+  { title: "Danh sách bạn bè", path: "/friends", icon: icons.PeopleAltIcon },
+  { title: "Gợi ý", path: "/friends/suggest", icon: icons.PeopleAltIcon },
+  { title: "Lời mời", path: "/friends/invite", icon: icons.PeopleAltIcon },
+  { title: "Sinh nhật", path: "/friends/birthday", icon: icons.PeopleAltIcon },
+];
+
+export default { sidebarHome, sidebarFriend };

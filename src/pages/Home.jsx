@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, Stack, Typography, Divider } from "@mui/material";
+import {
+  Box,
+  Stack,
+  useTheme,
+  useMediaQuery,
+  Typography,
+  Divider,
+} from "@mui/material";
 import { fakeData } from "constants";
 import {
   History,
@@ -15,6 +22,9 @@ import {
 const Home = () => {
   const [users, setUsers] = React.useState([]);
   const [advertises, setAdvertises] = React.useState([]);
+  const theme = useTheme();
+  const isMobileRes = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTableRes = useMediaQuery(theme.breakpoints.down("md"));
 
   React.useEffect(() => {
     const getUsers = async () => {
@@ -35,7 +45,10 @@ const Home = () => {
       <Stack direction="row" sx={{ gap: 3 }}>
         <Box
           sx={[
-            { flex: 0.8, maxWidth: 360 },
+            {
+              maxWidth: (theme) => theme.sizes.sidebar,
+              minWidth: (theme) => theme.sizes.sidebar,
+            },
             (theme) => ({
               [theme.breakpoints.down("md")]: {
                 display: "none",
@@ -55,27 +68,22 @@ const Home = () => {
         >
           <Box
             sx={[
-              { maxWidth: 600, m: "auto", transition: "max-width 150ms" },
+              { maxWidth: 600, m: "auto" },
               (theme) => ({ [theme.breakpoints.up("xl")]: { maxWidth: 900 } }),
               (theme) => ({
-                [theme.breakpoints.down("700")]: { maxWidth: 500 },
-              }),
-              (theme) => ({
-                [theme.breakpoints.down("sm")]: { maxWidth: 400 },
-              }),
-              (theme) => ({
-                [theme.breakpoints.down("480")]: { maxWidth: 320 },
-              }),
-              (theme) => ({
-                [theme.breakpoints.down("375")]: { maxWidth: 285 },
-              }),
-              (theme) => ({
-                [theme.breakpoints.down("330")]: { maxWidth: 250 },
+                [theme.breakpoints.down("md")]: { maxWidth: 800 },
               }),
             ]}
           >
             <Stack spacing={3}>
-              <History users={users} />
+              <History
+                isHistory={true}
+                handleClick={(item) => console.log("seen history", item)}
+                users={users}
+                maxWidth={
+                  !isMobileRes ? `calc(100vw - 65px)` : `calc(100vw - 50px)`
+                }
+              />
               <CreatePost />
               <Stack spacing={3}>
                 <PostItem />
@@ -89,7 +97,7 @@ const Home = () => {
           sx={[
             {
               flex: 0.8,
-              maxWidth: 360,
+              maxWidth: (theme) => theme.sizes.sidebar,
               // maxHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
               // overflow: "hidden",
             },

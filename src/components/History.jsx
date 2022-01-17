@@ -10,25 +10,37 @@ import {
 import { lineClampStyle } from "utils/lineClampStyle";
 import { icons } from "constants";
 
-const HistoryItem = ({ item }) => {
+const HistoryItem = ({ item, isHistory, matchParams, onClick }) => {
   return (
-    <Box>
+    <Box
+      onClick={() => onClick(item)}
+      sx={{
+        cursor: "pointer",
+        "&:hover": {
+          "& .MuiTypography-root": {
+            textDecoration: "underline",
+          },
+        },
+      }}
+    >
       <Stack alignItems="center">
         <Avatar
           src={item.avatar}
           sx={{
             width: 80,
             height: 80,
-            border: (theme) => `5px solid ${theme.palette.primary.main}`,
+            border: (theme) =>
+              isHistory || matchParams
+                ? `5px solid ${theme.palette.primary.main}`
+                : "none",
             "& img": { borderRadius: "50%" },
           }}
         />
         <Typography
           variant="body2"
           sx={{ ...lineClampStyle(2), textAlign: "center" }}
-        >
-          {item.name}
-        </Typography>
+          dangerouslySetInnerHTML={{ __html: item.name }}
+        />
       </Stack>
     </Box>
   );
@@ -71,8 +83,9 @@ const HistoryItemMe = ({ item }) => {
     </Box>
   );
 };
+
 const History = (props) => {
-  const { users } = props;
+  const { users, params, isHistory, maxWidth, handleClick } = props;
 
   const slideRef = React.useRef(null);
 
@@ -83,6 +96,8 @@ const History = (props) => {
         position: "relative",
         bgcolor: "background.navbar",
         borderRadius: (theme) => theme.sizes.minBase,
+        width: "100%",
+        minHeight: 100,
       }}
     >
       <Stack
@@ -95,14 +110,21 @@ const History = (props) => {
           overflow: "auto",
           scrollBehavior: "smooth",
           m: "auto",
+          maxWidth,
           "&::-webkit-scrollbar": {
             display: "none",
           },
         }}
       >
-        <HistoryItemMe />
+        {isHistory ? <HistoryItemMe /> : ""}
         {users?.map((item) => (
-          <HistoryItem key={item.id} item={item} />
+          <HistoryItem
+            matchParams={params === item.id.toString()}
+            key={item.id}
+            item={item}
+            isHistory={isHistory}
+            onClick={handleClick}
+          />
         ))}
       </Stack>
 
