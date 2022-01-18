@@ -10,7 +10,6 @@ const CardUser = ({ item }) => {
         {
           flex: 1,
           minWidth: 175,
-          maxWidth: 175,
           overflow: "hidden",
           bgcolor: "background.navbar",
         },

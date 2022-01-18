@@ -8,6 +8,7 @@ export { default as BirthdayToday } from "./BirthdayToday";
 export { default as ActivityStatus } from "./ActivityStatus";
 export { default as SidebarHome } from "./SidebarHome";
 export { default as SidebarItem } from "./SidebarItem";
+export { default as StickySidebar } from "./StickySidebar";
 
 export { default as FriendSuggestion } from "./FriendSuggestion";
 export { default as LoadingPage } from "./LoadingPage";

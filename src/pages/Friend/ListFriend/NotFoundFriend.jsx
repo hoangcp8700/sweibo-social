@@ -6,7 +6,7 @@ const NotFoundFriend = () => {
     <Stack
       alignItems="center"
       justifyContent="center"
-      sx={{ minHeight: "49vh" }}
+      sx={{ minHeight: "45vh" }}
     >
       <Box sx={{ width: 200, height: 200 }}>
         <img

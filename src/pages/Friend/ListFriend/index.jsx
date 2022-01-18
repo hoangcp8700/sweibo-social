@@ -103,14 +103,25 @@ const ListFriend = () => {
           }}
         />
 
-        <History
-          users={search.length ? searchResults : users}
-          maxWidth={!isTableRes ? `calc(100vw - 370px)` : `calc(100vw - 50px)`}
-          handleClick={(item) => handleShowProfile(item)}
-          params={params?.id || null}
-        />
+        <Stack sx={{ width: "100%" }}>
+          <Box
+            sx={{
+              width: "100%",
+              m: "0 auto",
+            }}
+          >
+            <History
+              users={search.length ? searchResults : users}
+              maxWidth={
+                !isTableRes ? `calc(100vw - 413px)` : `calc(100vw - 63px)`
+              }
+              handleClick={(item) => handleShowProfile(item)}
+              params={params?.id || null}
+            />
+          </Box>
+        </Stack>
 
-        <Box>
+        <Box sx={{ width: "100%" }}>
           <Outlet />
         </Box>
       </Stack>

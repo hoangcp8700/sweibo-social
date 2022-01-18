@@ -1,12 +1,6 @@
 import React from "react";
-import {
-  Box,
-  Stack,
-  useTheme,
-  useMediaQuery,
-  Typography,
-  Divider,
-} from "@mui/material";
+
+import { Box, Stack, Typography, Divider, styled } from "@mui/material";
 import { fakeData } from "constants";
 import {
   History,
@@ -17,14 +11,12 @@ import {
   ActivityStatus,
   SidebarHome,
   FriendSuggestion,
+  StickySidebar,
 } from "components";
 
 const Home = () => {
   const [users, setUsers] = React.useState([]);
   const [advertises, setAdvertises] = React.useState([]);
-  const theme = useTheme();
-  const isMobileRes = useMediaQuery(theme.breakpoints.down("sm"));
-  const isTableRes = useMediaQuery(theme.breakpoints.down("md"));
 
   React.useEffect(() => {
     const getUsers = async () => {
@@ -42,33 +34,37 @@ const Home = () => {
 
   return (
     <Box>
-      <Stack direction="row" sx={{ gap: 3 }}>
-        <Box
-          sx={[
-            {
-              maxWidth: (theme) => theme.sizes.sidebar,
-              minWidth: (theme) => theme.sizes.sidebar,
-            },
+      <Stack
+        direction="row"
+        sx={{
+          gap: { xs: 0, md: 3 },
+        }}
+        alignItems="flex-start"
+      >
+        <StickySidebar
+          containerStyle={[
             (theme) => ({
               [theme.breakpoints.down("md")]: {
                 display: "none",
               },
             }),
           ]}
+          contentStyle={{ pl: 3 }}
         >
           <SidebarHome />
           <Divider sx={{ my: 1 }} />
           <FriendSuggestion lists={users} />
-        </Box>
+        </StickySidebar>
 
         <Box
           sx={{
-            flex: 2,
+            flex: 1,
+            p: 3,
           }}
         >
           <Box
             sx={[
-              { maxWidth: 600, m: "auto" },
+              { maxWidth: 600, m: "0 auto" },
               (theme) => ({ [theme.breakpoints.up("xl")]: { maxWidth: 900 } }),
               (theme) => ({
                 [theme.breakpoints.down("md")]: { maxWidth: 800 },
@@ -80,9 +76,7 @@ const Home = () => {
                 isHistory={true}
                 handleClick={(item) => console.log("seen history", item)}
                 users={users}
-                maxWidth={
-                  !isMobileRes ? `calc(100vw - 65px)` : `calc(100vw - 50px)`
-                }
+                maxWidth="calc(100vw - 65px)"
               />
               <CreatePost />
               <Stack spacing={3}>
@@ -93,41 +87,34 @@ const Home = () => {
           </Box>
         </Box>
 
-        <Box
-          sx={[
-            {
-              flex: 0.8,
-              maxWidth: (theme) => theme.sizes.sidebar,
-              // maxHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
-              // overflow: "hidden",
-            },
+        <StickySidebar
+          containerStyle={[
             (theme) => ({
               [theme.breakpoints.down("lg")]: {
                 display: "none",
               },
             }),
           ]}
+          contentStyle={{ py: 2, pr: 2, mr: 1, gap: 1 }}
         >
-          <Stack spacing={1}>
-            <BirthdayToday />
-            <Divider sx={{ pt: 1 }} />
-            {/* advertise */}
+          <BirthdayToday />
+          <Divider sx={{ pt: 1 }} />
+          {/* advertise */}
 
-            <Box>
-              <Typography variant="h6" sx={{ color: "text.secondary" }}>
-                Được tài trợ
-              </Typography>
-              <Stack spacing={2} sx={{ mt: 1 }}>
-                {advertises?.map((item) => (
-                  <AdvertiseItem key={item.id} item={item} />
-                ))}
-              </Stack>
-            </Box>
-            <Divider />
+          <Box>
+            <Typography variant="h6" sx={{ color: "text.secondary" }}>
+              Được tài trợ
+            </Typography>
+            <Stack spacing={2} sx={{ mt: 1 }}>
+              {advertises?.map((item) => (
+                <AdvertiseItem key={item.id} item={item} />
+              ))}
+            </Stack>
+          </Box>
+          <Divider />
 
-            <ActivityStatus lists={users} />
-          </Stack>
-        </Box>
+          <ActivityStatus lists={users} />
+        </StickySidebar>
       </Stack>
     </Box>
   );

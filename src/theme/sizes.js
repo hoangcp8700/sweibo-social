@@ -6,7 +6,7 @@ const sizes = {
   radius: 16,
   padding: 24,
   circle: "50%",
-  sidebar: 300,
+  sidebar: 350,
   header: 60,
   fullWidth: 1900,
 };
