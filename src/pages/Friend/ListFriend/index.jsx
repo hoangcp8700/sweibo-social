@@ -34,7 +34,6 @@ const ListFriend = () => {
     getUsers();
   }, []);
 
-  console.log("params", params);
   React.useEffect(() => {
     if (!users.length) return;
     const timer = setTimeout(async () => {
@@ -121,7 +120,13 @@ const ListFriend = () => {
           </Box>
         </Stack>
 
-        <Box sx={{ width: "100%" }}>
+        <Box
+          sx={{
+            width: "100%",
+            borderRadius: (theme) => theme.sizes.minBase,
+            overflow: "hidden",
+          }}
+        >
           <Outlet />
         </Box>
       </Stack>

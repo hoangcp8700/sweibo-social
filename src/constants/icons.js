@@ -1,3 +1,9 @@
+import { SvgIcon, Icon } from "@mui/material";
+
+// ---------------------------------------
+import messageSVG from "assets/icons/message.svg";
+
+// ------------------------------------------------
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
@@ -27,7 +33,18 @@ import CakeIcon from "@mui/icons-material/Cake";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
+
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import PersonIcon from "@mui/icons-material/Person";
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+
+const ConvertIcon = ({ src }) => {
+  return (
+    <Icon>
+      <img src={src} />
+    </Icon>
+  );
+};
 
 export default {
   HomeOutlineIcon: <HomeOutlinedIcon />,
@@ -58,4 +75,7 @@ export default {
   WbSunnyIcon: <WbSunnyIcon />,
   BookmarkBorderOutlinedIcon: <BookmarkBorderOutlinedIcon />,
   PersonAddIcon: <PersonAddIcon />,
+  PersonIcon: <PersonIcon />,
+  PersonRemoveIcon: <PersonRemoveIcon />,
+  MessageIcon: <ConvertIcon src={messageSVG} />,
 };
