@@ -241,7 +241,7 @@ const Profile = () => {
           </Box>
         </Paper>
 
-        <Paper sx={{ bgcolor: "background.main" }}>
+        <Paper sx={{ bgcolor: "background.main", mt: 2 }}>
           <Outlet />
         </Paper>
       </Box>
