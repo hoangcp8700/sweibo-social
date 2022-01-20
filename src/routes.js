@@ -45,7 +45,6 @@ export default function Router() {
                     { path: "", element: <Navigate to="posts" replace /> },
                     { path: "posts", element: <PostProfilePage /> },
                     { path: "photos", element: <FileProfilePage /> },
-                    { path: "about", element: <InfoProfilePage /> },
                     { path: "friends", element: <FriendProfilePage /> },
                   ],
                 },
@@ -65,7 +64,6 @@ export default function Router() {
           children: [
             { path: "", element: <PostProfilePage /> },
             { path: "file", element: <FileProfilePage /> },
-            { path: "info", element: <InfoProfilePage /> },
             { path: "friend", element: <FriendProfilePage /> },
           ],
         },
@@ -103,9 +101,7 @@ const BirthdayFriendPage = Loadable(
 
 // profile
 const ProfilePage = Loadable(lazy(() => import("pages/Profile")));
-const InfoProfilePage = Loadable(
-  lazy(() => import("pages/Profile/InfoProfile"))
-);
+
 const FileProfilePage = Loadable(
   lazy(() => import("pages/Profile/FileProfile"))
 );

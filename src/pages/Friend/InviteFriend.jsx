@@ -23,7 +23,12 @@ const CardUser = ({ item }) => {
       ]}
     >
       <Stack alignItems="center">
-        <Box sx={{ width: "100%" }}>
+        <Box
+          sx={{
+            width: "100%",
+            p: 1,
+          }}
+        >
           <Avatar
             imgProps={{
               loading: "lazy",
@@ -31,8 +36,10 @@ const CardUser = ({ item }) => {
             src={item?.avatar}
             alt={item?.name}
             sx={[
-              { borderRadius: 0, width: "100%", height: 150 },
               (theme) => ({
+                borderRadius: (theme) => theme.sizes.minBase,
+                width: "100%",
+                height: 150,
                 [theme.breakpoints.down("sm")]: {
                   height: 120,
                 },

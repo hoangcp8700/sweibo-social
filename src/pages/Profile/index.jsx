@@ -39,7 +39,10 @@ const Profile = () => {
   return (
     <Box>
       <Box
-        sx={{ maxWidth: (theme) => theme.breakpoints.values.lg, m: "0 auto" }}
+        sx={{
+          maxWidth: (theme) => theme.breakpoints.values.lg,
+          m: "0 auto",
+        }}
       >
         {/* banner and avatar  */}
         <Paper sx={{ bgcolor: "background.navbar" }}>
@@ -91,6 +94,7 @@ const Profile = () => {
                 <Avatar
                   sx={avatar}
                   alt="avatar"
+                  // eslint-disable-next-line react/jsx-no-duplicate-props
                   sx={{
                     width: { xs: 120, sm: 168 },
                     height: { xs: 120, sm: 168 },

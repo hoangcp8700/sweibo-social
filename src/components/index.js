@@ -12,6 +12,8 @@ export { default as StickySidebar } from "./StickySidebar";
 export { default as InfomationUser } from "./InfomationUser";
 export { default as AlbumImage } from "./AlbumImage";
 export { default as AlbumFriends } from "./AlbumFriends";
+export { default as FriendItem } from "./FriendItem";
+export { default as EmojiPicker } from "./EmojiPicker";
 
 export { default as FriendSuggestion } from "./FriendSuggestion";
 export { default as LoadingPage } from "./LoadingPage";

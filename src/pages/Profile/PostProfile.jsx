@@ -10,9 +10,25 @@ import { Box, Stack } from "@mui/material";
 
 const PostProfile = () => {
   return (
-    <Box>
-      <Stack sx={{ flexDirection: "row", gap: 2 }}>
-        <Stack spacing={2} sx={{ maxWidth: 430 }}>
+    <Box sx={{ position: "relative" }}>
+      <Stack
+        sx={{
+          flexDirection: "row",
+          gap: 2,
+        }}
+        alignItems="flex-start"
+      >
+        <Stack
+          spacing={2}
+          sx={[
+            (theme) => ({
+              maxWidth: 430,
+              [theme.breakpoints.down("md")]: {
+                display: "none",
+              },
+            }),
+          ]}
+        >
           <InfomationUser />
           <AlbumImage />
           <AlbumFriends />
@@ -20,6 +36,11 @@ const PostProfile = () => {
 
         <Stack spacing={2} sx={{ flex: 1 }}>
           <CreatePost />
+          <PostItem />
+          <PostItem />
+          <PostItem />
+          <PostItem />
+          <PostItem />
           <PostItem />
           <PostItem />
           <PostItem />

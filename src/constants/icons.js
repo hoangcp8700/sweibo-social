@@ -23,6 +23,7 @@ import DeleteIcon from "@mui/icons-material/Clear";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
@@ -37,6 +38,8 @@ import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlin
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PersonIcon from "@mui/icons-material/Person";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import BlockIcon from "@mui/icons-material/Block";
+import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 
 const ConvertIcon = ({ src }) => {
   return (
@@ -66,6 +69,7 @@ export default {
   MoreHorizIcon: <MoreHorizIcon />,
 
   LikeIcon: <ThumbUpIcon />,
+  UnlikeIcon: <ThumbDownAltIcon />,
   CommentIcon: <ChatBubbleOutlineOutlinedIcon />,
   ShareIcon: <ShareOutlinedIcon />,
   HeartIcon: <FavoriteOutlinedIcon />,
@@ -78,4 +82,7 @@ export default {
   PersonIcon: <PersonIcon />,
   PersonRemoveIcon: <PersonRemoveIcon />,
   MessageIcon: <ConvertIcon src={messageSVG} />,
+  BlockIcon: <BlockIcon />,
+
+  EmojiEmotionsIcon: <EmojiEmotionsIcon />,
 };

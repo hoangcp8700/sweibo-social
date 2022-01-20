@@ -53,7 +53,7 @@ const ListFriend = () => {
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, users]);
 
   const handleChangeSearch = (e) => {
     setSearch(e.target.value);

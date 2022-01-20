@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 
 const MMenu = (props) => {
-  const { open, anchor, name, handleClose, children } = props;
+  const { open, anchor, paperStyle, name, handleClose, children } = props;
   const onClose = (e) => handleClose(name);
 
   return (
@@ -32,7 +32,7 @@ const MMenu = (props) => {
       )}
       <Popper
         open={open}
-        anchorEl={anchor.current}
+        anchorEl={anchor?.current || anchor}
         role={undefined}
         placement="bottom-end"
         transition
@@ -48,6 +48,7 @@ const MMenu = (props) => {
                 mt: 1.5,
                 minWidth: 300,
                 bgcolor: "background.navbar",
+                ...paperStyle,
               }}
             >
               <ClickAwayListener onClickAway={onClose}>

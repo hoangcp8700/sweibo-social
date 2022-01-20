@@ -18,8 +18,26 @@ const sidebarFriend = [
 
 const menuProfile = [
   { label: "Bài viết", value: "posts" },
-  { label: "Giới thiệu", value: "about" },
   { label: "Bạn bè", value: "friends" },
   { label: "Ảnh / Video", value: "photos" },
 ];
-export default { sidebarHome, sidebarFriend, menuProfile };
+
+const menuFriendItem = [
+  {
+    icon: icons.LikeIcon,
+    iconNo: icons.UnlikeIcon,
+    label: "Yêu thích",
+    labelNo: "Bỏ thích",
+    value: "like",
+  },
+  {
+    icon: icons.PersonAddIcon,
+    iconNo: icons.PersonRemoveIcon,
+    label: "Kết bạn",
+    labelNo: "Hủy kết bạn",
+    value: "friend",
+  },
+  { icon: icons.BlockIcon, label: "Chặn", labelNo: "Bỏ chặn", value: "block" },
+];
+// eslint-disable-next-line import/no-anonymous-default-export
+export default { sidebarHome, sidebarFriend, menuProfile, menuFriendItem };
