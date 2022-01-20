@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet, useParams } from "react-router-dom";
+import { Outlet, useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
   Paper,
@@ -12,6 +12,8 @@ import {
 } from "@mui/material";
 import { icons } from "constants";
 import { MButton } from "components/MUI";
+import { data } from "constants";
+import { PATH_PAGE } from "constants/paths";
 
 const AvatarGroupStyle = styled(AvatarGroup)(() => ({
   "& .MuiAvatar-root": {
@@ -21,20 +23,26 @@ const AvatarGroupStyle = styled(AvatarGroup)(() => ({
     fontWeight: 700,
   },
 }));
+const avatar =
+  "https://scontent.fsgn5-10.fna.fbcdn.net/v/t1.6435-9/s1080x2048/186374666_2837301546583982_8267757035377433575_n.jpg?_nc_cat=107&ccb=1-5&_nc_sid=e3f864&_nc_ohc=QtlBKR1rTwQAX8xg7fn&tn=L_BIy6fjZiNrTxJ3&_nc_ht=scontent.fsgn5-10.fna&oh=00_AT_tJT1RMPew839ArQHMuwbkdKqlIlmMRjUo6xEYxqAvuA&oe=620E5824";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const params = useParams();
+  const location = useLocation();
 
-  const avatar =
-    "https://scontent.fsgn5-10.fna.fbcdn.net/v/t1.6435-9/s1080x2048/186374666_2837301546583982_8267757035377433575_n.jpg?_nc_cat=107&ccb=1-5&_nc_sid=e3f864&_nc_ohc=QtlBKR1rTwQAX8xg7fn&tn=L_BIy6fjZiNrTxJ3&_nc_ht=scontent.fsgn5-10.fna&oh=00_AT_tJT1RMPew839ArQHMuwbkdKqlIlmMRjUo6xEYxqAvuA&oe=620E5824";
+  const handleRedirect = (key) => {
+    navigate(
+      `/${PATH_PAGE.friend.link}/${PATH_PAGE.profile.link}/${params?.id}/${key}`
+    );
+  };
   return (
-    <Paper sx={{ bgcolor: "background.navbar" }}>
+    <Box>
       <Box
-        sx={{ maxWidth: (theme) => theme.breakpoints.values.md, m: "0 auto" }}
+        sx={{ maxWidth: (theme) => theme.breakpoints.values.lg, m: "0 auto" }}
       >
-        {/* profile {params?.id} */}
         {/* banner and avatar  */}
-        <Box>
+        <Paper sx={{ bgcolor: "background.navbar" }}>
           <Box>
             <Paper
               sx={[
@@ -187,12 +195,57 @@ const Profile = () => {
               </Stack>
             </Stack>
 
-            <Divider sx={{ my: 2, mx: 3 }} />
+            <Divider sx={{ mt: 2, mx: 3 }} />
+
+            <Box sx={{ px: 3, mt: 0.5 }}>
+              <Stack direction="row" spacing={1}>
+                {data?.menuProfile?.map((item, index) => {
+                  const getIndex = location.pathname.indexOf(params?.id);
+                  const newString = location.pathname.slice(getIndex);
+                  const match = newString.includes(item.value);
+                  return (
+                    <MButton
+                      key={item.label}
+                      sx={{
+                        py: 1,
+                        px: 2,
+                        position: "relative",
+                        color: match ? "primary.main" : "text.primary",
+
+                        "&:hover": {
+                          bgcolor: "background.opacity",
+                        },
+                      }}
+                      onClick={() => handleRedirect(item.value)}
+                    >
+                      {item.label}
+                      <Box
+                        className="borderBottom"
+                        sx={{
+                          position: "absolute",
+                          bottom: 0,
+                          left: 0,
+                          borderBottom: (theme) =>
+                            `3px solid ${theme.palette.primary.main}`,
+                          bgcolor: "primary.main",
+                          width: match ? "100%" : "0%",
+                          height: 3,
+                          transition: "width .3s",
+                        }}
+                      />
+                    </MButton>
+                  );
+                })}
+              </Stack>
+            </Box>
           </Box>
-        </Box>
-        <Outlet />
+        </Paper>
+
+        <Paper sx={{ bgcolor: "background.main" }}>
+          <Outlet />
+        </Paper>
       </Box>
-    </Paper>
+    </Box>
   );
 };
 

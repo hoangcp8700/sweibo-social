@@ -16,4 +16,10 @@ const sidebarFriend = [
   { title: "Sinh nhật", path: "/friends/birthday", icon: icons.PeopleAltIcon },
 ];
 
-export default { sidebarHome, sidebarFriend };
+const menuProfile = [
+  { label: "Bài viết", value: "posts" },
+  { label: "Giới thiệu", value: "about" },
+  { label: "Bạn bè", value: "friends" },
+  { label: "Ảnh / Video", value: "photos" },
+];
+export default { sidebarHome, sidebarFriend, menuProfile };
