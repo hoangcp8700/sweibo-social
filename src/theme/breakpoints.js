@@ -4,6 +4,7 @@ const breakpoints = {
     xs: 0,
     mobile: 420,
     sm: 600,
+    sm1: 810,
     md: 960,
     lg: 1280,
     xl: 1920,

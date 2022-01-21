@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { icons } from "constants";
 import { styled } from "@mui/styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PATH_PAGE } from "constants/paths";
 import MenuHeader from "components/MenuHeader/Main";
 import MenuHeaderNotification from "components/MenuHeader/Notification";
@@ -30,6 +30,8 @@ const IconButtonStyle = styled(IconButton)(({ theme }) => ({
 
 const Header = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
+
   const isSettingRef = useRef(null);
   const isNotificationRef = useRef(null);
   const isMessageRef = useRef(null);
@@ -45,6 +47,11 @@ const Header = () => {
       ...openMenu,
       [name]: openMenu[name] === true ? false : true,
     });
+  };
+
+  const handleRedirectProfile = (name) => {
+    navigate(`${PATH_PAGE.profile.link}/hoang.locchoc`);
+    handleToggleAction(name);
   };
 
   return (
@@ -77,6 +84,7 @@ const Header = () => {
             open={openMenu.isSetting}
             name="isSetting"
             handleClose={handleToggleAction}
+            handleRedirectProfile={handleRedirectProfile}
           />
           <MenuHeaderNotification
             anchor={isSettingRef}

@@ -1,10 +1,18 @@
 import React from "react";
 import { Box, Paper, Stack, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { lineClampStyle } from "utils/lineClampStyle";
 
 const ImageItem = ({ src }) => {
   return (
-    <Box sx={{ height: 120, flex: 1, minWidth: 120, position: "relative" }}>
+    <Box
+      sx={{
+        height: 120,
+        flex: 1,
+        minWidth: 120,
+        position: "relative",
+      }}
+    >
       <Box
         sx={{
           cursor: "pointer",
@@ -19,7 +27,7 @@ const ImageItem = ({ src }) => {
           },
         }}
       />
-      <img src={src} alt="image" sx={{ objectFit: "cover" }} />
+      <img src={src} alt="image" style={{ objectFit: "cover" }} />
     </Box>
   );
 };
@@ -56,6 +64,7 @@ const AlbumImage = () => {
           component={Link}
           to="/"
           sx={{
+            ...lineClampStyle(1),
             "&:hover": {
               textDecoration: "underline",
             },
@@ -71,6 +80,7 @@ const AlbumImage = () => {
           gap: 1,
           borderRadius: (theme) => theme.sizes.minBase,
           overflow: "hidden",
+          maxHeight: { xs: 250, md: "inherit" },
         }}
       >
         {listImage.map((item, index) => (

@@ -15,12 +15,18 @@ import { EmojiPicker } from "components";
 import MenuHeader from "components/MenuHeader/Main";
 
 const BirthdayItem = (props) => {
-  const { name, birthday, isText = true, onClick } = props;
+  const { name, birthday, disabledInput = false, onSubmit } = props;
+  const anchorRef = React.useRef();
+  const [open, setOpen] = React.useState(false);
+  const [content, setContent] = React.useState("");
+
+  const handleTargetEmoji = (e) => setOpen(!open);
+
   return (
     <Box>
       <Stack
         direction="row"
-        alignItems={isText ? "flex-start" : "center"}
+        alignItems={!disabledInput ? "flex-start" : "center"}
         spacing={2}
       >
         <Avatar sx={{ width: 60, height: 60 }} />
@@ -44,8 +50,10 @@ const BirthdayItem = (props) => {
             ""
           )}
 
-          {isText ? (
+          {!disabledInput ? (
             <TextField
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
               sx={{
                 mt: 0.5,
                 width: "100%",
@@ -59,7 +67,8 @@ const BirthdayItem = (props) => {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      onClick={onClick}
+                      ref={anchorRef}
+                      onClick={handleTargetEmoji}
                       sx={{
                         "& svg": {
                           fontSize: 20,
@@ -78,6 +87,17 @@ const BirthdayItem = (props) => {
           )}
         </Stack>
       </Stack>
+
+      {open ? (
+        <EmojiPicker
+          anchor={anchorRef}
+          open={open}
+          handleClose={handleTargetEmoji}
+          handleSubmit={(value) => setContent(`${content} ${value.emoji}`)}
+        />
+      ) : (
+        ""
+      )}
     </Box>
   );
 };
@@ -94,16 +114,6 @@ const BirthdayBox = ({ title, children }) => {
 };
 
 const BirthdayFriend = () => {
-  const [anchor, setAnchor] = React.useState(null);
-  const [open, setOpen] = React.useState(false);
-
-  const handleTargetEmoji = (e) => {
-    setOpen(!open);
-    if (!anchor && !open) {
-      return setAnchor(e.currentTarget);
-    }
-  };
-
   return (
     <Box>
       <Box
@@ -114,15 +124,8 @@ const BirthdayFriend = () => {
         }}
       >
         <Stack spacing={2}>
-          <EmojiPicker
-            anchor={anchor}
-            open={open}
-            handleClose={handleTargetEmoji}
-            handleSubmit={(value) => console.log("value", value)}
-          />
-
           <BirthdayBox title="Sinh nhật hôm nay">
-            <BirthdayItem name="Thế Vỹ" onClick={handleTargetEmoji} />
+            <BirthdayItem name="Thế Vỹ" />
           </BirthdayBox>
 
           <BirthdayBox title="Sinh nhật gần đây">
@@ -130,25 +133,34 @@ const BirthdayFriend = () => {
               <BirthdayItem
                 name="Thế Vỹ"
                 birthday={`1999-04-12T00:00:00.000Z`}
-                onClick={handleTargetEmoji}
               />
             </Stack>
           </BirthdayBox>
-          {/* 
+
           <BirthdayBox title="Sinh nhật sắp tới">
             <Stack spacing={2}>
               <BirthdayItem
                 name="Thế Vỹ"
                 birthday={`1999-04-12T00:00:00.000Z`}
-                isText={false}
+                disabledInput={true}
               />
               <BirthdayItem
                 name="Thế Vỹ"
                 birthday={`1999-04-12T00:00:00.000Z`}
-                isText={false}
+                disabledInput={true}
+              />
+              <BirthdayItem
+                name="Thế Vỹ"
+                birthday={`1999-04-12T00:00:00.000Z`}
+                disabledInput={true}
+              />
+              <BirthdayItem
+                name="Thế Vỹ"
+                birthday={`1999-04-12T00:00:00.000Z`}
+                disabledInput={true}
               />
             </Stack>
-          </BirthdayBox> */}
+          </BirthdayBox>
         </Stack>
       </Box>
     </Box>

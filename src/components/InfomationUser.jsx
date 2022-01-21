@@ -43,9 +43,7 @@ const InfomationUser = () => {
           />
           <MTextIconCustom
             startIcon={icons.HomeOutlineIcon}
-            label={
-              "Từng học tại Trường THCS Nguyễn Hiền ừng học tại Trường THCS Nguyễn Hiề"
-            }
+            label={"Từng học tại Trường THCS Nguyễn Hiền "}
           />
           <MTextIconCustom
             startIcon={icons.HomeOutlineIcon}

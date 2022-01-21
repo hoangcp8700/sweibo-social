@@ -68,9 +68,11 @@ const FriendProfile = () => {
     >
       <Box sx={{ position: "relative", mb: 2 }}>
         <Stack
-          direction="row"
-          spacing={1}
-          alignItems="center"
+          sx={{
+            flexDirection: { xs: "column", sm: "row" },
+            gap: 1,
+            alignItems: { xs: "flex-start", sm: "center" },
+          }}
           justifyContent="space-between"
         >
           <Typography variant="h6">Bạn bè</Typography>
@@ -97,7 +99,11 @@ const FriendProfile = () => {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr) )",
+          gridTemplateColumns: {
+            xs: "repeat(auto-fill, minmax(200px, 1fr) )",
+            sm: "repeat(auto-fill, minmax(250px, 1fr) )",
+            md: "repeat(auto-fill, minmax(400px, 1fr) )",
+          },
           gap: 2,
           px: 2,
         }}

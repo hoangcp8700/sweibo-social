@@ -13,19 +13,16 @@ const PostProfile = () => {
     <Box sx={{ position: "relative" }}>
       <Stack
         sx={{
-          flexDirection: "row",
+          flexDirection: { xs: "column", sm: "row" },
           gap: 2,
         }}
         alignItems="flex-start"
       >
         <Stack
-          spacing={2}
           sx={[
             (theme) => ({
-              maxWidth: 430,
-              [theme.breakpoints.down("md")]: {
-                display: "none",
-              },
+              maxWidth: { xs: "inherit", sm: 430 },
+              gap: 2,
             }),
           ]}
         >
@@ -34,7 +31,14 @@ const PostProfile = () => {
           <AlbumFriends />
         </Stack>
 
-        <Stack spacing={2} sx={{ flex: 1 }}>
+        <Stack
+          spacing={2}
+          sx={{
+            flex: 1,
+            width: "100%",
+            minWidth: { xs: "inherit", sm: 350, md: 320 },
+          }}
+        >
           <CreatePost />
           <PostItem />
           <PostItem />

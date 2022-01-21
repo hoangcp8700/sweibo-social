@@ -4,14 +4,14 @@ import {
   MenuList,
   ListItemIcon,
   MenuItem,
-  ListItemText,
   Box,
   Typography,
 } from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { styled } from "@mui/styles";
-import { icons } from "constants";
+
 import { data } from "constants";
+import { PATH_PAGE } from "constants/paths";
 
 const MenuItemStyle = styled(MenuItem)(({ active, theme }) => ({
   gap: theme.spacing(2),
@@ -25,12 +25,14 @@ const MenuItemStyle = styled(MenuItem)(({ active, theme }) => ({
 
 const SidebarHome = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  console.log("location.pathname ", location.pathname);
   return (
     <Box>
       <MenuList sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        <MenuItemStyle>
+        <MenuItemStyle
+          onClick={() => navigate(`${PATH_PAGE.profile.link}/hoang.locchoc`)}
+        >
           <Avatar sx={{ width: 32, height: 32 }} />
           <Typography variant="subtitle2">Hoang Cong Phan </Typography>
         </MenuItemStyle>

@@ -59,12 +59,17 @@ export default function Router() {
         { path: PATH_PAGE.chat.link, element: <ChatPage /> },
         { path: PATH_PAGE.weather.link, element: <WeatherPage /> },
         {
-          path: PATH_PAGE.profile.link,
+          path: `${PATH_PAGE.profile.link}/:id`,
           element: <ProfilePage />,
           children: [
-            { path: "", element: <PostProfilePage /> },
-            { path: "file", element: <FileProfilePage /> },
-            { path: "friend", element: <FriendProfilePage /> },
+            {
+              children: [
+                { path: "", element: <Navigate to="posts" replace /> },
+                { path: "posts", element: <PostProfilePage /> },
+                { path: "photos", element: <FileProfilePage /> },
+                { path: "friends", element: <FriendProfilePage /> },
+              ],
+            },
           ],
         },
         { path: "*", element: <Error404Page /> },

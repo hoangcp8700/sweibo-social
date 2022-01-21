@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Paper, Stack, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { lineClampStyle } from "utils/lineClampStyle";
 
 const ImageItem = ({ src, label }) => {
   return (
@@ -29,7 +30,7 @@ const ImageItem = ({ src, label }) => {
             },
           }}
         />
-        <img src={src} alt="image" sx={{ objectFit: "cover" }} />
+        <img src={src} alt="image" style={{ objectFit: "cover" }} />
       </Box>
       <Typography variant="subtitle2">{label}</Typography>
     </Box>
@@ -110,6 +111,7 @@ const AlbumFriends = () => {
           component={Link}
           to="/"
           sx={{
+            ...lineClampStyle(1),
             "&:hover": {
               textDecoration: "underline",
             },
@@ -125,6 +127,7 @@ const AlbumFriends = () => {
           gap: 1,
           borderRadius: (theme) => theme.sizes.minBase,
           overflow: "hidden",
+          maxHeight: { xs: 300, md: "inherit" },
         }}
       >
         {listFriend.map((item, index) => (

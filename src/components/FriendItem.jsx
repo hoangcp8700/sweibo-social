@@ -59,8 +59,8 @@ const FriendItem = (props) => {
           <Avatar
             sx={{
               borderRadius: (theme) => theme.sizes.minBase,
-              width: 80,
-              height: 80,
+              width: { xs: 50, sm: 60, md: 80 },
+              height: { xs: 50, sm: 60, md: 80 },
             }}
           />
           <Stack>

@@ -12,10 +12,10 @@ import { icons } from "constants";
 import SwitchMode from "../SwitchMode";
 
 const MenuHeader = (props) => {
-  const { name, handleDarkMode, ...restProps } = props;
+  const { name, handleDarkMode, handleRedirectProfile, ...restProps } = props;
   return (
     <MMenu {...props}>
-      <MenuItem sx={{ gap: 2 }}>
+      <MenuItem sx={{ gap: 2 }} onClick={() => handleRedirectProfile(name)}>
         <Avatar />
         <Box>
           <Typography variant="subtitle2">Hoang Cong Phan</Typography>

@@ -29,7 +29,7 @@ const SidebarItem = (props) => {
   return (
     <Box sx={{ minHeight: "85vh" }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Typography variant="h6" sx={{ color: "text.secondary" }}>
+        <Typography variant="h6" sx={{ color: "text.primary" }}>
           {title}
         </Typography>
         {headerChildren}

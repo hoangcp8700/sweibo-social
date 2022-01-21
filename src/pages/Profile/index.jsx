@@ -32,9 +32,14 @@ const Profile = () => {
   const location = useLocation();
 
   const handleRedirect = (key) => {
-    navigate(
-      `/${PATH_PAGE.friend.link}/${PATH_PAGE.profile.link}/${params?.id}/${key}`
+    const check = location.pathname.includes(
+      `/${PATH_PAGE.friend.link}/${PATH_PAGE.profile.link}`
     );
+    check
+      ? navigate(
+          `/${PATH_PAGE.friend.link}/${PATH_PAGE.profile.link}/${params?.id}/${key}`
+        )
+      : navigate(`/${PATH_PAGE.profile.link}/${params?.id}/${key}`);
   };
   return (
     <Box>
@@ -111,9 +116,7 @@ const Profile = () => {
                   }}
                 >
                   <Stack direction="row" alignItems="center" spacing={1}>
-                    <Typography variant="h3">
-                      Xuan Hoang {params?.id}
-                    </Typography>
+                    <Typography variant="h3">Xuan Hoang</Typography>
                     <Typography variant="h4" sx={{ fontWeight: 400 }}>
                       (Đạm){" "}
                     </Typography>
