@@ -16,9 +16,10 @@ import { icons } from "constants";
 import { styled } from "@mui/styles";
 import { Link, useNavigate } from "react-router-dom";
 import { PATH_PAGE } from "constants/paths";
-import MenuHeader from "components/MenuHeader/Main";
-import MenuHeaderNotification from "components/MenuHeader/Notification";
-import MenuHeaderMessage from "components/MenuHeader/Message";
+
+import MenuHeader from "components/Header/MenuMain";
+import MenuHeaderNotification from "components/Header/MenuNotification";
+import MenuHeaderMessage from "components/Header/MenuMessage";
 
 const IconButtonStyle = styled(IconButton)(({ theme }) => ({
   backgroundColor: theme.palette.grey[200],

@@ -12,7 +12,6 @@ import {
 import { icons } from "constants";
 import { fDateOriginal } from "utils/formatTime";
 import { EmojiPicker } from "components";
-import MenuHeader from "components/MenuHeader/Main";
 
 const BirthdayItem = (props) => {
   const { name, birthday, disabledInput = false, onSubmit } = props;

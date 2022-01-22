@@ -5,6 +5,7 @@ import { Box, Stack, styled } from "@mui/material";
 
 const Container = styled(Box)(({ theme }) => ({
   maxWidth: theme.sizes.sidebar,
+  width: "100%",
   height: "100%",
   "& .content-scroll": {
     height: "100%",

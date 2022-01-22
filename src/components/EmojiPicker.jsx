@@ -19,8 +19,8 @@ const EmojiPicker = (props) => {
       horizontal: "right",
     },
     paperStyle: {
-      backgroundColor: "transparent",
-      boxShadow: "none",
+      backgroundColor: "#fff",
+      boxShadow: "none!important",
     },
     ...restProps,
   };
@@ -30,6 +30,7 @@ const EmojiPicker = (props) => {
         sx={{
           "& .emoji-picker-react": {
             m: "0 auto",
+            boxShadow: "none",
           },
           "& .emoji-scroll-wrapper": {
             overflowX: "hidden",

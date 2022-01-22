@@ -40,7 +40,7 @@ const SidebarHome = () => {
         {data.sidebarHome.map((item) => (
           <Typography key={item.label} component={Link} to={item.path}>
             <MenuItemStyle active={location.pathname === item.path}>
-              <ListItemIcon sx={{ "& svg": { fontSize: 32 } }}>
+              <ListItemIcon sx={{ "& svg": { fontSize: 28 } }}>
                 {item.icon}
               </ListItemIcon>
               <Typography variant="subtitle2" sx={{ color: "text.primary" }}>

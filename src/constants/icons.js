@@ -41,6 +41,18 @@ import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import BlockIcon from "@mui/icons-material/Block";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+import InfoIcon from "@mui/icons-material/Info";
+import SendIcon from "@mui/icons-material/Send";
+import PhotoIcon from "@mui/icons-material/Photo";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PushPinIcon from "@mui/icons-material/PushPin";
+
 const ConvertIcon = ({ src }) => {
   return (
     <Icon>
@@ -85,4 +97,15 @@ export default {
   BlockIcon: <BlockIcon />,
 
   EmojiEmotionsIcon: <EmojiEmotionsIcon />,
+  CheckCircleOutlineIcon: <CheckCircleOutlineIcon />,
+  CheckCircleIcon: <CheckCircleIcon />,
+
+  ExpandLessIcon: <ExpandLessIcon />,
+  ExpandMoreIcon: <ExpandMoreIcon />,
+
+  InfoIcon: <InfoIcon />,
+  SendIcon: <SendIcon />,
+  PhotoIcon: <PhotoIcon />,
+  MoreVertIcon: <MoreVertIcon />,
+  PinIcon: <PushPinIcon />,
 };

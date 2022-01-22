@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Stack, Typography, Divider, styled } from "@mui/material";
+import { Box, Stack, Typography, Divider, IconButton } from "@mui/material";
 import { fakeData } from "constants";
 import {
   History,
@@ -13,6 +13,7 @@ import {
   FriendSuggestion,
   StickySidebar,
 } from "components";
+import { icons } from "constants";
 
 const Home = () => {
   const [users, setUsers] = React.useState([]);
@@ -44,6 +45,10 @@ const Home = () => {
         <StickySidebar
           containerStyle={[
             (theme) => ({
+              minWidth: {
+                xs: theme.sizes.sidebar - 100,
+                lg: theme.sizes.sidebar,
+              },
               [theme.breakpoints.down("md")]: {
                 display: "none",
               },
@@ -113,7 +118,42 @@ const Home = () => {
           </Box>
           <Divider />
 
-          <ActivityStatus lists={users} />
+          <Box>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography variant="h6" sx={{ color: "text.secondary" }}>
+                Hoạt động
+              </Typography>
+              <IconButton>{icons.MoreHorizIcon}</IconButton>
+            </Stack>
+            <Stack spacing={1}>
+              {users?.map((item) => (
+                <Stack
+                  key={item.id}
+                  direction="row"
+                  alignItems="center"
+                  spacing={2}
+                  sx={{
+                    transition: "background 150ms",
+                    p: 1,
+                    borderRadius: (theme) => theme.sizes.minBase / 2,
+                    cursor: "pointer",
+                    "&:hover": {
+                      bgcolor: "background.opacity",
+                    },
+                  }}
+                >
+                  <ActivityStatus label={item.name} src={item.avatar} />
+                  <Typography variant="subtitle2" sx={{}}>
+                    {item?.name}
+                  </Typography>
+                </Stack>
+              ))}
+            </Stack>
+          </Box>
         </StickySidebar>
       </Stack>
     </Box>
