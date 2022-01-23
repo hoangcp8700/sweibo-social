@@ -39,4 +39,27 @@ const GET_ADVERTISE = () => {
   return arr;
 };
 
-export default { GET_USERS, GET_ADVERTISE };
+const GET_COLLECTION_SAVE = () => {
+  const arr = [
+    {
+      id: "123",
+      title: "Nhà ở",
+      path: "collections/nha-o",
+      thumbnail: `https://scontent.fsgn5-10.fna.fbcdn.net/v/t45.1600-4/cp0/q75/spS444/p296x100/194484182_23848002198700391_4322638678952833879_n.jpg?_nc_cat=1&ccb=1-5&_nc_sid=67cdda&_nc_ohc=DBvchkPvM2UAX-Y0I9f&_nc_ht=scontent.fsgn5-10.fna&oh=00_AT_nCnB2VORDh3YfGdp3M2FyFYO_kCL8-QUUY0fHwJgC9Q&oe=61EA1BC6`,
+    },
+    {
+      id: "123243",
+      title: "Xe cộ",
+      path: "collections/xe-co",
+      thumbnail: `https://scontent.fsgn5-10.fna.fbcdn.net/v/t45.1600-4/cp0/q75/spS444/p296x100/194484182_23848002198700391_4322638678952833879_n.jpg?_nc_cat=1&ccb=1-5&_nc_sid=67cdda&_nc_ohc=DBvchkPvM2UAX-Y0I9f&_nc_ht=scontent.fsgn5-10.fna&oh=00_AT_nCnB2VORDh3YfGdp3M2FyFYO_kCL8-QUUY0fHwJgC9Q&oe=61EA1BC6`,
+    },
+    {
+      id: "212123",
+      title: "Top top",
+      path: "collections/top-top",
+      thumbnail: `https://scontent.fsgn5-10.fna.fbcdn.net/v/t45.1600-4/cp0/q75/spS444/p296x100/194484182_23848002198700391_4322638678952833879_n.jpg?_nc_cat=1&ccb=1-5&_nc_sid=67cdda&_nc_ohc=DBvchkPvM2UAX-Y0I9f&_nc_ht=scontent.fsgn5-10.fna&oh=00_AT_nCnB2VORDh3YfGdp3M2FyFYO_kCL8-QUUY0fHwJgC9Q&oe=61EA1BC6`,
+    },
+  ];
+  return arr;
+};
+export default { GET_USERS, GET_ADVERTISE, GET_COLLECTION_SAVE };

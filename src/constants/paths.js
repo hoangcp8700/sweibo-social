@@ -30,11 +30,6 @@ const PATH_PAGE = {
     title: "Bạn bè",
   },
   save: { path: path(ROOTS_PAGE, "/saves"), link: "saves", title: "Đã lưu" },
-  weather: {
-    path: path(ROOTS_PAGE, "/weather"),
-    link: "weather",
-    title: "Thời tiết",
-  },
   chat: {
     path: path(ROOTS_PAGE, "/chats"),
     link: "chats",

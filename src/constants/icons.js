@@ -53,6 +53,10 @@ import PhotoIcon from "@mui/icons-material/Photo";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PushPinIcon from "@mui/icons-material/PushPin";
 
+import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
+import PublicIcon from "@mui/icons-material/Public";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+
 const ConvertIcon = ({ src }) => {
   return (
     <Icon>
@@ -108,4 +112,8 @@ export default {
   PhotoIcon: <PhotoIcon />,
   MoreVertIcon: <MoreVertIcon />,
   PinIcon: <PushPinIcon />,
+
+  BookmarkRemoveIcon: <BookmarkRemoveIcon />,
+  PublicIcon: <PublicIcon />,
+  LockOpenIcon: <LockOpenIcon />,
 };

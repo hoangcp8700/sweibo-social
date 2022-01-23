@@ -8,9 +8,16 @@ import {
   Divider,
   IconButton,
   InputAdornment,
+  Paper,
 } from "@mui/material";
 import { fakeData } from "constants";
-import { StickySidebar, ChatItem, BoxChat, InfomationChat } from "components";
+import {
+  StickySidebar,
+  SidebarHeader,
+  ChatItem,
+  BoxChat,
+  InfomationChat,
+} from "components";
 import { icons } from "constants";
 
 const Chat = () => {
@@ -45,48 +52,46 @@ const Chat = () => {
           ]}
           contentStyle={{ pb: 3 }}
         >
-          <Stack sx={{ px: 1, gap: 1, pt: 1 }}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Typography variant="h6">Tin nhắn</Typography>
-              <IconButton
-                sx={{
-                  bgcolor: "background.opacity",
-                  "& svg": { fontSize: 18 },
-                }}
-              >
-                {icons.AddIcon}
-              </IconButton>
+          <Paper sx={{ bgcolor: "background.navbar" }}>
+            <Stack sx={{ px: 1, gap: 1, pt: 1 }}>
+              <SidebarHeader title="Tin nhắn">
+                <IconButton
+                  sx={{
+                    bgcolor: "background.opacity",
+                    "& svg": { fontSize: 18 },
+                  }}
+                >
+                  {icons.AddIcon}
+                </IconButton>
+              </SidebarHeader>
+
+              <Box>
+                <TextField
+                  sx={{
+                    width: "100%",
+                    "& input": { py: 1, fontSize: 14 },
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: (theme) => theme.sizes.radius,
+                    },
+                  }}
+                  placeholder="Tìm kiếm tin nhắn"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconButton sx={{ "& svg": { fontSize: 20 } }}>
+                          {icons.SearchIcon}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
             </Stack>
-            <Box>
-              <TextField
-                sx={{
-                  width: "100%",
-                  "& input": { py: 1, fontSize: 14 },
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: (theme) => theme.sizes.radius,
-                  },
-                }}
-                placeholder="Tìm kiếm tin nhắn"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconButton sx={{ "& svg": { fontSize: 20 } }}>
-                        {icons.SearchIcon}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Box>
-          </Stack>
-          <Divider />
-          {users?.map((item) => (
-            <ChatItem key={item.id} item={item} />
-          ))}
+            <Divider />
+            {users?.map((item) => (
+              <ChatItem key={item.id} item={item} />
+            ))}
+          </Paper>
         </StickySidebar>
 
         <Box

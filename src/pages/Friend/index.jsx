@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Stack } from "@mui/material";
 
-import { SidebarItem, StickySidebar } from "components";
+import { SidebarHeader, SidebarList, StickySidebar } from "components";
 import { data } from "constants";
 import { Outlet } from "react-router-dom";
 
@@ -22,7 +22,8 @@ const Friend = () => {
           ]}
           contentStyle={{ pl: 3 }}
         >
-          <SidebarItem title="Bạn bè" lists={data.sidebarFriend} />
+          <SidebarHeader title="Bạn bè" />
+          <SidebarList lists={data.sidebarFriend} />
         </StickySidebar>
 
         <Box

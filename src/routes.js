@@ -55,9 +55,18 @@ export default function Router() {
             { path: "birthday", element: <BirthdayFriendPage /> },
           ],
         },
-        { path: PATH_PAGE.save.link, element: <SavePage /> },
+        {
+          path: PATH_PAGE.save.link,
+          element: <SavePage />,
+          children: [
+            { path: "", element: <Navigate to="all" replace /> },
+            { path: ":id", element: <AllSavePage /> },
+            { path: "all", element: <AllSavePage /> },
+            { path: ":id/collections/:name", element: <CollectionSavePage /> },
+            { path: "collections/:name", element: <CollectionSavePage /> },
+          ],
+        },
         { path: PATH_PAGE.chat.link, element: <ChatPage /> },
-        { path: PATH_PAGE.weather.link, element: <WeatherPage /> },
         {
           path: `${PATH_PAGE.profile.link}/:id`,
           element: <ProfilePage />,
@@ -82,9 +91,14 @@ export default function Router() {
 
 // import
 const HomePage = Loadable(lazy(() => import("pages/Home")));
-const SavePage = Loadable(lazy(() => import("pages/Save")));
 const ChatPage = Loadable(lazy(() => import("pages/Chat")));
-const WeatherPage = Loadable(lazy(() => import("pages/Weather")));
+
+// save
+const SavePage = Loadable(lazy(() => import("pages/Save")));
+const AllSavePage = Loadable(lazy(() => import("pages/Save/AllSave")));
+const CollectionSavePage = Loadable(
+  lazy(() => import("pages/Save/CollectionSave"))
+);
 
 // friend
 const FriendPage = Loadable(lazy(() => import("pages/Friend")));
