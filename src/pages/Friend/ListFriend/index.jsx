@@ -63,12 +63,14 @@ const ListFriend = () => {
     navigate(`/${PATH_PAGE.friend.link}/${PATH_PAGE.profile.link}/${item.id}`);
 
   return (
-    <Box>
+    <Box sx={{ m: "0 auto", maxWidth: (theme) => theme.breakpoints.values.lg }}>
       <Stack
         direction="row"
         alignItems="center"
         justifyContent="space-between"
-        sx={{ mb: 2 }}
+        sx={{
+          mb: 2,
+        }}
         gap={1}
       >
         <Typography variant="h6" sx={{ ...lineClampStyle(1) }}>

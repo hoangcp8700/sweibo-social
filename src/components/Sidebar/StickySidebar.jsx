@@ -39,15 +39,23 @@ const Container = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StickySidebarCustom = ({ containerStyle, contentStyle, children }) => {
+const StickySidebarCustom = ({
+  isShowSidebar,
+  containerStyle,
+  contentStyle,
+  children,
+  sx,
+}) => {
   return (
-    <StickyBox>
-      <Container sx={containerStyle}>
-        <Stack spacing={1} className="content-scroll" sx={contentStyle}>
-          {children}
-        </Stack>
-      </Container>
-    </StickyBox>
+    <Box sx={{ position: "relative", zIndex: 2, ...sx }}>
+      <StickyBox>
+        <Container sx={containerStyle}>
+          <Stack spacing={1} className="content-scroll" sx={contentStyle}>
+            {children}
+          </Stack>
+        </Container>
+      </StickyBox>
+    </Box>
   );
 };
 

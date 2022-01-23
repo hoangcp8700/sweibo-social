@@ -22,7 +22,8 @@ import { icons } from "constants";
 
 const Chat = () => {
   const [users, setUsers] = React.useState([]);
-  const [isSidebar, setIsSidebar] = React.useState(false);
+  const [isSidebarContent, setIsSidebarContent] = React.useState(false);
+  const [isSidebarLeft, setIsSidebarLeft] = React.useState(true);
 
   React.useEffect(() => {
     const getUsers = async () => {
@@ -32,17 +33,31 @@ const Chat = () => {
     getUsers();
   }, []);
 
-  const handleToggleSidebar = () => setIsSidebar(!isSidebar);
+  const handleToggleSidebarContent = React.useCallback(
+    () => setIsSidebarContent(!isSidebarContent),
+    [isSidebarContent]
+  );
+
+  const handleToggleSidebarLeft = () => setIsSidebarLeft(!isSidebarLeft);
+
   return (
     <Box>
       <Stack
         direction="row"
         sx={{
           gap: { xs: 0, md: 1 },
+          overflowX: "hidden",
         }}
         alignItems="flex-start"
       >
         <StickySidebar
+          sx={{
+            transition: "all 0.6s ease",
+            transform: isSidebarLeft
+              ? `translate3d(0px, 0px, 0px)`
+              : `translate3d(-100%, 0px, 0px)`,
+          }}
+          isShowSidebar={isSidebarLeft}
           containerStyle={[
             (theme) => ({
               [theme.breakpoints.down("md")]: {
@@ -50,11 +65,19 @@ const Chat = () => {
               },
             }),
           ]}
-          contentStyle={{ pb: 3 }}
         >
-          <Paper sx={{ bgcolor: "background.navbar" }}>
-            <Stack sx={{ px: 1, gap: 1, pt: 1 }}>
-              <SidebarHeader title="Tin nhắn">
+          <Paper
+            sx={{
+              bgcolor: "background.navbar",
+              pb: 3,
+            }}
+          >
+            <Stack sx={{ p: (theme) => theme.spacing(1, 2, 2), gap: 1 }}>
+              <SidebarHeader
+                isShowSidebar={isSidebarLeft}
+                title="Tin nhắn"
+                handleToggleSidebar={handleToggleSidebarLeft}
+              >
                 <IconButton
                   sx={{
                     bgcolor: "background.opacity",
@@ -87,7 +110,9 @@ const Chat = () => {
                 />
               </Box>
             </Stack>
+
             <Divider />
+
             {users?.map((item) => (
               <ChatItem key={item.id} item={item} />
             ))}
@@ -95,31 +120,41 @@ const Chat = () => {
         </StickySidebar>
 
         <Box
-          sx={{
-            flex: 1,
-            display: "flex",
-            height: "100%",
-            maxHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
-            overflow: "hidden",
-          }}
+          sx={[
+            (theme) => ({
+              flex: 1,
+              display: "flex",
+              height: "100%",
+              maxHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
+              overflow: "hidden",
+              transition: "all 0.5s ease 0s",
+              transform: !isSidebarLeft
+                ? `translateX(-250px)`
+                : `translateX(0)`,
+              minWidth: !isSidebarLeft ? `100%` : `inherit`,
+              [theme.breakpoints.down("md")]: {
+                transform: `translateX(0)`,
+              },
+            }),
+          ]}
         >
           <Stack
             sx={{
               flex: 1,
-              minWidth: isSidebar ? "0%" : "100%",
+              minWidth: isSidebarContent ? "0%" : "100%",
               transition: "min-width 0.5s ease 0s",
             }}
           >
-            <BoxChat handleToggleSidebar={handleToggleSidebar} />
+            <BoxChat handleToggleSidebar={handleToggleSidebarContent} />
           </Stack>
           <Stack
             sx={{
               width: (theme) => theme.sizes.sidebar,
-              transform: isSidebar
+              transform: isSidebarContent
                 ? `translate3d(0px, 0px, 0px)`
                 : `translate3d(100%, 0px, 0px)`,
               visibility: "visible",
-              transition: " all 0.6s ease 0s",
+              transition: "all 0.6s ease 0s",
             }}
           >
             <InfomationChat />
