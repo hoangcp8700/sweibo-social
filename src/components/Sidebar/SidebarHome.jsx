@@ -14,7 +14,7 @@ import { data } from "constants";
 import { PATH_PAGE } from "constants/paths";
 
 const MenuItemStyle = styled(MenuItem)(({ active, theme }) => ({
-  gap: theme.spacing(2),
+  gap: theme.spacing(1),
   padding: theme.spacing(2, 1),
   borderRadius: theme.sizes.base,
   backgroundColor: active ? theme.palette.background.opacity : "none",
@@ -34,7 +34,9 @@ const SidebarHome = () => {
           onClick={() => navigate(`${PATH_PAGE.profile.link}/hoang.locchoc`)}
         >
           <Avatar sx={{ width: 32, height: 32 }} />
-          <Typography variant="subtitle2">Hoang Cong Phan </Typography>
+          <Typography variant="subtitle2" sx={{ pl: 1 }}>
+            Hoang Cong Phan{" "}
+          </Typography>
         </MenuItemStyle>
 
         {data.sidebarHome.map((item) => (

@@ -54,7 +54,7 @@ const Home = () => {
               },
             }),
           ]}
-          contentStyle={{ pl: 3, pr: 1 }}
+          contentStyle={{ px: 1, pb: 2 }}
         >
           <SidebarHome />
           <Divider sx={{ my: 1 }} />

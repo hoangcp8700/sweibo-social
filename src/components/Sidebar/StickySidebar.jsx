@@ -47,15 +47,15 @@ const StickySidebarCustom = ({
   sx,
 }) => {
   return (
-    <Box sx={{ position: "relative", zIndex: 2, ...sx }}>
-      <StickyBox>
+    <StickyBox>
+      <Box sx={{ position: "relative", zIndex: 2, ...sx }}>
         <Container sx={containerStyle}>
           <Stack spacing={1} className="content-scroll" sx={contentStyle}>
             {children}
           </Stack>
         </Container>
-      </StickyBox>
-    </Box>
+      </Box>
+    </StickyBox>
   );
 };
 

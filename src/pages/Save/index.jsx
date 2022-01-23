@@ -1,7 +1,12 @@
 import React from "react";
 import { Box, Stack, Divider, Typography } from "@mui/material";
 import { fakeData, data } from "constants";
-import { SidebarHeader, SidebarList, StickySidebar } from "components";
+import {
+  SidebarHeader,
+  SidebarList,
+  StickySidebar,
+  ToggleSidebar,
+} from "components";
 import { Outlet } from "react-router-dom";
 import { MButton } from "components/MUI";
 import { lineClampStyle } from "utils/lineClampStyle";
@@ -28,11 +33,14 @@ const Save = () => {
 
   return (
     <Box>
+      <ToggleSidebar
+        isShowSidebar={isSidebarLeft}
+        handleToggleSidebar={handleToggleSidebarLeft}
+      />
       <Stack
         direction="row"
         sx={{
           gap: { xs: 0, md: 1 },
-          overflowX: "hidden",
         }}
         alignItems="flex-start"
       >
@@ -54,16 +62,13 @@ const Save = () => {
             }),
           ]}
           contentStyle={{
-            pl: 3,
-            pr: 1,
+            px: 1,
             py: 2,
-            minHeight: (theme) =>
-              `calc(100vh - ${theme.sizes.header}px - 24px)`,
+            minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
           }}
         >
           <SidebarHeader
             title="Đã lưu"
-            isShowSidebar={isSidebarLeft}
             handleToggleSidebar={handleToggleSidebarLeft}
           />
           <SidebarList lists={data.sidebarSave} />
@@ -92,9 +97,9 @@ const Save = () => {
         </StickySidebar>
 
         <Box
-          sx={{}}
           sx={[
             (theme) => ({
+              position: "relative",
               flex: 1,
               transition: "all 0.5s ease 0s",
               transform: !isSidebarLeft

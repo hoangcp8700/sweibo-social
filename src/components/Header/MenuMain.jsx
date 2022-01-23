@@ -10,9 +10,11 @@ import {
 } from "@mui/material";
 import { icons } from "constants";
 import SwitchMode from "../SwitchMode";
+import { useSetting } from "hooks";
 
 const MenuHeader = (props) => {
   const { name, handleDarkMode, handleRedirectProfile, ...restProps } = props;
+  const { darkMode, handleToggleDarkMode } = useSetting();
   return (
     <MMenu {...props}>
       <MenuItem sx={{ gap: 2 }} onClick={() => handleRedirectProfile(name)}>

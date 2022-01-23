@@ -22,7 +22,7 @@ const Main = () => {
             m: "auto",
             height: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
             overflowY: "auto",
-
+            overflowX: "hidden",
             "&::-webkit-scrollbar-track": {
               // boxShadow: "inset 0 0 6px rgba(0,0,0,0.3)",
               borderRadius: "10px",
@@ -37,7 +37,6 @@ const Main = () => {
             "&::-webkit-scrollbar-thumb": {
               bgcolor: (theme) => theme.palette.grey[500],
               borderRadius: "10px",
-
             },
           }}
         >

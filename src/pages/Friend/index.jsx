@@ -1,7 +1,12 @@
 import React from "react";
 import { Box, Stack } from "@mui/material";
 
-import { SidebarHeader, SidebarList, StickySidebar } from "components";
+import {
+  SidebarHeader,
+  SidebarList,
+  StickySidebar,
+  ToggleSidebar,
+} from "components";
 import { data } from "constants";
 import { Outlet } from "react-router-dom";
 
@@ -15,11 +20,11 @@ const Friend = () => {
 
   return (
     <Box>
-      <Stack
-        direction="row"
-        alignItems="flex-start"
-        sx={{ overflowX: "hidden" }}
-      >
+      <ToggleSidebar
+        isShowSidebar={isSidebarLeft}
+        handleToggleSidebar={handleToggleSidebarLeft}
+      />
+      <Stack direction="row" alignItems="flex-start">
         <StickySidebar
           sx={{
             transition: "all 0.6s ease",
@@ -38,11 +43,14 @@ const Friend = () => {
               },
             }),
           ]}
-          contentStyle={{ pl: 3, pr: 1, py: 2 }}
+          contentStyle={{
+            px: 1,
+            py: 2,
+            minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
+          }}
         >
           <SidebarHeader
             title="Bạn bè"
-            isShowSidebar={isSidebarLeft}
             handleToggleSidebar={handleToggleSidebarLeft}
           />
           <SidebarList lists={data.sidebarFriend} />

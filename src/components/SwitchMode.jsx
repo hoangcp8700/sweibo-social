@@ -99,7 +99,7 @@ function MUISwitch(props) {
   );
 }
 
-export default function UseSwitchesCustom() {
+export default function UseSwitchesCustom(props) {
   const { darkMode, handleToggleDarkMode } = useSetting();
   return <MUISwitch checked={darkMode} onChange={handleToggleDarkMode} />;
 }

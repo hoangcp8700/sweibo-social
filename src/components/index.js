@@ -14,6 +14,7 @@ export { default as SidebarItem } from "./Sidebar/SidebarItem";
 export { default as SidebarHeader } from "./Sidebar/SidebarHeader";
 export { default as SidebarList } from "./Sidebar/SidebarList";
 export { default as StickySidebar } from "./Sidebar/StickySidebar";
+export { default as ToggleSidebar } from "./Sidebar/ToggleSidebar";
 
 export { default as InfomationUser } from "./InfomationUser";
 

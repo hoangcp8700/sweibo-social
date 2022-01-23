@@ -9,10 +9,10 @@ const sidebarHome = [
 ];
 
 const sidebarFriend = [
-  { title: "Danh sách bạn bè", path: "/friends", icon: icons.PeopleAltIcon },
+  { title: "Danh sách bạn bè", path: "/friends", icon: icons.GroupsIcon },
   { title: "Gợi ý", path: "/friends/suggest", icon: icons.PeopleAltIcon },
-  { title: "Lời mời", path: "/friends/invite", icon: icons.PeopleAltIcon },
-  { title: "Sinh nhật", path: "/friends/birthday", icon: icons.PeopleAltIcon },
+  { title: "Lời mời", path: "/friends/invite", icon: icons.GroupAddIcon },
+  { title: "Sinh nhật", path: "/friends/birthday", icon: icons.CakeIcon },
 ];
 
 const sidebarSave = [

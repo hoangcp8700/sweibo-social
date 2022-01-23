@@ -57,6 +57,9 @@ import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
 import PublicIcon from "@mui/icons-material/Public";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 
+import GroupsIcon from "@mui/icons-material/Groups";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+
 const ConvertIcon = ({ src }) => {
   return (
     <Icon>
@@ -116,4 +119,7 @@ export default {
   BookmarkRemoveIcon: <BookmarkRemoveIcon />,
   PublicIcon: <PublicIcon />,
   LockOpenIcon: <LockOpenIcon />,
+
+  GroupsIcon: <GroupsIcon />,
+  GroupAddIcon: <GroupAddIcon />,
 };

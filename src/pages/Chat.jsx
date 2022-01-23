@@ -3,7 +3,6 @@ import React from "react";
 import {
   Box,
   Stack,
-  Typography,
   TextField,
   Divider,
   IconButton,
@@ -17,6 +16,7 @@ import {
   ChatItem,
   BoxChat,
   InfomationChat,
+  ToggleSidebar,
 } from "components";
 import { icons } from "constants";
 
@@ -42,11 +42,14 @@ const Chat = () => {
 
   return (
     <Box>
+      <ToggleSidebar
+        isShowSidebar={isSidebarLeft}
+        handleToggleSidebar={handleToggleSidebarLeft}
+      />
       <Stack
         direction="row"
         sx={{
           gap: { xs: 0, md: 1 },
-          overflowX: "hidden",
         }}
         alignItems="flex-start"
       >
@@ -70,11 +73,11 @@ const Chat = () => {
             sx={{
               bgcolor: "background.navbar",
               pb: 3,
+              minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
             }}
           >
-            <Stack sx={{ p: (theme) => theme.spacing(1, 2, 2), gap: 1 }}>
+            <Stack sx={{ p: (theme) => theme.spacing(1, 1, 2), gap: 1 }}>
               <SidebarHeader
-                isShowSidebar={isSidebarLeft}
                 title="Tin nhắn"
                 handleToggleSidebar={handleToggleSidebarLeft}
               >

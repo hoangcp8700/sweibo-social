@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { styled } from "@mui/styles";
 
 const MenuItemStyle = styled(MenuItem)(({ active, theme }) => ({
-  gap: theme.spacing(2),
+  gap: theme.spacing(1),
   padding: theme.spacing(2, 1),
   borderRadius: theme.sizes.base,
   backgroundColor: active ? theme.palette.background.opacity : "transparent",
@@ -26,7 +26,7 @@ const SidebarItem = (props) => {
             ""
           )}
           {item?.icon ? (
-            <ListItemIcon sx={{ "& svg": { fontSize: 32 } }}>
+            <ListItemIcon sx={{ "& svg": { fontSize: 24 } }}>
               {item?.icon}
             </ListItemIcon>
           ) : (
