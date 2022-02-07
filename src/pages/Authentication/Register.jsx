@@ -11,7 +11,7 @@ import {
   IconButton,
   styled,
 } from "@mui/material";
-import { MButton } from "components/MUI";
+import { MButton, MDataPicker } from "components/MUI";
 import { icons } from "constants";
 import { Link } from "react-router-dom";
 import { PATH_AUTH } from "constants/paths";
@@ -202,20 +202,37 @@ const Register = () => {
             {/* // step 1 */}
             {step === 1 ? (
               <Stack spacing={2} sx={{ mt: 3 }}>
-                <TextFieldStyle
-                  value={form.email}
-                  placeholder="Địa chỉ email"
-                  {...getFieldProps("email")}
-                  error={Boolean(touched.email && errors.email)}
-                  helperText={touched.email && errors.email}
-                />
+                <Stack direction="row" spacing={2}>
+                  <TextFieldStyle
+                    value={form.firstName}
+                    placeholder="Họ và tên lót"
+                    {...getFieldProps("firstName")}
+                    error={Boolean(touched.firstName && errors.firstName)}
+                    helperText={touched.firstName && errors.firstName}
+                  />
 
-                <TextFieldStyle
-                  value={form.phone}
-                  placeholder="Số điện thoại"
-                  {...getFieldProps("phone")}
-                  error={Boolean(touched.phone && errors.phone)}
-                  helperText={touched.phone && errors.phone}
+                  <TextFieldStyle
+                    value={form.lastName}
+                    placeholder="Tên"
+                    {...getFieldProps("lastName")}
+                    error={Boolean(touched.lastName && errors.lastName)}
+                    helperText={touched.lastName && errors.lastName}
+                  />
+                </Stack>
+
+                <MDataPicker
+                  value={values?.dOB}
+                  onChange={(value) => setFieldValue("dOB", value)}
+                  inputProps={{
+                    sx: {
+                      "& input": { height: 10, fontSize: 14 },
+                      "& svg": { fontSize: 18 },
+                    },
+                    placeholder: "Sinh nhật",
+                    error: Boolean(touched.dOB && errors.dOB),
+                    helperText: touched.dOB && errors.dOB,
+                    ...getFieldProps("dOB"),
+                  }}
                 />
               </Stack>
             ) : (
@@ -223,7 +240,7 @@ const Register = () => {
             )}
             <MButton
               variant="contained"
-              sx={{ px: 5, display: step !== 1 ? "none" : "flex" }}
+              sx={{ px: 5, mt: 2, display: step !== 1 ? "none" : "flex" }}
               type="submit"
             >
               Đăng ký
