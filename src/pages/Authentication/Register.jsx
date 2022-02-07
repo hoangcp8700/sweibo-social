@@ -11,26 +11,35 @@ import {
   IconButton,
   styled,
 } from "@mui/material";
-import { MButton, MDataPicker } from "components/MUI";
+import { MButton, MDataPicker, MRadioGroup } from "components/MUI";
 import { icons } from "constants";
 import { Link } from "react-router-dom";
 import { PATH_AUTH } from "constants/paths";
+
+import { useAuth } from "hooks";
 
 const TextFieldStyle = styled(TextField)(({ theme }) => ({
   width: "100%",
   "& input": { padding: theme.spacing(1.5, 3), fontSize: 14 },
 }));
 
+const genders = [
+  { label: "Nam", value: "Nam" },
+  { label: "Nữ", value: "Nữ" },
+  { label: "Khác", value: "Khác" },
+];
+
 const initialize = {
   email: "",
   phone: "",
   password: "",
   passwordConfirmation: "",
+
   firstName: "",
   lastName: "",
-  userName: "",
+  nickName: "",
   gender: "",
-  dOB: "",
+  dOB: null,
 };
 
 const schema = Yup.object().shape({
@@ -40,7 +49,7 @@ const schema = Yup.object().shape({
   phone: Yup.string().required("Yêu cầu nhập số điện thoại"),
   password: Yup.string()
     .required("Yêu cầu nhập mật khẩu")
-    .min(8, "Mật khẩu ít nhất 8 kí tự")
+    .min(6, "Mật khẩu ít nhất 6 kí tự")
     .max(50, "Mật khẩu tối đa 50 kí tự"),
   passwordConfirmation: Yup.string()
     .required("Yêu cầu nhập lại mật khẩu")
@@ -48,26 +57,40 @@ const schema = Yup.object().shape({
 });
 
 const Register = () => {
-  const [form, setForm] = React.useState(initialize);
   const [showPassword, setShowPassword] = React.useState(false);
   const [showPassword2, setShowPassword2] = React.useState(false);
   const [step, setStep] = React.useState(0);
+
+  const { handleRegister } = useAuth();
 
   const formik = useFormik({
     initialValues: initialize,
     validationSchema: schema,
     onSubmit: async (values, { setErrors, setSubmitting }) => {
-      setSubmitting(true);
-      console.log("value", values);
+      try {
+        setSubmitting(true);
+        const { passwordConfirmation, ...restForm } = values;
 
-      // formik.resetForm({ values: initialize });
+        const response = await handleRegister(restForm);
+        console.log("submit", response);
+        setSubmitting(false);
+
+        // if (response.status !== 'success') {
+        //   formik.resetForm({ values: { ...values, password: '' } })
+        //   return setErrors({ afterSubmit: response.message })
+        // }
+
+        // formik.resetForm({ values: initialize });
+      } catch (error) {
+        console.log("err", error);
+      }
     },
   });
   const {
     errors,
     values,
-    resetForm,
-    setErrors,
+    // resetForm,
+    // setErrors,
     touched,
     handleSubmit,
     isSubmitting,
@@ -75,16 +98,26 @@ const Register = () => {
     setFieldValue,
   } = formik;
 
+  const disabledNextStep = React.useCallback(() => {
+    return values.email &&
+      values.password &&
+      values.passwordConfirmation &&
+      values.phone &&
+      Object.keys(errors).length === 0
+      ? true
+      : false;
+  }, [values, errors]);
+
   return (
     <Paper elevation={4}>
       <Box sx={{ px: 5, pb: 5, pt: 3 }}>
         <Stack
           direction="row"
           spacing={1}
-          alignItems="center"
+          alignItems="flex-start"
           justifyContent="space-between"
         >
-          <Box>
+          <Box sx={{ width: "fit-content" }}>
             <Typography variant="h4">Đăng ký</Typography>
             <Typography
               variant="body2"
@@ -99,11 +132,13 @@ const Register = () => {
             </Typography>
           </Box>
           <IconButton
-            onClick={() => setStep(step !== 1 ? 1 : 0)}
+            onClick={() =>
+              disabledNextStep() ? setStep(step !== 1 ? 1 : 0) : ""
+            }
             sx={{
-              bgcolor: "primary.main",
+              bgcolor: disabledNextStep() ? "primary.main" : "grey.300",
               "&:hover": {
-                bgcolor: "primary.main",
+                bgcolor: disabledNextStep() ? "primary.main" : "grey.300",
               },
               "& svg": {
                 fill: (theme) => theme.palette.common.white,
@@ -121,7 +156,7 @@ const Register = () => {
             {step === 0 ? (
               <Stack spacing={2} sx={{ mt: 3 }}>
                 <TextFieldStyle
-                  value={form.email}
+                  value={values.email}
                   placeholder="Địa chỉ email"
                   {...getFieldProps("email")}
                   error={Boolean(touched.email && errors.email)}
@@ -129,7 +164,7 @@ const Register = () => {
                 />
 
                 <TextFieldStyle
-                  value={form.phone}
+                  value={values.phone}
                   placeholder="Số điện thoại"
                   {...getFieldProps("phone")}
                   error={Boolean(touched.phone && errors.phone)}
@@ -137,7 +172,7 @@ const Register = () => {
                 />
 
                 <TextFieldStyle
-                  value={form.password}
+                  value={values.password}
                   name="password"
                   type={showPassword ? "string" : "password"}
                   placeholder="Mật khẩu"
@@ -165,7 +200,7 @@ const Register = () => {
                 />
 
                 <TextFieldStyle
-                  value={form.passwordConfirmation}
+                  value={values.passwordConfirmation}
                   type={showPassword2 ? "string" : "password"}
                   placeholder="Nhập lại mật khẩu"
                   {...getFieldProps("passwordConfirmation")}
@@ -204,7 +239,7 @@ const Register = () => {
               <Stack spacing={2} sx={{ mt: 3 }}>
                 <Stack direction="row" spacing={2}>
                   <TextFieldStyle
-                    value={form.firstName}
+                    value={values.firstName}
                     placeholder="Họ và tên lót"
                     {...getFieldProps("firstName")}
                     error={Boolean(touched.firstName && errors.firstName)}
@@ -212,13 +247,21 @@ const Register = () => {
                   />
 
                   <TextFieldStyle
-                    value={form.lastName}
+                    value={values.lastName}
                     placeholder="Tên"
                     {...getFieldProps("lastName")}
                     error={Boolean(touched.lastName && errors.lastName)}
                     helperText={touched.lastName && errors.lastName}
                   />
                 </Stack>
+
+                <TextFieldStyle
+                  value={values.nickName}
+                  placeholder="Tên khác (nếu có)"
+                  {...getFieldProps("nickName")}
+                  error={Boolean(touched.nickName && errors.nickName)}
+                  helperText={touched.nickName && errors.nickName}
+                />
 
                 <MDataPicker
                   value={values?.dOB}
@@ -229,19 +272,27 @@ const Register = () => {
                       "& svg": { fontSize: 18 },
                     },
                     placeholder: "Sinh nhật",
-                    error: Boolean(touched.dOB && errors.dOB),
-                    helperText: touched.dOB && errors.dOB,
-                    ...getFieldProps("dOB"),
+                  }}
+                />
+
+                <MRadioGroup
+                  label="Giới tính: "
+                  lists={genders}
+                  radioGroupProps={{
+                    ...getFieldProps("gender"),
+                    sx: { "&.MuiFormGroup-root": { flexDirection: "row" } },
                   }}
                 />
               </Stack>
             ) : (
               ""
             )}
+
             <MButton
+              loading={isSubmitting}
+              type="submit"
               variant="contained"
               sx={{ px: 5, mt: 2, display: step !== 1 ? "none" : "flex" }}
-              type="submit"
             >
               Đăng ký
             </MButton>

@@ -1,9 +1,9 @@
 import axios from "axios";
 
-// const ENDPOINT = 'https://d31mp7dmwh32b5.cloudfront.net/api'
+const ENDPOINT = "http://localhost:5000/api";
 
 const axiosInstance = axios.create({
-  // baseURL: ENDPOINT,
+  baseURL: ENDPOINT,
   headers: {
     "Content-type": "application/json",
   },

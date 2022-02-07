@@ -5,19 +5,20 @@ import ThemeConfig from "theme";
 // import NotistackProvider from "components/Notistack";
 import { useSetting } from "hooks";
 import { PATH_AUTH } from "constants/paths";
+import NotistackProvider from "components/Notistack";
 
 function App() {
   const { darkMode } = useSetting();
   const isLogin = false;
   return (
     <ThemeConfig darkMode={darkMode}>
-      {/* <NotistackProvider> */}
-      <Router>
-        <Routes />
-        {/* {isLogin ? <Routes /> : <Navigate to={PATH_AUTH.login} />} */}
-        {/* {isLogin ? <Routes /> : <Navigate to={PATH_AUTH.login} />} */}
-      </Router>
-      {/* </NotistackProvider> */}
+      <NotistackProvider>
+        <Router>
+          <Routes />
+          {/* {isLogin ? <Routes /> : <Navigate to={PATH_AUTH.login} />} */}
+          {/* {isLogin ? <Routes /> : <Navigate to={PATH_AUTH.login} />} */}
+        </Router>
+      </NotistackProvider>
     </ThemeConfig>
   );
 }

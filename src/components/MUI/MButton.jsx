@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { forwardRef } from "react";
-import { Button, styled, alpha } from "@mui/material";
+import { Button, styled, alpha, CircularProgress } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
@@ -52,14 +52,21 @@ const ButtonStyle = styled(Button)(({ theme, styleProps }) => {
 // ----------------------------------------------------------------------
 
 const MButton = forwardRef(
-  ({ color = "primary", variant = "text", children, ...other }, ref) => {
+  ({ color = "primary", variant = "text", children, ...props }, ref) => {
+    const { loading, ...others } = props;
     return (
       <ButtonStyle
         ref={ref}
         variant={variant}
         styleProps={{ color, variant }}
-        {...other}
+        {...others}
       >
+        {loading ? (
+          <CircularProgress size={18} sx={{ mr: 1, color: "primary.main" }} />
+        ) : (
+          ""
+        )}
+
         {children}
       </ButtonStyle>
     );

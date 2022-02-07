@@ -2,49 +2,38 @@ import React from "react";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
-import DesktopTimePicker from "@mui/lab/DesktopTimePicker";
-import DateTimePicker from "@mui/lab/DateTimePicker";
+
 import { TextField } from "@mui/material";
 import { vi } from "date-fns/locale";
 
-const MDataPicker = React.forwardRef((props, ref) => {
-  const {
-    value,
-    onChange,
-    isTimer,
-    isDateRange,
-    isDateAndTime,
-    inputProps,
-    ...restProps
-  } = props;
+const MDataPicker = (props) => {
+  const { value, onChange, inputProps, ...restProps } = props;
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi} ref={ref}>
-      {isTimer ? (
-        <DesktopTimePicker
-          {...restProps}
-          value={value}
-          onChange={(newValue) => onChange(newValue)}
-          renderInput={(params) => <TextField {...inputProps} />}
-        />
-      ) : isDateAndTime ? (
-        <DateTimePicker
-          {...restProps}
-          value={value}
-          onChange={(newValue) => onChange(newValue)}
-          renderInput={(params) => <TextField {...inputProps} />}
-        />
-      ) : (
-        <DatePicker
-          inputFormat="dd/MM/yyyy"
-          {...restProps}
-          value={value}
-          onChange={(newValue) => onChange(newValue)}
-          renderInput={(params) => <TextField {...inputProps} />}
-        />
-      )}
+    <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
+      <DatePicker
+        inputFormat="dd/MM/yyyy"
+        {...restProps}
+        value={value}
+        onChange={(newValue) => onChange(newValue)}
+        renderInput={(params) => (
+          <TextField
+            {...inputProps}
+            {...params}
+            sx={{
+              width: "100%",
+              "& input": { py: 1.5, px: 3, fontSize: 14 },
+            }}
+          />
+        )}
+        PaperProps={{
+          sx: {
+            "& .PrivatePickersFadeTransitionGroup-root": { maxHeight: 280 },
+          },
+        }}
+      />
     </LocalizationProvider>
   );
-});
+};
 
 export default MDataPicker;
