@@ -8,7 +8,7 @@ const ROOTS_PAGE = "";
 // ----------------------------------------------------------------------
 
 const PATH_AUTH = {
-  root: { path: ROOTS_AUTH, title: "Dashboard" },
+  root: { path: ROOTS_AUTH },
   login: { path: path(ROOTS_AUTH, "/login"), title: "Login" },
   register: { path: path(ROOTS_AUTH, "/register"), title: "Register" },
   forgotPassword: {
@@ -19,7 +19,7 @@ const PATH_AUTH = {
     path: path(ROOTS_AUTH, "/reset-password"),
     title: "Reset Password",
   },
-  verify: { path: path(ROOTS_AUTH, "/verify"), title: "Verify" },
+  verify: { path: path(ROOTS_AUTH, "/verify-code"), title: "Verify Code" },
 };
 
 const PATH_PAGE = {

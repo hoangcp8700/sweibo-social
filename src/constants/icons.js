@@ -60,6 +60,9 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import GroupsIcon from "@mui/icons-material/Groups";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+
 const ConvertIcon = ({ src }) => {
   return (
     <Icon>
@@ -122,4 +125,7 @@ export default {
 
   GroupsIcon: <GroupsIcon />,
   GroupAddIcon: <GroupAddIcon />,
+
+  EyeOnIcon: <RemoveRedEyeOutlinedIcon />,
+  EyeOffIcon: <VisibilityOffOutlinedIcon />,
 };

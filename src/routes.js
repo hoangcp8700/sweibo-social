@@ -3,6 +3,7 @@ import { Navigate, useRoutes } from "react-router-dom";
 
 // layouts
 import MainLayout from "components/layouts/LayoutMain";
+import MainAuthenticationLayout from "components/layouts/LayoutAuthentication";
 
 // guards
 // import GuestGuard from 'guards/GuestGuard'
@@ -12,7 +13,7 @@ import MainLayout from "components/layouts/LayoutMain";
 import { LoadingPage } from "components";
 
 // ----------------------------------------------------------------------
-import { PATH_PAGE } from "constants/paths";
+import { PATH_AUTH, PATH_PAGE } from "constants/paths";
 
 const Loadable = (Component) => (props) => {
   return (
@@ -22,8 +23,8 @@ const Loadable = (Component) => (props) => {
   );
 };
 
-export default function Router() {
-  return useRoutes([
+const routes = () => {
+  return [
     {
       path: "/",
       element: <MainLayout />,
@@ -86,10 +87,38 @@ export default function Router() {
         // { path: "*", element: <Navigate to="/404" replace /> },
       ],
     },
-  ]);
+    {
+      path: PATH_AUTH.root.path,
+      element: <MainAuthenticationLayout />,
+      children: [
+        {
+          path: PATH_AUTH.login.path,
+          element: <LoginPage />,
+        },
+
+        { path: PATH_AUTH.register.path, element: <RegisterPage /> },
+        {
+          path: PATH_AUTH.forgotPassword.path,
+          element: <ForgotPasswordPage />,
+        },
+        { path: PATH_AUTH.verify.path, element: <VerifyCodePage /> },
+        {
+          path: PATH_AUTH.resetPassword.path,
+          element: <ResetPasswordPage />,
+        },
+      ],
+    },
+  ];
+};
+
+export default function Router() {
+  return useRoutes(routes());
 }
 
-// import
+// -------------------------------import--------------------------
+// -------------------------------import--------------------------
+// -------------------------------import--------------------------
+// -------------------------------import--------------------------
 const HomePage = Loadable(lazy(() => import("pages/Home")));
 const ChatPage = Loadable(lazy(() => import("pages/Chat")));
 
@@ -129,6 +158,21 @@ const PostProfilePage = Loadable(
 );
 const FriendProfilePage = Loadable(
   lazy(() => import("pages/Profile/FriendProfile"))
+);
+
+// authentication
+const LoginPage = Loadable(lazy(() => import("pages/Authentication/Login")));
+const RegisterPage = Loadable(
+  lazy(() => import("pages/Authentication/Register"))
+);
+const ForgotPasswordPage = Loadable(
+  lazy(() => import("pages/Authentication/ForgotPassword"))
+);
+const VerifyCodePage = Loadable(
+  lazy(() => import("pages/Authentication/VerifyCode"))
+);
+const ResetPasswordPage = Loadable(
+  lazy(() => import("pages/Authentication/ResetPassword"))
 );
 
 const Error404Page = Loadable(lazy(() => import("pages/Error404")));
