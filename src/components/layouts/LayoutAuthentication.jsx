@@ -32,17 +32,19 @@ const MainAuthenticationLayout = () => {
             m: "0 auto",
           }}
         >
-          <Box sx={{ maxWidth: 700 }}>
+          <Box sx={{ maxWidth: 600 }}>
             <Typography variant="h1" color="primary">
               weibo
             </Typography>
-            <Typography variant="h3">
+            <Typography variant="h4">
               Weibo giúp bạn kết nối và chia sẻ với mọi người trong cuộc sống
               của bạn.
             </Typography>
           </Box>
-          <Box sx={{ flexGrow: 1, bgcolor: "primary.main" }}>
-            <Outlet />
+          <Box sx={{ flexGrow: 1 }}>
+            <Box sx={{ maxWidth: 500, width: "100%", m:'0 auto' }}>
+              <Outlet />
+            </Box>
           </Box>
         </Stack>
       </Paper>

@@ -63,6 +63,10 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
+import GoogleIcon from "@mui/icons-material/Google";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import FacebookIcon from "@mui/icons-material/Facebook";
+
 const ConvertIcon = ({ src }) => {
   return (
     <Icon>
@@ -128,4 +132,8 @@ export default {
 
   EyeOnIcon: <RemoveRedEyeOutlinedIcon />,
   EyeOffIcon: <VisibilityOffOutlinedIcon />,
+
+  GoogleIcon: <GoogleIcon sx={{ "& path": { fill: "#DB4437" } }} />,
+  GitHubIcon: <GitHubIcon sx={{ "& path": { fill: "#4267B2" } }} />,
+  FacebookIcon: <FacebookIcon sx={{ "& path": { fill: "#000" } }} />,
 };
