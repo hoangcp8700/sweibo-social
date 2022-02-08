@@ -53,7 +53,7 @@ const ButtonStyle = styled(Button)(({ theme, styleProps }) => {
 
 const MButton = forwardRef(
   ({ color = "primary", variant = "text", children, ...props }, ref) => {
-    const { loading, ...others } = props;
+    const { loading, loadingStyle, ...others } = props;
     return (
       <ButtonStyle
         ref={ref}
@@ -62,7 +62,10 @@ const MButton = forwardRef(
         {...others}
       >
         {loading ? (
-          <CircularProgress size={18} sx={{ mr: 1, color: "primary.main" }} />
+          <CircularProgress
+            size={18}
+            sx={{ mr: 1, color: "common.white", ...loadingStyle }}
+          />
         ) : (
           ""
         )}

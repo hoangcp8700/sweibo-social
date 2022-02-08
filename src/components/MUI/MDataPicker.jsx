@@ -23,6 +23,11 @@ const MDataPicker = (props) => {
             sx={{
               width: "100%",
               "& input": { py: 1.5, px: 3, fontSize: 14 },
+              "& .MuiInputLabel-root": {
+                color: "#b7bbbe",
+                fontSize: 14,
+                pl: 1.5,
+              },
             }}
           />
         )}

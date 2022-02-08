@@ -101,7 +101,10 @@ const routes = () => {
           path: PATH_AUTH.forgotPassword.path,
           element: <ForgotPasswordPage />,
         },
-        { path: PATH_AUTH.verify.path, element: <VerifyCodePage /> },
+        {
+          path: `${PATH_AUTH.verify.path}/:email`,
+          element: <VerifyCodePage />,
+        },
         {
           path: PATH_AUTH.resetPassword.path,
           element: <ResetPasswordPage />,

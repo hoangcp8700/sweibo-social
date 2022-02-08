@@ -10,10 +10,11 @@ import {
   InputAdornment,
   IconButton,
   styled,
+  Chip,
 } from "@mui/material";
 import { MButton, MDataPicker, MRadioGroup } from "components/MUI";
 import { icons } from "constants";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PATH_AUTH } from "constants/paths";
 
 import { useAuth } from "hooks";
@@ -57,43 +58,48 @@ const schema = Yup.object().shape({
 });
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = React.useState(false);
   const [showPassword2, setShowPassword2] = React.useState(false);
   const [step, setStep] = React.useState(0);
-
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { handleRegister } = useAuth();
 
   const formik = useFormik({
     initialValues: initialize,
     validationSchema: schema,
-    onSubmit: async (values, { setErrors, setSubmitting }) => {
+    onSubmit: async (values, actions) => {
       try {
-        setSubmitting(true);
+        setIsSubmitting(true);
+        const { setErrors } = actions;
         const { passwordConfirmation, ...restForm } = values;
 
         const response = await handleRegister(restForm);
-        console.log("submit", response);
-        setSubmitting(false);
 
-        // if (response.status !== 'success') {
-        //   formik.resetForm({ values: { ...values, password: '' } })
-        //   return setErrors({ afterSubmit: response.message })
-        // }
+        setIsSubmitting(false);
 
-        // formik.resetForm({ values: initialize });
+        if (response.error) {
+          formik.resetForm({
+            values: { ...values, password: "", passwordConfirmation: "" },
+          });
+          setStep(0);
+          return setErrors({ afterSubmit: response.error });
+        }
+
+        formik.resetForm({ values: initialize });
+        navigate(PATH_AUTH.login.path);
       } catch (error) {
-        console.log("err", error);
+        console.log("err 123", error);
       }
     },
   });
   const {
     errors,
     values,
-    // resetForm,
-    // setErrors,
     touched,
     handleSubmit,
-    isSubmitting,
+
     getFieldProps,
     setFieldValue,
   } = formik;
@@ -108,198 +114,222 @@ const Register = () => {
       : false;
   }, [values, errors]);
 
+  const handleNextStep = () => {
+    if (
+      !values.email ||
+      !values.password ||
+      !values.passwordConfirmation ||
+      !values.phone
+    )
+      handleSubmit();
+
+    return disabledNextStep() ? setStep(step !== 1 ? 1 : 0) : "";
+  };
   return (
-    <Paper elevation={4}>
-      <Box sx={{ px: 5, pb: 5, pt: 3 }}>
-        <Stack
-          direction="row"
-          spacing={1}
-          alignItems="flex-start"
-          justifyContent="space-between"
-        >
-          <Box sx={{ width: "fit-content" }}>
-            <Typography variant="h4">Đăng ký</Typography>
-            <Typography
-              variant="body2"
-              component={Link}
-              to={PATH_AUTH.login.path}
-              color="secondary"
-              sx={{
-                "&:hover": { textDecoration: "underline" },
-              }}
-            >
-              Đã có tài khoản? Đăng nhập
-            </Typography>
-          </Box>
-          <IconButton
-            onClick={() =>
-              disabledNextStep() ? setStep(step !== 1 ? 1 : 0) : ""
-            }
+    <Box sx={{ px: 5, pb: 5, pt: 3 }}>
+      <Stack
+        direction="row"
+        spacing={1}
+        alignItems="flex-start"
+        justifyContent="space-between"
+      >
+        <Box sx={{ width: "fit-content" }}>
+          <Typography variant="h4" sx={{ mb: -0.5 }}>
+            Đăng ký
+          </Typography>
+          <Typography
+            variant="body2"
+            component={Link}
+            to={PATH_AUTH.login.path}
+            color="secondary"
             sx={{
-              bgcolor: disabledNextStep() ? "primary.main" : "grey.300",
-              "&:hover": {
-                bgcolor: disabledNextStep() ? "primary.main" : "grey.300",
-              },
-              "& svg": {
-                fill: (theme) => theme.palette.common.white,
-                fontSize: 16,
-              },
+              mt: -2,
+              "&:hover": { textDecoration: "underline" },
             }}
           >
-            {step !== 1 ? icons.ArrowRightIcon : icons.ArrowLeftIcon}
-          </IconButton>
-        </Stack>
+            Đã có tài khoản? Đăng nhập
+          </Typography>
+        </Box>
+        <IconButton
+          onClick={() => handleNextStep()}
+          sx={{
+            bgcolor: disabledNextStep() ? "primary.main" : "grey.300",
+            "&:hover": {
+              bgcolor: disabledNextStep() ? "primary.main" : "grey.300",
+            },
+            "& svg": {
+              fill: (theme) => theme.palette.common.white,
+              fontSize: 16,
+            },
+          }}
+        >
+          {step !== 1 ? icons.ArrowRightIcon : icons.ArrowLeftIcon}
+        </IconButton>
+      </Stack>
 
-        <FormikProvider value={formik}>
-          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-            {/* // step 0 */}
-            {step === 0 ? (
-              <Stack spacing={2} sx={{ mt: 3 }}>
+      <FormikProvider value={formik}>
+        <Form onSubmit={handleSubmit}>
+          {/* // step 0 */}
+
+          {errors && errors?.afterSubmit?.length ? (
+            <Stack direction="row" sx={{ gap: 1, flexWrap: "wrap" }}>
+              {errors?.afterSubmit.map((item, index) => (
+                <Chip
+                  label={item.message}
+                  key={index}
+                  size="small"
+                  color="error"
+                />
+              ))}
+            </Stack>
+          ) : null}
+
+          {step === 0 ? (
+            <Stack spacing={2} sx={{ mt: 3 }}>
+              <TextFieldStyle
+                value={values.email}
+                placeholder="Địa chỉ email"
+                {...getFieldProps("email")}
+                error={Boolean(touched.email && errors.email)}
+                helperText={touched.email && errors.email}
+              />
+
+              <TextFieldStyle
+                value={values.phone}
+                placeholder="Số điện thoại"
+                {...getFieldProps("phone")}
+                error={Boolean(touched.phone && errors.phone)}
+                helperText={touched.phone && errors.phone}
+              />
+
+              <TextFieldStyle
+                value={values.password}
+                name="password"
+                type={showPassword ? "string" : "password"}
+                placeholder="Mật khẩu"
+                {...getFieldProps("password")}
+                error={Boolean(touched.password && errors.password)}
+                helperText={touched.password && errors.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        sx={{
+                          "& svg": {
+                            fontSize: 20,
+                            fill: (theme) => theme.palette.background.opacity3,
+                          },
+                        }}
+                      >
+                        {showPassword ? icons.EyeOnIcon : icons.EyeOffIcon}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <TextFieldStyle
+                value={values.passwordConfirmation}
+                type={showPassword2 ? "string" : "password"}
+                placeholder="Nhập lại mật khẩu"
+                {...getFieldProps("passwordConfirmation")}
+                error={Boolean(
+                  touched.passwordConfirmation && errors.passwordConfirmation
+                )}
+                helperText={
+                  touched.passwordConfirmation && errors.passwordConfirmation
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword2(!showPassword2)}
+                        sx={{
+                          "& svg": {
+                            fontSize: 20,
+                            fill: (theme) => theme.palette.background.opacity3,
+                          },
+                        }}
+                      >
+                        {showPassword2 ? icons.EyeOnIcon : icons.EyeOffIcon}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Stack>
+          ) : (
+            ""
+          )}
+
+          {/* // step 1 */}
+          {step === 1 ? (
+            <Stack spacing={2} sx={{ mt: 3 }}>
+              <Stack direction="row" spacing={2}>
                 <TextFieldStyle
-                  value={values.email}
-                  placeholder="Địa chỉ email"
-                  {...getFieldProps("email")}
-                  error={Boolean(touched.email && errors.email)}
-                  helperText={touched.email && errors.email}
+                  value={values.firstName}
+                  placeholder="Họ và tên lót"
+                  {...getFieldProps("firstName")}
+                  error={Boolean(touched.firstName && errors.firstName)}
+                  helperText={touched.firstName && errors.firstName}
                 />
 
                 <TextFieldStyle
-                  value={values.phone}
-                  placeholder="Số điện thoại"
-                  {...getFieldProps("phone")}
-                  error={Boolean(touched.phone && errors.phone)}
-                  helperText={touched.phone && errors.phone}
-                />
-
-                <TextFieldStyle
-                  value={values.password}
-                  name="password"
-                  type={showPassword ? "string" : "password"}
-                  placeholder="Mật khẩu"
-                  {...getFieldProps("password")}
-                  error={Boolean(touched.password && errors.password)}
-                  helperText={touched.password && errors.password}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPassword(!showPassword)}
-                          sx={{
-                            "& svg": {
-                              fontSize: 20,
-                              fill: (theme) =>
-                                theme.palette.background.opacity3,
-                            },
-                          }}
-                        >
-                          {showPassword ? icons.EyeOnIcon : icons.EyeOffIcon}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-
-                <TextFieldStyle
-                  value={values.passwordConfirmation}
-                  type={showPassword2 ? "string" : "password"}
-                  placeholder="Nhập lại mật khẩu"
-                  {...getFieldProps("passwordConfirmation")}
-                  error={Boolean(
-                    touched.passwordConfirmation && errors.passwordConfirmation
-                  )}
-                  helperText={
-                    touched.passwordConfirmation && errors.passwordConfirmation
-                  }
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPassword2(!showPassword2)}
-                          sx={{
-                            "& svg": {
-                              fontSize: 20,
-                              fill: (theme) =>
-                                theme.palette.background.opacity3,
-                            },
-                          }}
-                        >
-                          {showPassword2 ? icons.EyeOnIcon : icons.EyeOffIcon}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
+                  value={values.lastName}
+                  placeholder="Tên"
+                  {...getFieldProps("lastName")}
+                  error={Boolean(touched.lastName && errors.lastName)}
+                  helperText={touched.lastName && errors.lastName}
                 />
               </Stack>
-            ) : (
-              ""
-            )}
 
-            {/* // step 1 */}
-            {step === 1 ? (
-              <Stack spacing={2} sx={{ mt: 3 }}>
-                <Stack direction="row" spacing={2}>
-                  <TextFieldStyle
-                    value={values.firstName}
-                    placeholder="Họ và tên lót"
-                    {...getFieldProps("firstName")}
-                    error={Boolean(touched.firstName && errors.firstName)}
-                    helperText={touched.firstName && errors.firstName}
-                  />
+              <TextFieldStyle
+                value={values.nickName}
+                placeholder="Tên khác (nếu có)"
+                {...getFieldProps("nickName")}
+                error={Boolean(touched.nickName && errors.nickName)}
+                helperText={touched.nickName && errors.nickName}
+              />
 
-                  <TextFieldStyle
-                    value={values.lastName}
-                    placeholder="Tên"
-                    {...getFieldProps("lastName")}
-                    error={Boolean(touched.lastName && errors.lastName)}
-                    helperText={touched.lastName && errors.lastName}
-                  />
-                </Stack>
+              <MDataPicker
+                value={values?.dOB}
+                onChange={(value) => setFieldValue("dOB", value)}
+                label="Sinh nhật"
+                inputProps={{
+                  sx: {
+                    "& input": { height: 10, fontSize: 14 },
+                    "& svg": { fontSize: 18 },
+                  },
+                  placeholder: "Sinh nhật",
+                }}
+              />
 
-                <TextFieldStyle
-                  value={values.nickName}
-                  placeholder="Tên khác (nếu có)"
-                  {...getFieldProps("nickName")}
-                  error={Boolean(touched.nickName && errors.nickName)}
-                  helperText={touched.nickName && errors.nickName}
-                />
+              <MRadioGroup
+                label="Giới tính: "
+                lists={genders}
+                radioGroupProps={{
+                  ...getFieldProps("gender"),
+                  sx: { "&.MuiFormGroup-root": { flexDirection: "row" } },
+                }}
+              />
+            </Stack>
+          ) : (
+            ""
+          )}
 
-                <MDataPicker
-                  value={values?.dOB}
-                  onChange={(value) => setFieldValue("dOB", value)}
-                  inputProps={{
-                    sx: {
-                      "& input": { height: 10, fontSize: 14 },
-                      "& svg": { fontSize: 18 },
-                    },
-                    placeholder: "Sinh nhật",
-                  }}
-                />
-
-                <MRadioGroup
-                  label="Giới tính: "
-                  lists={genders}
-                  radioGroupProps={{
-                    ...getFieldProps("gender"),
-                    sx: { "&.MuiFormGroup-root": { flexDirection: "row" } },
-                  }}
-                />
-              </Stack>
-            ) : (
-              ""
-            )}
-
-            <MButton
-              loading={isSubmitting}
-              type="submit"
-              variant="contained"
-              sx={{ px: 5, mt: 2, display: step !== 1 ? "none" : "flex" }}
-            >
-              Đăng ký
-            </MButton>
-          </Form>
-        </FormikProvider>
-      </Box>
-    </Paper>
+          <MButton
+            disabled={isSubmitting}
+            loading={isSubmitting}
+            type="submit"
+            variant="contained"
+            sx={{ px: 5, mt: 2, display: step !== 1 ? "none" : "flex" }}
+          >
+            Đăng ký
+          </MButton>
+        </Form>
+      </FormikProvider>
+    </Box>
   );
 };
 

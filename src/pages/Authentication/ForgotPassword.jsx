@@ -1,16 +1,12 @@
 import React from "react";
-import {
-  Paper,
-  Box,
-  Stack,
-  TextField,
-  Typography,
-  styled,
-} from "@mui/material";
+import * as Yup from "yup";
+import { useFormik, Form, FormikProvider } from "formik";
+
+import { Box, Stack, TextField, Typography, styled, Chip } from "@mui/material";
 import { MButton } from "components/MUI";
-import { icons } from "constants";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PATH_AUTH } from "constants/paths";
+import { useAuth } from "hooks";
 
 const TextFieldStyle = styled(TextField)(({ theme }) => ({
   width: "100%",
@@ -21,17 +17,49 @@ const initialize = {
   email: "",
 };
 
-const ForgotPassword = () => {
-  const [form, setForm] = React.useState(initialize);
+const schema = Yup.object().shape({
+  email: Yup.string()
+    .email("Email không hợp lệ")
+    .required("Yêu cầu nhập địa chỉ email"),
+});
 
-  const handleChangeForm = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+const ForgotPassword = () => {
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  const { handleForgotPassword } = useAuth();
+
+  const formik = useFormik({
+    initialValues: initialize,
+    validationSchema: schema,
+    onSubmit: async (values, { setErrors }) => {
+      try {
+        setIsSubmitting(true);
+        const response = await handleForgotPassword(values);
+        setIsSubmitting(false);
+
+        console.log("ForgotPassword", response);
+        if (response.error) {
+          return setErrors({ afterSubmit: response.error });
+        }
+
+        formik.resetForm({ values: initialize });
+        navigate(PATH_AUTH.verify.path);
+      } catch (error) {
+        console.log("err 123", error);
+      }
+    },
+  });
+
+  const { errors, values, touched, handleSubmit, getFieldProps } = formik;
 
   return (
-    <Paper elevation={4}>
-      <Box sx={{ px: 5, pb: 5, pt: 3 }}>
-        <Stack>
-          <Typography variant="h4">Quên mật khẩu</Typography>
+    <Box sx={{ px: 5, pb: 5, pt: 3 }}>
+      <Stack>
+        <Box sx={{ width: "fit-content" }}>
+          <Typography variant="h4" sx={{ mb: -0.5 }}>
+            Quên mật khẩu
+          </Typography>
           <Typography
             variant="body2"
             component={Link}
@@ -43,22 +71,42 @@ const ForgotPassword = () => {
           >
             Đã có tài khoản? Đăng nhập
           </Typography>
-        </Stack>
+        </Box>
+      </Stack>
 
-        <Stack spacing={2} sx={{ mt: 3 }}>
-          <TextFieldStyle
-            value={form.email}
-            onChange={handleChangeForm}
-            name="email"
-            placeholder="Địa chỉ email "
-          />
+      <FormikProvider value={formik}>
+        <Form onSubmit={handleSubmit}>
+          {errors && errors?.afterSubmit ? (
+            <Stack direction="row" sx={{ gap: 1, flexWrap: "wrap" }}>
+              <Chip
+                label={errors?.afterSubmit.message}
+                size="small"
+                color="error"
+              />
+            </Stack>
+          ) : null}
 
-          <MButton variant="contained" sx={{ px: 5 }}>
-            Gửi
-          </MButton>
-        </Stack>
-      </Box>
-    </Paper>
+          <Stack spacing={2} sx={{ mt: 3 }}>
+            <TextFieldStyle
+              value={values.email}
+              {...getFieldProps("email")}
+              error={Boolean(touched.email && errors.email)}
+              helperText={touched.email && errors.email}
+              placeholder="Địa chỉ email"
+            />
+            <MButton
+              variant="contained"
+              disabled={isSubmitting}
+              loading={isSubmitting}
+              type="submit"
+              sx={{ px: 5, width: { xs: "100%", sm: "auto" } }}
+            >
+              Gửi
+            </MButton>
+          </Stack>
+        </Form>
+      </FormikProvider>
+    </Box>
   );
 };
 
