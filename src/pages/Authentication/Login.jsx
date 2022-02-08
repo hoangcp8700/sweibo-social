@@ -3,7 +3,6 @@ import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
 
 import {
-  Paper,
   Box,
   Stack,
   TextField,
@@ -19,7 +18,7 @@ import {
 import { MButton } from "components/MUI";
 import { icons } from "constants";
 import { Link, useNavigate } from "react-router-dom";
-import { PATH_AUTH } from "constants/paths";
+import { PATH_AUTH, PATH_PAGE } from "constants/paths";
 import { useAuth } from "hooks";
 
 const TextFieldStyle = styled(TextField)(({ theme }) => ({
@@ -70,7 +69,7 @@ const Login = () => {
         }
 
         formik.resetForm({ values: initialize });
-        navigate(PATH_AUTH.login.path);
+        navigate(PATH_PAGE.home.path);
       } catch (error) {
         console.log("err 123", error);
       }

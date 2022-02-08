@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import Header from "../Header";
 import { Paper, Box } from "@mui/material";
 
-const Main = (props) => {
+const Main = () => {
   return (
     <Box>
       <Header />

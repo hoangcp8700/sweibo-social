@@ -38,13 +38,12 @@ const ForgotPassword = () => {
         const response = await handleForgotPassword(values);
         setIsSubmitting(false);
 
-        console.log("ForgotPassword", response);
         if (response.error) {
           return setErrors({ afterSubmit: response.error });
         }
 
         formik.resetForm({ values: initialize });
-        navigate(PATH_AUTH.verify.path);
+        navigate(PATH_AUTH.verify.path, { state: values });
       } catch (error) {
         console.log("err 123", error);
       }

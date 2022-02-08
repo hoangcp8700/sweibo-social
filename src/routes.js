@@ -6,8 +6,8 @@ import MainLayout from "components/layouts/LayoutMain";
 import MainAuthenticationLayout from "components/layouts/LayoutAuthentication";
 
 // guards
-// import GuestGuard from 'guards/GuestGuard'
-// import AuthGuard from 'guards/AuthGuard'
+import GuestGuard from "guards/GuestGuard";
+import AuthGuard from "guards/AuthGuard";
 
 // components
 import { LoadingPage } from "components";
@@ -27,7 +27,12 @@ const routes = () => {
   return [
     {
       path: "/",
-      element: <MainLayout />,
+      element: (
+        <AuthGuard>
+          <MainLayout />
+        </AuthGuard>
+        // <MainLayout />
+      ),
       children: [
         { path: PATH_PAGE.home.link, element: <HomePage /> },
         {
@@ -102,11 +107,11 @@ const routes = () => {
           element: <ForgotPasswordPage />,
         },
         {
-          path: `${PATH_AUTH.verify.path}/:email`,
+          path: PATH_AUTH.verify.path,
           element: <VerifyCodePage />,
         },
         {
-          path: PATH_AUTH.resetPassword.path,
+          path: `${PATH_AUTH.resetPassword.path}/:token`,
           element: <ResetPasswordPage />,
         },
       ],

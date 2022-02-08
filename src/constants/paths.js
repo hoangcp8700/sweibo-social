@@ -3,7 +3,7 @@ function path(root, sublink) {
 }
 
 const ROOTS_AUTH = "/auth";
-const ROOTS_PAGE = "";
+const ROOTS_PAGE = "/";
 
 // ----------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ const PATH_AUTH = {
 };
 
 const PATH_PAGE = {
-  home: { path: path(ROOTS_PAGE, "/"), link: "", title: "Trang chủ" },
+  home: { path: ROOTS_PAGE, link: "", title: "Trang chủ" },
   friend: {
     path: path(ROOTS_PAGE, "/friends"),
     link: "friends",

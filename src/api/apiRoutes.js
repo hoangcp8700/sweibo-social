@@ -2,6 +2,7 @@
 
 const authentication = () => {
   return {
+    user: "/auth/user",
     login: "/auth/login",
     register: "/auth/register",
     forgotPassword: "/auth/forgot-password",

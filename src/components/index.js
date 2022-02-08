@@ -1,6 +1,7 @@
 export { default as LayoutMain } from "./layouts/LayoutMain";
 export { default as Header } from "./Header";
 export { default as History } from "./History";
+export { default as LoadingScreen } from "./LoadingScreen";
 
 export { default as AdvertiseItem } from "./AdvertiseItem";
 export { default as ActivityStatus } from "./ActivityStatus";
