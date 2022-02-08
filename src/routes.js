@@ -31,7 +31,6 @@ const routes = () => {
         <AuthGuard>
           <MainLayout />
         </AuthGuard>
-        // <MainLayout />
       ),
       children: [
         { path: PATH_PAGE.home.link, element: <HomePage /> },
@@ -94,7 +93,11 @@ const routes = () => {
     },
     {
       path: PATH_AUTH.root.path,
-      element: <MainAuthenticationLayout />,
+      element: (
+        <GuestGuard>
+          <MainAuthenticationLayout />
+        </GuestGuard>
+      ),
       children: [
         {
           path: PATH_AUTH.login.path,

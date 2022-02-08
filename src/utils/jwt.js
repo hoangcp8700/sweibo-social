@@ -6,21 +6,18 @@ const isValidToken = (accessToken) => {
   if (!accessToken) return false;
   const decoded = jwtDecode(accessToken);
   const currentTime = Math.floor(Date.now() / 1000);
-  console.log("isValidToken", decoded.exp, currentTime);
+
   return decoded.exp > currentTime;
 };
 
 const handleTokenExpired = (exp) => {
-  let expiredTimer;
+  const currentTime = Date.now();
+  const expirationTime = exp * 1000 - 60000;
 
-  window.clearTimeout(expiredTimer);
-  const currentTime = Math.floor(Date.now() / 1000);
-  const timeLeft = (exp - currentTime) * 1000;
-
-  expiredTimer = window.setTimeout(() => {
+  if (currentTime >= expirationTime) {
     console.log("expired token");
     localStorage.removeItem("accessToken");
-  }, timeLeft);
+  }
 };
 
 const getIdByToken = (accessToken) => {

@@ -2,7 +2,7 @@ import axios from "utils/axios";
 import routes from "api/apiRoutes";
 import { useSnackbar } from "notistack";
 import { useSelector, useDispatch } from "react-redux";
-import { LOADING_AUTH, SUCCESS_AUTH, LOG_OUT } from "stores/AuthSlice";
+import { LOADING_AUTH, SUCCESS_AUTH, LOGOUT } from "stores/AuthSlice";
 import { isValidToken, setSession, getIdByToken } from "utils/jwt";
 
 const useAuth = () => {
@@ -13,22 +13,20 @@ const useAuth = () => {
   const isLoading = useSelector((state) => state.auth.isLoading);
   const isAuth = useSelector((state) => state.auth.isAuth);
 
+  const handleIsLoadingUser = (value) => dispatch(LOADING_AUTH(value));
+
+  const handleLogout = async () => {
+    await dispatch(LOGOUT());
+    await setSession(null);
+  };
+
   const handleAuthenticated = async () => {
-    dispatch(LOADING_AUTH);
+    dispatch(LOADING_AUTH(true));
     try {
       const accessToken = localStorage.getItem("accessToken");
       const id = accessToken && getIdByToken(accessToken);
 
-      console.log(
-        "accessToken && isValidToken(accessToken) && getIdByToken(accessToken)",
-        accessToken,
-        isValidToken(accessToken),
-        getIdByToken(accessToken)
-      );
-
       if (accessToken && id && isValidToken(accessToken)) {
-        setSession(accessToken);
-
         const response = await axios.get(routes.authentication().user);
 
         console.log("authen", response);
@@ -37,8 +35,11 @@ const useAuth = () => {
       }
       return false;
     } catch (error) {
-      // create data
-      return error;
+      console.log("err auith");
+
+      setSession(null);
+      dispatch(LOADING_AUTH(false));
+      return false;
     }
   };
 
@@ -60,7 +61,6 @@ const useAuth = () => {
       const response = await axios.post(routes.authentication().login, form);
       dispatch(SUCCESS_AUTH(response.data.data));
       setSession(response.data.accessToken);
-
       enqueueSnackbar("Đăng nhập thành công", { variant: "success" });
       return { success: response.data };
     } catch (error) {
@@ -125,6 +125,8 @@ const useAuth = () => {
     handleForgotPassword,
     handleVerifyCode,
     handleResetPassword,
+    handleIsLoadingUser,
+    handleLogout,
   };
 };
 

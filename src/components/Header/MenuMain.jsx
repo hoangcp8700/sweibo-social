@@ -13,7 +13,13 @@ import SwitchMode from "../SwitchMode";
 import { useSetting } from "hooks";
 
 const MenuHeader = (props) => {
-  const { name, handleDarkMode, handleRedirectProfile, ...restProps } = props;
+  const {
+    name,
+    handleDarkMode,
+    handleRedirectProfile,
+    handleLogout,
+    ...restProps
+  } = props;
   const { darkMode, handleToggleDarkMode } = useSetting();
   return (
     <MMenu {...props}>
@@ -35,7 +41,7 @@ const MenuHeader = (props) => {
         <SwitchMode />
       </MenuItem>
 
-      <MenuItem sx={{ gap: 2 }}>
+      <MenuItem sx={{ gap: 2 }} onClick={handleLogout}>
         <IconButton>{icons.LogoutIcon} </IconButton>
         <Typography variant="subtitle2">Đăng xuất</Typography>
       </MenuItem>

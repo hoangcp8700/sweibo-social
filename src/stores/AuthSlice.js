@@ -11,14 +11,14 @@ const slice = createSlice({
   initialState,
   reducers: {
     LOADING_AUTH(state, action) {
-      state.isLoading = true;
+      state.isLoading = action.payload;
     },
     SUCCESS_AUTH(state, action) {
       state.isLoading = false;
       state.user = action.payload;
       state.isAuth = true;
     },
-    LOG_OUT(state) {
+    LOGOUT(state) {
       state.isLoading = false;
       state.user = null;
       state.isAuth = false;
@@ -28,6 +28,6 @@ const slice = createSlice({
 
 const { reducer, actions } = slice;
 
-export const { LOADING_AUTH, SUCCESS_AUTH, LOG_OUT } = actions;
+export const { LOADING_AUTH, SUCCESS_AUTH, LOGOUT } = actions;
 
 export default reducer;

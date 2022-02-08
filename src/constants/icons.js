@@ -134,6 +134,6 @@ export default {
   EyeOffIcon: <VisibilityOffOutlinedIcon />,
 
   GoogleIcon: <GoogleIcon sx={{ "& path": { fill: "#DB4437" } }} />,
-  GitHubIcon: <GitHubIcon sx={{ "& path": { fill: "#4267B2" } }} />,
-  FacebookIcon: <FacebookIcon sx={{ "& path": { fill: "#000" } }} />,
+  GitHubIcon: <GitHubIcon sx={{ "& path": { fill: "#000" } }} />,
+  FacebookIcon: <FacebookIcon sx={{ "& path": { fill: "#4267B2" } }} />,
 };

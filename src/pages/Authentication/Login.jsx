@@ -52,15 +52,18 @@ const Login = () => {
   const matches = useMediaQuery(theme.breakpoints.down("475"));
 
   const [showPassword, setShowPassword] = React.useState(false);
-  const { handleLogin, isLoading } = useAuth();
+  const { handleLogin } = useAuth();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const formik = useFormik({
     initialValues: initialize,
     validationSchema: schema,
     onSubmit: async (values, { setErrors }) => {
       try {
+        setIsSubmitting(true);
         const response = await handleLogin(values);
-        console.log("plogim", response);
+        setIsSubmitting(false);
+
         if (response.error) {
           formik.resetForm({
             values: { ...values, password: "" },
@@ -159,8 +162,8 @@ const Login = () => {
           >
             <MButton
               variant="contained"
-              disabled={isLoading}
-              loading={isLoading}
+              disabled={isSubmitting}
+              loading={isSubmitting}
               type="submit"
               sx={{ px: 5, width: { xs: "100%", sm: "auto" } }}
             >

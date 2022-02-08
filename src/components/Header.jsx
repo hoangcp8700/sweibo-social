@@ -15,11 +15,12 @@ import {
 import { icons } from "constants";
 import { styled } from "@mui/styles";
 import { Link, useNavigate } from "react-router-dom";
-import { PATH_PAGE } from "constants/paths";
+import { PATH_AUTH, PATH_PAGE } from "constants/paths";
 
 import MenuHeader from "components/Header/MenuMain";
 import MenuHeaderNotification from "components/Header/MenuNotification";
 import MenuHeaderMessage from "components/Header/MenuMessage";
+import { useAuth } from "hooks";
 
 const IconButtonStyle = styled(IconButton)(({ theme }) => ({
   backgroundColor: theme.palette.grey[200],
@@ -32,6 +33,7 @@ const IconButtonStyle = styled(IconButton)(({ theme }) => ({
 const Header = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { handleLogout } = useAuth();
 
   const isSettingRef = useRef(null);
   const isNotificationRef = useRef(null);
@@ -55,6 +57,10 @@ const Header = () => {
     handleToggleAction(name);
   };
 
+  const handleLogoutCustom = async () => {
+    await handleLogout();
+    navigate(PATH_AUTH.login.path);
+  };
   return (
     <>
       <Paper
@@ -86,6 +92,7 @@ const Header = () => {
             name="isSetting"
             handleClose={handleToggleAction}
             handleRedirectProfile={handleRedirectProfile}
+            handleLogout={handleLogoutCustom}
           />
           <MenuHeaderNotification
             anchor={isSettingRef}

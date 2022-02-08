@@ -17,34 +17,17 @@ export default function AuthGuard({ children }) {
   const { isLoading, handleAuthenticated } = useAuth();
   const { pathname } = useLocation();
 
-  console.log("path", pathname);
-
   React.useEffect(() => {
     const isAuth = async () => {
-      try {
-        const response = await handleAuthenticated();
-        if (!response) {
-          console.log("!response", pathname, requestedLocation);
+      const response = await handleAuthenticated();
+      if (!response) {
+        localStorage.setItem("path", pathname);
+        return navigate(PATH_AUTH.login.path);
+      }
 
-          // if (pathname === requestedLocation) {
-          //   localStorage.removeItem("path");
-          //   return <Navigate to={PATH_PAGE.root.path} />;
-          // }
-
-          // if (pathname !== requestedLocation) {
-          //   localStorage.setItem("path", pathname);
-          //   return navigate(PATH_AUTH.login.path);
-          // }
-          localStorage.setItem("path", pathname);
-          return navigate(PATH_AUTH.login.path);
-        }
-
-        if (requestedLocation && requestedLocation !== pathname) {
-          localStorage.removeItem("path");
-          return <Navigate to={requestedLocation} />;
-        }
-      } catch (error) {
-        console.log("err", error);
+      if (requestedLocation && requestedLocation !== pathname) {
+        localStorage.removeItem("path");
+        return <Navigate to={requestedLocation} />;
       }
     };
     isAuth();
