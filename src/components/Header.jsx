@@ -33,7 +33,7 @@ const IconButtonStyle = styled(IconButton)(({ theme }) => ({
 const Header = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { handleLogout } = useAuth();
+  const { handleLogout, user } = useAuth();
 
   const isSettingRef = useRef(null);
   const isNotificationRef = useRef(null);
@@ -184,9 +184,12 @@ const Header = () => {
                   },
                 ]}
               >
-                <Avatar sx={{ width: 32, height: 32 }} />
+                <Avatar
+                  sx={{ width: 32, height: 32 }}
+                  src={user?.avatar?.url}
+                />
                 <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
-                  Hoàng
+                  {user?.lastName}
                 </Typography>
               </Box>
               <Badge badgeContent={4} color="primary">

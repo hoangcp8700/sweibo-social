@@ -26,9 +26,9 @@ const TextFieldStyle = styled(TextField)(({ theme }) => ({
   "& input": { padding: theme.spacing(1.5, 3), fontSize: 14 },
 }));
 
-const ButtonSocial = ({ icon, title }) => {
+const ButtonSocial = ({ icon, title, ...props }) => {
   return (
-    <MButton startIcon={icon} sx={{ py: 1.5 }}>
+    <MButton startIcon={icon} sx={{ py: 1.5 }} {...props}>
       <Typography variant="subtitle2" sx={{ color: "common.black" }}>
         {title}
       </Typography>
@@ -80,6 +80,10 @@ const Login = () => {
   });
 
   const { errors, values, touched, handleSubmit, getFieldProps } = formik;
+
+  const handleLoginSocial = (name) => {
+    window.open(`${process.env.REACT_APP_API_URL}/auth/${name}`, "_self");
+  };
 
   return (
     <Box sx={{ px: 5, pb: 5, pt: 3 }}>
@@ -189,6 +193,7 @@ const Login = () => {
 
       <Stack sx={{ justifyContent: "flex-start", mt: 1 }}>
         <ButtonSocial
+          onClick={() => handleLoginSocial("google")}
           icon={icons.GoogleIcon}
           title={`${!matches ? "Đăng nhập với tài khoản" : ""} Google`}
         />
@@ -197,6 +202,7 @@ const Login = () => {
           title={`${!matches ? "Đăng nhập với tài khoản" : ""} Facebook`}
         />
         <ButtonSocial
+          onClick={() => handleLoginSocial("github")}
           icon={icons.GitHubIcon}
           title={`${!matches ? "Đăng nhập với tài khoản" : ""} Github`}
         />

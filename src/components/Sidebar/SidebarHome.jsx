@@ -12,6 +12,7 @@ import { styled } from "@mui/styles";
 
 import { data } from "constants";
 import { PATH_PAGE } from "constants/paths";
+import { useAuth } from "hooks";
 
 const MenuItemStyle = styled(MenuItem)(({ active, theme }) => ({
   gap: theme.spacing(1),
@@ -26,6 +27,7 @@ const MenuItemStyle = styled(MenuItem)(({ active, theme }) => ({
 const SidebarHome = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <Box>
@@ -33,9 +35,9 @@ const SidebarHome = () => {
         <MenuItemStyle
           onClick={() => navigate(`${PATH_PAGE.profile.link}/hoang.locchoc`)}
         >
-          <Avatar sx={{ width: 32, height: 32 }} />
+          <Avatar sx={{ width: 32, height: 32 }} src={user?.avatar?.url} />
           <Typography variant="subtitle2" sx={{ pl: 1 }}>
-            Hoang Cong Phan{" "}
+            {user?.firstName} {user?.lastName}
           </Typography>
         </MenuItemStyle>
 

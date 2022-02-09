@@ -7,9 +7,6 @@ import {
   StyledEngineProvider,
 } from "@mui/material/styles";
 
-// hooks dark mode
-// import useSettings from 'hooks/useSettings'
-
 import sizes from "./sizes";
 import palette from "./palette";
 import typography from "./typography";
@@ -20,7 +17,7 @@ import GlobalStyles from "./globalStyles";
 
 // ----------------------------------------------------------------------
 
-export default function ThemeConfig({ children, darkMode }) {
+export default function ThemeConfig({ children, darkMode = false }) {
   const themeOptions = useMemo(
     () => ({
       palette: !darkMode

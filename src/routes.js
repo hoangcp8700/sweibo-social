@@ -119,6 +119,14 @@ const routes = () => {
         },
       ],
     },
+    {
+      path: "auth/:provider/callback",
+      element: <OAuth2CallbackSuccessPage />,
+    },
+    {
+      path: "auth/:provider/failed",
+      element: <OAuth2CallbackFailedPage />,
+    },
   ];
 };
 
@@ -184,6 +192,12 @@ const VerifyCodePage = Loadable(
 );
 const ResetPasswordPage = Loadable(
   lazy(() => import("pages/Authentication/ResetPassword"))
+);
+const OAuth2CallbackSuccessPage = Loadable(
+  lazy(() => import("pages/Authentication/OAuth2CallbackSuccess"))
+);
+const OAuth2CallbackFailedPage = Loadable(
+  lazy(() => import("pages/Authentication/OAuth2CallbackFailed"))
 );
 
 const Error404Page = Loadable(lazy(() => import("pages/Error404")));

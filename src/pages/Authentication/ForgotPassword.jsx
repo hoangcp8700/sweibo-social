@@ -1,6 +1,7 @@
 import React from "react";
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
+import { useSnackbar } from "notistack";
 
 import { Box, Stack, TextField, Typography, styled, Chip } from "@mui/material";
 import { MButton } from "components/MUI";
@@ -25,9 +26,10 @@ const schema = Yup.object().shape({
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-
+  const { enqueueSnackbar } = useSnackbar();
   const { handleForgotPassword } = useAuth();
+
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const formik = useFormik({
     initialValues: initialize,
@@ -41,7 +43,12 @@ const ForgotPassword = () => {
         if (response.error) {
           return setErrors({ afterSubmit: response.error });
         }
-
+        enqueueSnackbar(
+          "Đã gửi mã xác nhận qua email! Vui lòng kiểm tra email",
+          {
+            variant: "success",
+          }
+        );
         formik.resetForm({ values: initialize });
         navigate(PATH_AUTH.verify.path, { state: values });
       } catch (error) {

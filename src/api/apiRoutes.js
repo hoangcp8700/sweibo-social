@@ -8,9 +8,16 @@ const authentication = () => {
     forgotPassword: "/auth/forgot-password",
     verifyCode: "/auth/verify-code",
     resetPassword: "/auth/reset-password",
+    logout: "/auth/logout",
   };
 };
 
+const users = (id) => {
+  return {
+    edit: `/users/${id}`,
+  };
+};
 export default {
   authentication,
+  users,
 };

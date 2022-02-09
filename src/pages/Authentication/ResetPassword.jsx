@@ -1,5 +1,7 @@
 import React from "react";
 import * as Yup from "yup";
+import { useSnackbar } from "notistack";
+
 import { useFormik, Form, FormikProvider } from "formik";
 import {
   Box,
@@ -41,13 +43,14 @@ const schema = Yup.object().shape({
 const ResetPassword = () => {
   const navigate = useNavigate();
   const params = useParams();
-  const [isReset, setIsReset] = React.useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
+  const { handleResetPassword } = useAuth();
 
+  const [isReset, setIsReset] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   const [showPassword2, setShowPassword2] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const { handleResetPassword } = useAuth();
 
   React.useEffect(() => {
     if (!location?.state?.email || !params?.token || params.token.length < 150)
@@ -55,7 +58,7 @@ const ResetPassword = () => {
 
     setIsReset(true);
     return () => setIsReset(false);
-  }, [params, location]);
+  }, [params, location, navigate]);
 
   const formik = useFormik({
     initialValues: initialize,
@@ -80,7 +83,9 @@ const ResetPassword = () => {
           });
           return setErrors({ afterSubmit: response.error });
         }
-
+        enqueueSnackbar("Đổi mật khẩu thành công", {
+          variant: "success",
+        });
         formik.resetForm({ values: initialize });
         navigate(PATH_AUTH.login.path);
       } catch (error) {

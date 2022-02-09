@@ -1,10 +1,11 @@
 import React from "react";
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
+import { useSnackbar } from "notistack";
 
 import { Box, Stack, TextField, Typography, styled, Chip } from "@mui/material";
 import { MButton } from "components/MUI";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { PATH_AUTH } from "constants/paths";
 import { useAuth } from "hooks";
 
@@ -24,6 +25,7 @@ const schema = Yup.object().shape({
 const VerifyCode = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [isVerify, setIsVerify] = React.useState(false);
 
@@ -53,7 +55,9 @@ const VerifyCode = () => {
         if (response.error) {
           return setErrors({ afterSubmit: response.error });
         }
-
+        enqueueSnackbar("Xác nhận thành công", {
+          variant: "success",
+        });
         formik.resetForm({ values: initialize });
         navigate(`${PATH_AUTH.resetPassword.path}/${response.success.data}`, {
           state: { email: location?.state?.email },

@@ -1,8 +1,8 @@
 import React from "react";
 import * as Yup from "yup";
+import { useSnackbar } from "notistack";
 import { useFormik, Form, FormikProvider } from "formik";
 import {
-  Paper,
   Box,
   Stack,
   TextField,
@@ -59,6 +59,7 @@ const schema = Yup.object().shape({
 
 const Register = () => {
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [showPassword2, setShowPassword2] = React.useState(false);
@@ -86,6 +87,7 @@ const Register = () => {
           setStep(0);
           return setErrors({ afterSubmit: response.error });
         }
+        enqueueSnackbar("Đăng ký thành công", { variant: "success" });
 
         formik.resetForm({ values: initialize });
         navigate(PATH_AUTH.login.path);

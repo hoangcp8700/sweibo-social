@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { icons } from "constants";
 import SwitchMode from "../SwitchMode";
-import { useSetting } from "hooks";
+import { useAuth } from "hooks";
 
 const MenuHeader = (props) => {
   const {
@@ -20,13 +20,16 @@ const MenuHeader = (props) => {
     handleLogout,
     ...restProps
   } = props;
-  const { darkMode, handleToggleDarkMode } = useSetting();
+  const { user } = useAuth();
+
   return (
     <MMenu {...props}>
       <MenuItem sx={{ gap: 2 }} onClick={() => handleRedirectProfile(name)}>
-        <Avatar />
+        <Avatar src={user?.avatar?.url} />
         <Box>
-          <Typography variant="subtitle2">Hoang Cong Phan</Typography>
+          <Typography variant="subtitle2">
+            {user?.firstName} {user?.lastName}
+          </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
             Xem trang thông tin cá nhân
           </Typography>

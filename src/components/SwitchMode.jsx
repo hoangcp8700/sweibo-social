@@ -2,8 +2,7 @@ import * as React from "react";
 import clsx from "clsx";
 import { styled } from "@mui/system";
 import { useSwitch } from "@mui/base/SwitchUnstyled";
-import useSetting from "hooks/useSetting";
-
+import { useAuth } from "hooks";
 const blue = {
   700: "#0059B2",
 };
@@ -100,6 +99,11 @@ function MUISwitch(props) {
 }
 
 export default function UseSwitchesCustom(props) {
-  const { darkMode, handleToggleDarkMode } = useSetting();
-  return <MUISwitch checked={darkMode} onChange={handleToggleDarkMode} />;
+  const { user, handleToggleDarkMode } = useAuth();
+  return (
+    <MUISwitch
+      checked={user?.settings?.isDarkMode}
+      onChange={handleToggleDarkMode}
+    />
+  );
 }
