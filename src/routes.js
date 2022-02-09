@@ -73,7 +73,7 @@ const routes = () => {
         },
         { path: PATH_PAGE.chat.link, element: <ChatPage /> },
         {
-          path: `${PATH_PAGE.profile.link}/:id`,
+          path: `${PATH_PAGE.profile.link}`,
           element: <ProfilePage />,
           children: [
             {

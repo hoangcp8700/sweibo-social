@@ -1,4 +1,5 @@
 import React from "react";
+import queryString from "query-string";
 import { Outlet, useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
@@ -13,7 +14,9 @@ import {
 import { icons } from "constants";
 import { MButton } from "components/MUI";
 import { data } from "constants";
+import { useUser, useAuth } from "hooks";
 import { PATH_PAGE } from "constants/paths";
+import { LoadingEllipsis } from "components";
 
 const AvatarGroupStyle = styled(AvatarGroup)(() => ({
   "& .MuiAvatar-root": {
@@ -30,17 +33,52 @@ const Profile = () => {
   const navigate = useNavigate();
   const params = useParams();
   const location = useLocation();
+  const { userSocial, handleGetUserByEmail } = useUser();
+  const { user } = useAuth();
+
+  const menuProfileRef = React.useRef();
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [userProfile, setUserProfile] = React.useState(null);
+
+  const parsed = queryString.parse(location?.search);
+
+  React.useEffect(() => {
+    const getProfile = async () => {
+      menuProfileRef?.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "start",
+      });
+
+      if (parsed.email) {
+        const response = await handleGetUserByEmail(parsed.email);
+        console.log("response profile", response);
+        return setUserProfile(userSocial);
+      }
+      console.log("parse", parsed, isLoading);
+      setUserProfile(user);
+      setIsLoading(false);
+    };
+
+    getProfile();
+    return () => {
+      setIsLoading(true);
+      setUserProfile(null);
+    };
+  }, [location, params]);
 
   const handleRedirect = (key) => {
     const check = location.pathname.includes(
       `/${PATH_PAGE.friend.link}/${PATH_PAGE.profile.link}`
     );
     check
-      ? navigate(
-          `/${PATH_PAGE.friend.link}/${PATH_PAGE.profile.link}/${params?.id}/${key}`
-        )
-      : navigate(`/${PATH_PAGE.profile.link}/${params?.id}/${key}`);
+      ? navigate(`/${PATH_PAGE.friend.link}/${PATH_PAGE.profile.link}/${key}`)
+      : navigate(`/${PATH_PAGE.profile.link}/${key}`);
   };
+
+  if (isLoading) {
+    return <LoadingEllipsis />;
+  }
   return (
     <Box>
       <Box
@@ -116,10 +154,16 @@ const Profile = () => {
                   }}
                 >
                   <Stack direction="row" alignItems="center" spacing={1}>
-                    <Typography variant="h3">Xuan Hoang</Typography>
-                    <Typography variant="h4" sx={{ fontWeight: 400 }}>
-                      (Đạm){" "}
+                    <Typography variant="h3">
+                      {userProfile?.firstName} {userProfile?.lastName}
                     </Typography>
+                    {userProfile?.nickName ? (
+                      <Typography variant="h4" sx={{ fontWeight: 400 }}>
+                        ({userProfile?.nickName})
+                      </Typography>
+                    ) : (
+                      ""
+                    )}
                   </Stack>
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <Typography>3.8k bạn bè</Typography>
@@ -176,27 +220,31 @@ const Profile = () => {
                       />
                     </AvatarGroupStyle>
 
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      <MButton
-                        startIcon={icons.PersonIcon}
-                        variant="contained"
-                        sx={{
-                          bgcolor: "background.opacity1",
-                          color: "text.primary",
-                          "&:hover": {
-                            bgcolor: "background.opacity2",
-                          },
-                        }}
-                      >
-                        Bạn bè
-                      </MButton>
-                      <MButton
-                        startIcon={icons.MessageIcon}
-                        variant="contained"
-                      >
-                        Nhắn tin
-                      </MButton>
-                    </Stack>
+                    {parsed.email ? (
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        <MButton
+                          startIcon={icons.PersonIcon}
+                          variant="contained"
+                          sx={{
+                            bgcolor: "background.opacity1",
+                            color: "text.primary",
+                            "&:hover": {
+                              bgcolor: "background.opacity2",
+                            },
+                          }}
+                        >
+                          Bạn bè
+                        </MButton>
+                        <MButton
+                          startIcon={icons.MessageIcon}
+                          variant="contained"
+                        >
+                          Nhắn tin
+                        </MButton>
+                      </Stack>
+                    ) : (
+                      ""
+                    )}
                   </Stack>
                 </Stack>
               </Stack>
@@ -205,7 +253,7 @@ const Profile = () => {
             <Divider sx={{ mt: 2, mx: 3 }} />
 
             <Box sx={{ px: 3, mt: 0.5 }}>
-              <Stack direction="row" spacing={1}>
+              <Stack direction="row" spacing={1} ref={menuProfileRef}>
                 {data?.menuProfile?.map((item, index) => {
                   const getIndex = location.pathname.indexOf(params?.id);
                   const newString = location.pathname.slice(getIndex);

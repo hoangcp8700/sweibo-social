@@ -15,6 +15,7 @@ const authentication = () => {
 const users = (id) => {
   return {
     edit: `/users/${id}`,
+    users: `/users`,
   };
 };
 export default {

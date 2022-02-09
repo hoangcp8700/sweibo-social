@@ -13,13 +13,7 @@ import SwitchMode from "../SwitchMode";
 import { useAuth } from "hooks";
 
 const MenuHeader = (props) => {
-  const {
-    name,
-    handleDarkMode,
-    handleRedirectProfile,
-    handleLogout,
-    ...restProps
-  } = props;
+  const { name, handleRedirectProfile, handleLogout } = props;
   const { user } = useAuth();
 
   return (

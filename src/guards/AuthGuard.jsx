@@ -14,11 +14,12 @@ const requestedLocation = localStorage.getItem("path");
 
 export default function AuthGuard({ children }) {
   const navigate = useNavigate();
-  const { isLoading, handleAuthenticated } = useAuth();
+  const { isAuth, isLoading, handleAuthenticated } = useAuth();
   const { pathname } = useLocation();
 
   React.useEffect(() => {
-    const isAuth = async () => {
+    const getAuth = async () => {
+      if (isAuth) return;
       const response = await handleAuthenticated();
       if (!response) {
         localStorage.setItem("path", pathname);
@@ -30,7 +31,7 @@ export default function AuthGuard({ children }) {
         return <Navigate to={requestedLocation} />;
       }
     };
-    isAuth();
+    getAuth();
   }, [pathname]);
 
   if (isLoading) {

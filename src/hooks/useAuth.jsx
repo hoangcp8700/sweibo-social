@@ -28,7 +28,7 @@ const useAuth = () => {
       if (accessToken && id && isValidToken(accessToken)) {
         const response = await axios.get(routes.authentication().user);
 
-        console.log("authen", response);
+        // console.log("authen", response);
         dispatch(SUCCESS_AUTH(response.data.data));
         return true;
       }
@@ -111,13 +111,12 @@ const useAuth = () => {
         ...user?.settings,
         isDarkMode: !user?.settings?.isDarkMode,
       };
-      const response = await axios.put(
-        `${routes.users(user?._id).edit}`,
-        newSettings
-      );
-      console.log("response", response);
-
-      return { success: response.data };
+      await axios.put(`${routes.users(user?._id).edit}`, {
+        settings: newSettings,
+      });
+      const newUser = { ...user, settings: newSettings };
+      dispatch(SUCCESS_AUTH(newUser));
+      return true;
     } catch (error) {
       return { error: error.response.data };
     }

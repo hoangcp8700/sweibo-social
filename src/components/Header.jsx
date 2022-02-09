@@ -53,7 +53,7 @@ const Header = () => {
   };
 
   const handleRedirectProfile = (name) => {
-    navigate(`${PATH_PAGE.profile.link}/hoang.locchoc`);
+    navigate(`${PATH_PAGE.profile.link}`);
     handleToggleAction(name);
   };
 

@@ -1,12 +1,13 @@
 export { default as LayoutMain } from "./layouts/LayoutMain";
 export { default as Header } from "./Header";
 export { default as History } from "./History";
-export { default as LoadingScreen } from "./LoadingScreen";
+export { default as LoadingScreen } from "./Loading/LoadingScreen";
+export { default as LoadingEllipsis } from "./Loading/LoadingEllipsis";
 
 export { default as AdvertiseItem } from "./AdvertiseItem";
 export { default as ActivityStatus } from "./ActivityStatus";
 export { default as AlbumImage } from "./AlbumImage";
-export { default as LoadingPage } from "./LoadingPage";
+export { default as LoadingPage } from "./Loading/LoadingPage";
 export { default as CreatePost } from "./Post/CreatePost";
 export { default as PostItem } from "./Post/PostItem";
 
