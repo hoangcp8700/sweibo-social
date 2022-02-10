@@ -9,6 +9,7 @@ const authentication = () => {
     verifyCode: "/auth/verify-code",
     resetPassword: "/auth/reset-password",
     logout: "/auth/logout",
+    updateAvatar: "/users/avatar/update",
   };
 };
 

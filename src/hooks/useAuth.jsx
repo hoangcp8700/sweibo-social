@@ -122,6 +122,20 @@ const useAuth = () => {
     }
   };
 
+  const handleUploadAvatar = async (file) => {
+    try {
+      const newForm = await new FormData();
+      await newForm.append("files", file);
+
+      const response = await axios.put(
+        `${routes.authentication().updateAvatar}`,
+        newForm
+      );
+      const newUser = { ...user, avatar: response.data.data.avatar };
+      dispatch(SUCCESS_AUTH(newUser));
+      console.log("handleUploadAvatar", response);
+    } catch (error) {}
+  };
   return {
     user,
     isLoading,
@@ -137,6 +151,7 @@ const useAuth = () => {
     handleIsLoadingUser,
     handleLogout,
     handleToggleDarkMode,
+    handleUploadAvatar,
   };
 };
 

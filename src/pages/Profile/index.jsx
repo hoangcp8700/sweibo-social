@@ -19,7 +19,11 @@ import { useUser, useAuth } from "hooks";
 import handleUploadFile from "utils/uploadFile";
 
 import { MButton } from "components/MUI";
-import { LoadingEllipsis, LoadingEllipsisElement } from "components";
+import {
+  LoadingEllipsis,
+  LoadingEllipsisElement,
+  AvatarDetail,
+} from "components";
 
 const AvatarGroupStyle = styled(AvatarGroup)(() => ({
   "& .MuiAvatar-root": {
@@ -49,6 +53,7 @@ const Profile = () => {
 
   const [isLoading, setIsLoading] = React.useState(initializeLoading);
   const [userProfile, setUserProfile] = React.useState(null);
+  const [avatarDetail, setAvatarDetail] = React.useState(null);
 
   const parsed = queryString.parse(location?.search);
 
@@ -100,15 +105,24 @@ const Profile = () => {
     setTimeout(() => {
       setIsLoading({ ...isLoading, avatar: false });
     }, 3000);
-    // handleUploadAvatar(response)
+    handleUploadAvatar(response);
   };
 
   if (isLoading.page) {
     return <LoadingEllipsis />;
   }
 
+  const handleShowAvatar = (isNull = false) => {
+    setAvatarDetail(!isNull ? userProfile.avatar : null);
+  };
+
   return (
     <Box>
+      <AvatarDetail
+        open={Boolean(avatarDetail)}
+        avatar={avatarDetail}
+        onClose={() => handleShowAvatar(true)}
+      />
       <Box
         sx={{
           maxWidth: (theme) => theme.breakpoints.values.lg,
@@ -204,6 +218,7 @@ const Profile = () => {
                       </Box>
                     ) : (
                       <Avatar
+                        onClick={() => handleShowAvatar()}
                         src={userProfile?.avatar?.url}
                         alt="avatar"
                         sx={{
@@ -212,6 +227,7 @@ const Profile = () => {
                           border: (theme) =>
                             `3px solid ${theme.palette.background.paper}`,
                           boxShadow: (theme) => theme.shadows[5],
+                          cursor: "pointer",
                         }}
                       />
                     )}
