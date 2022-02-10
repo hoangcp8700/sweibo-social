@@ -134,7 +134,11 @@ const useAuth = () => {
       const newUser = { ...user, avatar: response.data.data.avatar };
       dispatch(SUCCESS_AUTH(newUser));
       console.log("handleUploadAvatar", response);
-    } catch (error) {}
+      return true;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
   };
   return {
     user,

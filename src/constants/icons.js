@@ -68,6 +68,8 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import FacebookIcon from "@mui/icons-material/Facebook";
 
 import PhotoCameraOutlinedIcon from "@mui/icons-material/PhotoCameraOutlined";
+import CloseIcon from "@mui/icons-material/Close";
+
 const ConvertIcon = ({ src }) => {
   return (
     <Icon>
@@ -139,4 +141,5 @@ export default {
   FacebookIcon: <FacebookIcon sx={{ "& path": { fill: "#4267B2" } }} />,
 
   CameraIcon: <PhotoCameraOutlinedIcon />,
+  CloseIcon: <CloseIcon />,
 };

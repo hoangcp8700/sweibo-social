@@ -40,6 +40,7 @@ const initializeLoading = {
   page: true,
   avatar: false,
 };
+
 const Profile = () => {
   const navigate = useNavigate();
   const params = useParams();
@@ -56,10 +57,11 @@ const Profile = () => {
   const [avatarDetail, setAvatarDetail] = React.useState(null);
 
   const parsed = queryString.parse(location?.search);
+  const isAuth = parsed.email ? false : true;
 
   React.useEffect(() => {
     const getProfile = async () => {
-      if (parsed.email) {
+      if (!isAuth) {
         const response = await handleGetUserByEmail(parsed.email);
         console.log("response profile", response);
         if (!response) {
@@ -83,9 +85,14 @@ const Profile = () => {
     const check = location.pathname.includes(
       `/${PATH_PAGE.friend.link}/${PATH_PAGE.profile.link}`
     );
+
+    const urlDefault = `/${PATH_PAGE.profile.link}/${key}${
+      location.search || ""
+    }`;
+
     check
-      ? navigate(`/${PATH_PAGE.friend.link}/${PATH_PAGE.profile.link}/${key}`)
-      : navigate(`/${PATH_PAGE.profile.link}/${key}`);
+      ? navigate(`/${PATH_PAGE.friend.link}${urlDefault}`)
+      : navigate(urlDefault);
 
     setTimeout(() => {
       menuProfileRef?.current?.scrollIntoView({
@@ -93,24 +100,25 @@ const Profile = () => {
         block: "start",
         inline: "start",
       });
-    }, 100);
+    }, 500);
   };
 
   const handleUploadFileCustom = async (e) => {
     setIsLoading({ ...isLoading, avatar: true });
     const response = await handleUploadFile(e);
     if (response.error) {
+      setIsLoading({ ...isLoading, avatar: false });
       return enqueueSnackbar(response.message, { variant: "error" });
     }
-    setTimeout(() => {
-      setIsLoading({ ...isLoading, avatar: false });
-    }, 3000);
-    handleUploadAvatar(response);
+    await handleUploadAvatar(response);
+    console.log("set isloading");
+    await setIsLoading({ ...isLoading, avatar: false });
   };
 
-  if (isLoading.page) {
+  if (isLoading?.page) {
     return <LoadingEllipsis />;
   }
+  console.log("isLoadinggg", isLoading);
 
   const handleShowAvatar = (isNull = false) => {
     setAvatarDetail(!isNull ? userProfile.avatar : null);
@@ -118,11 +126,14 @@ const Profile = () => {
 
   return (
     <Box>
-      <AvatarDetail
+      {/* <AvatarDetail
         open={Boolean(avatarDetail)}
         avatar={avatarDetail}
         onClose={() => handleShowAvatar(true)}
-      />
+        isLoading={isLoading?.avatar}
+        handleUploadAvatar={() => uploadAvatarRef.current.click()}
+      /> */}
+
       <Box
         sx={{
           maxWidth: (theme) => theme.breakpoints.values.lg,
@@ -163,11 +174,15 @@ const Profile = () => {
                     }),
                   ]}
                 />
-                <Box sx={{ position: "absolute", bottom: 15, right: 40 }}>
-                  <MButton startIcon={icons.CameraIcon} variant="contained">
-                    Thêm ảnh bìa
-                  </MButton>
-                </Box>
+                {isAuth ? (
+                  <Box sx={{ position: "absolute", bottom: 15, right: 40 }}>
+                    <MButton startIcon={icons.CameraIcon} variant="contained">
+                      Thêm ảnh bìa
+                    </MButton>
+                  </Box>
+                ) : (
+                  ""
+                )}
                 {/* <img
                   src={avatar}
                   alt="banner"
@@ -234,36 +249,39 @@ const Profile = () => {
                   </Box>
 
                   {/* button upload avatar */}
-                  <Paper
-                    elevation={5}
-                    sx={{
-                      position: "absolute",
-                      bottom: 10,
-                      right: 0,
-                      bgcolor: "background.default",
-                      borderRadius: "50%",
-                      border: (theme) =>
-                        `2px solid ${theme.palette.background.main}`,
-                    }}
-                  >
-                    <IconButton
-                      onClick={() => uploadAvatarRef.current.click()}
-                      sx={{
-                        "& svg": {
-                          fill: (theme) => theme.palette.text.secondary,
-                        },
-                      }}
-                    >
-                      {icons.CameraIcon}
-                    </IconButton>
-                  </Paper>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    ref={uploadAvatarRef}
-                    style={{ display: "none" }}
-                    onChange={handleUploadFileCustom}
-                  />
+                  {isAuth ? (
+                    <Box sx={{ position: "absolute", bottom: 10, right: 0 }}>
+                      <Paper
+                        elevation={5}
+                        sx={{
+                          bgcolor: "background.default",
+                          borderRadius: "50%",
+                          border: (theme) =>
+                            `2px solid ${theme.palette.background.main}`,
+                        }}
+                      >
+                        <IconButton
+                          onClick={() => uploadAvatarRef.current.click()}
+                          sx={{
+                            "& svg": {
+                              fill: (theme) => theme.palette.text.secondary,
+                            },
+                          }}
+                        >
+                          {icons.CameraIcon}
+                        </IconButton>
+                      </Paper>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={uploadAvatarRef}
+                        style={{ display: "none" }}
+                        onChange={handleUploadFileCustom}
+                      />
+                    </Box>
+                  ) : (
+                    ""
+                  )}
                 </Box>
                 <Stack
                   sx={{
@@ -339,7 +357,7 @@ const Profile = () => {
                       />
                     </AvatarGroupStyle>
 
-                    {parsed.email ? (
+                    {!isAuth ? (
                       <Stack direction="row" alignItems="center" spacing={1}>
                         <MButton
                           startIcon={icons.PersonIcon}
