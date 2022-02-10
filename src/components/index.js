@@ -9,7 +9,7 @@ export { default as AdvertiseItem } from "./AdvertiseItem";
 export { default as ActivityStatus } from "./ActivityStatus";
 export { default as AlbumImage } from "./AlbumImage";
 export { default as LoadingPage } from "./Loading/LoadingPage";
-export { default as CreatePost } from "./Post/CreatePost";
+export { default as InputCreatePost } from "./Post/InputCreatePost";
 export { default as PostItem } from "./Post/PostItem";
 
 export { default as SidebarHome } from "./Sidebar/SidebarHome";

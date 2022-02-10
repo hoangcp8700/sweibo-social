@@ -4,7 +4,7 @@ import { Box, Stack, Typography, Divider, IconButton } from "@mui/material";
 import { fakeData } from "constants";
 import {
   History,
-  CreatePost,
+  InputCreatePost,
   PostItem,
   AdvertiseItem,
   BirthdayToday,
@@ -83,7 +83,7 @@ const Home = () => {
                 users={users}
                 maxWidth="calc(100vw - 65px)"
               />
-              <CreatePost />
+              <InputCreatePost />
               <Stack spacing={3}>
                 <PostItem />
                 <PostItem />

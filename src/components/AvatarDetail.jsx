@@ -21,7 +21,7 @@ export default function AvatarDetail(props) {
     handleRemoveAvatar,
     isLoading,
   } = props;
-  console.log("avatardetail", isLoading, avatar);
+
   return (
     <Dialog fullWidth={true} maxWidth="sm" open={open} onClose={onClose}>
       <DialogContent>
@@ -59,7 +59,7 @@ export default function AvatarDetail(props) {
           sx={{ mt: 1 }}
         >
           <MButton variant="contained" onClick={handleUploadAvatar}>
-            Cập nhập
+            Đổi ảnh đại diện
           </MButton>
           <MButton
             onClick={handleRemoveAvatar}
@@ -73,7 +73,7 @@ export default function AvatarDetail(props) {
               },
             }}
           >
-            Xóa ảnh đại diện
+            Xóa ảnh
           </MButton>
         </Stack>
 

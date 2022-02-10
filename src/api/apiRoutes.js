@@ -17,6 +17,7 @@ const users = (id) => {
   return {
     edit: `/users/${id}`,
     users: `/users`,
+    albums: `/users/albums`,
   };
 };
 export default {

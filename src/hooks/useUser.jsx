@@ -21,7 +21,21 @@ const useUser = () => {
       return false;
     }
   };
-  return { userSocial, handleGetUserByEmail };
+
+  const handleGetAlbums = async (page = 1, email) => {
+    try {
+      const link = `?page=${page}${email ? `&email=${email}` : ""}`;
+      const response = await axios.get(`${routes.users().albums}${link}`);
+      console.log("handleGetAlbums", response);
+      // dispatch(SET_PROFILE(response.data.data));
+      return response.data.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
+
+  return { userSocial, handleGetUserByEmail, handleGetAlbums };
 };
 
 export default useUser;

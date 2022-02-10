@@ -33,13 +33,6 @@ const AvatarGroupStyle = styled(AvatarGroup)(() => ({
     fontWeight: 700,
   },
 }));
-const avatar =
-  "https://scontent.fsgn5-10.fna.fbcdn.net/v/t1.6435-9/s1080x2048/186374666_2837301546583982_8267757035377433575_n.jpg?_nc_cat=107&ccb=1-5&_nc_sid=e3f864&_nc_ohc=QtlBKR1rTwQAX8xg7fn&tn=L_BIy6fjZiNrTxJ3&_nc_ht=scontent.fsgn5-10.fna&oh=00_AT_tJT1RMPew839ArQHMuwbkdKqlIlmMRjUo6xEYxqAvuA&oe=620E5824";
-
-const initializeLoading = {
-  page: true,
-  avatar: false,
-};
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -52,7 +45,8 @@ const Profile = () => {
   const menuProfileRef = React.useRef();
   const uploadAvatarRef = React.useRef();
 
-  const [isLoading, setIsLoading] = React.useState(initializeLoading);
+  const [pageLoading, setPageLoading] = React.useState(true);
+  const [avatarLoading, setAvatarLoading] = React.useState(false);
   const [userProfile, setUserProfile] = React.useState(null);
   const [avatarDetail, setAvatarDetail] = React.useState(null);
 
@@ -71,12 +65,12 @@ const Profile = () => {
       } else {
         setUserProfile(user);
       }
-      setIsLoading({ ...isLoading, page: false });
+      setPageLoading(false);
     };
 
     getProfile();
     return () => {
-      setIsLoading(initializeLoading);
+      setPageLoading(true);
       setUserProfile(null);
     };
   }, [location, params]);
@@ -103,22 +97,26 @@ const Profile = () => {
     }, 500);
   };
 
-  const handleUploadFileCustom = async (e) => {
-    setIsLoading({ ...isLoading, avatar: true });
-    const response = await handleUploadFile(e);
-    if (response.error) {
-      setIsLoading({ ...isLoading, avatar: false });
-      return enqueueSnackbar(response.message, { variant: "error" });
+  const handleUploadFileAvatar = async (e) => {
+    setAvatarLoading(true);
+    try {
+      const response = await handleUploadFile(e);
+      if (response.error) {
+        setAvatarLoading(false);
+        return enqueueSnackbar(response.message, { variant: "error" });
+      }
+      const newAvatar = await handleUploadAvatar(response);
+      setAvatarDetail(newAvatar);
+      setAvatarLoading(false);
+    } catch (error) {
+      console.log("err", error);
+      setAvatarLoading(false);
     }
-    await handleUploadAvatar(response);
-    console.log("set isloading");
-    await setIsLoading({ ...isLoading, avatar: false });
   };
 
-  if (isLoading?.page) {
+  if (pageLoading) {
     return <LoadingEllipsis />;
   }
-  console.log("isLoadinggg", isLoading);
 
   const handleShowAvatar = (isNull = false) => {
     setAvatarDetail(!isNull ? userProfile.avatar : null);
@@ -126,13 +124,13 @@ const Profile = () => {
 
   return (
     <Box>
-      {/* <AvatarDetail
+      <AvatarDetail
         open={Boolean(avatarDetail)}
         avatar={avatarDetail}
         onClose={() => handleShowAvatar(true)}
-        isLoading={isLoading?.avatar}
+        isLoading={avatarLoading}
         handleUploadAvatar={() => uploadAvatarRef.current.click()}
-      /> */}
+      />
 
       <Box
         sx={{
@@ -219,7 +217,7 @@ const Profile = () => {
                       height: { xs: 120, sm: 168 },
                     }}
                   >
-                    {isLoading?.avatar ? (
+                    {avatarLoading ? (
                       <Box
                         sx={{
                           height: "100%",
@@ -276,7 +274,7 @@ const Profile = () => {
                         accept="image/*"
                         ref={uploadAvatarRef}
                         style={{ display: "none" }}
-                        onChange={handleUploadFileCustom}
+                        onChange={handleUploadFileAvatar}
                       />
                     </Box>
                   ) : (
@@ -398,7 +396,7 @@ const Profile = () => {
                       key={item.label}
                       sx={{
                         py: 1,
-                        px: 2,
+                        px: 6,
                         position: "relative",
                         color: match ? "primary.main" : "text.primary",
 
@@ -410,7 +408,6 @@ const Profile = () => {
                     >
                       {item.label}
                       <Box
-                        className="borderBottom"
                         sx={{
                           position: "absolute",
                           bottom: 0,

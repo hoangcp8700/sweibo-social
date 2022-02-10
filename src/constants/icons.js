@@ -127,8 +127,8 @@ export default {
   PinIcon: <PushPinIcon />,
 
   BookmarkRemoveIcon: <BookmarkRemoveIcon />,
-  PublicIcon: <PublicIcon />,
-  LockOpenIcon: <LockOpenIcon />,
+  PublicIcon: <PublicIcon sx={{ "& path": { fill: "#4267B2" } }} />,
+  LockOpenIcon: <LockOpenIcon sx={{ "& path": { fill: "#fff" } }} />,
 
   GroupsIcon: <GroupsIcon />,
   GroupAddIcon: <GroupAddIcon />,

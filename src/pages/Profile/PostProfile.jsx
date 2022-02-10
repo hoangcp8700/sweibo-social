@@ -3,7 +3,7 @@ import {
   InfomationUser,
   AlbumFriends,
   AlbumImage,
-  CreatePost,
+  InputCreatePost,
   PostItem,
 } from "components";
 import { Box, Stack } from "@mui/material";
@@ -39,7 +39,7 @@ const PostProfile = () => {
             minWidth: { xs: "inherit", sm: 350, md: 320 },
           }}
         >
-          <CreatePost />
+          <InputCreatePost />
           <PostItem />
           <PostItem />
           <PostItem />

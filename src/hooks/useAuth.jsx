@@ -132,9 +132,9 @@ const useAuth = () => {
         newForm
       );
       const newUser = { ...user, avatar: response.data.data.avatar };
+      console.log("newUser avatar", newUser);
       dispatch(SUCCESS_AUTH(newUser));
-      console.log("handleUploadAvatar", response);
-      return true;
+      return response.data.data.avatar;
     } catch (error) {
       console.log("err", error);
       return false;

@@ -3,7 +3,7 @@ import {
   InfomationUser,
   AlbumFriends,
   AlbumImage,
-  CreatePost,
+  InputCreatePost,
   PostItem,
   FriendItem,
 } from "components";
