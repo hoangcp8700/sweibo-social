@@ -69,6 +69,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 
 import PhotoCameraOutlinedIcon from "@mui/icons-material/PhotoCameraOutlined";
 import CloseIcon from "@mui/icons-material/Close";
+import ReplayIcon from "@mui/icons-material/Replay";
 
 const ConvertIcon = ({ src }) => {
   return (
@@ -142,4 +143,5 @@ export default {
 
   CameraIcon: <PhotoCameraOutlinedIcon />,
   CloseIcon: <CloseIcon />,
+  ReplayIcon: <ReplayIcon />,
 };
