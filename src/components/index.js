@@ -3,6 +3,7 @@ export { default as Header } from "./Header";
 export { default as History } from "./History";
 export { default as LoadingScreen } from "./Loading/LoadingScreen";
 export { default as LoadingEllipsis } from "./Loading/LoadingEllipsis";
+export { default as LoadingEllipsisElement } from "./Loading/LoadingEllipsisElement";
 
 export { default as AdvertiseItem } from "./AdvertiseItem";
 export { default as ActivityStatus } from "./ActivityStatus";

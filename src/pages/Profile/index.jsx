@@ -1,5 +1,6 @@
 import React from "react";
 import queryString from "query-string";
+import { useSnackbar } from "notistack";
 import { Outlet, useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
@@ -10,13 +11,15 @@ import {
   Typography,
   Divider,
   styled,
+  IconButton,
 } from "@mui/material";
-import { icons } from "constants";
-import { MButton } from "components/MUI";
-import { data } from "constants";
-import { useUser, useAuth } from "hooks";
+import { icons, data } from "constants";
 import { PATH_PAGE } from "constants/paths";
-import { LoadingEllipsis } from "components";
+import { useUser, useAuth } from "hooks";
+import handleUploadFile from "utils/uploadFile";
+
+import { MButton } from "components/MUI";
+import { LoadingEllipsis, LoadingEllipsisElement } from "components";
 
 const AvatarGroupStyle = styled(AvatarGroup)(() => ({
   "& .MuiAvatar-root": {
@@ -29,40 +32,44 @@ const AvatarGroupStyle = styled(AvatarGroup)(() => ({
 const avatar =
   "https://scontent.fsgn5-10.fna.fbcdn.net/v/t1.6435-9/s1080x2048/186374666_2837301546583982_8267757035377433575_n.jpg?_nc_cat=107&ccb=1-5&_nc_sid=e3f864&_nc_ohc=QtlBKR1rTwQAX8xg7fn&tn=L_BIy6fjZiNrTxJ3&_nc_ht=scontent.fsgn5-10.fna&oh=00_AT_tJT1RMPew839ArQHMuwbkdKqlIlmMRjUo6xEYxqAvuA&oe=620E5824";
 
+const initializeLoading = {
+  page: true,
+  avatar: false,
+};
 const Profile = () => {
   const navigate = useNavigate();
   const params = useParams();
   const location = useLocation();
-  const { userSocial, handleGetUserByEmail } = useUser();
-  const { user } = useAuth();
+  const { enqueueSnackbar } = useSnackbar();
+  const { handleGetUserByEmail } = useUser();
+  const { user, handleUploadAvatar } = useAuth();
 
   const menuProfileRef = React.useRef();
-  const [isLoading, setIsLoading] = React.useState(true);
+  const uploadAvatarRef = React.useRef();
+
+  const [isLoading, setIsLoading] = React.useState(initializeLoading);
   const [userProfile, setUserProfile] = React.useState(null);
 
   const parsed = queryString.parse(location?.search);
 
   React.useEffect(() => {
     const getProfile = async () => {
-      menuProfileRef?.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "start",
-      });
-
       if (parsed.email) {
         const response = await handleGetUserByEmail(parsed.email);
         console.log("response profile", response);
-        return setUserProfile(userSocial);
+        if (!response) {
+          return navigate("/404");
+        }
+        setUserProfile(response);
+      } else {
+        setUserProfile(user);
       }
-      console.log("parse", parsed, isLoading);
-      setUserProfile(user);
-      setIsLoading(false);
+      setIsLoading({ ...isLoading, page: false });
     };
 
     getProfile();
     return () => {
-      setIsLoading(true);
+      setIsLoading(initializeLoading);
       setUserProfile(null);
     };
   }, [location, params]);
@@ -74,11 +81,32 @@ const Profile = () => {
     check
       ? navigate(`/${PATH_PAGE.friend.link}/${PATH_PAGE.profile.link}/${key}`)
       : navigate(`/${PATH_PAGE.profile.link}/${key}`);
+
+    setTimeout(() => {
+      menuProfileRef?.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "start",
+      });
+    }, 100);
   };
 
-  if (isLoading) {
+  const handleUploadFileCustom = async (e) => {
+    setIsLoading({ ...isLoading, avatar: true });
+    const response = await handleUploadFile(e);
+    if (response.error) {
+      return enqueueSnackbar(response.message, { variant: "error" });
+    }
+    setTimeout(() => {
+      setIsLoading({ ...isLoading, avatar: false });
+    }, 3000);
+    // handleUploadAvatar(response)
+  };
+
+  if (isLoading.page) {
     return <LoadingEllipsis />;
   }
+
   return (
     <Box>
       <Box
@@ -87,9 +115,9 @@ const Profile = () => {
           m: "0 auto",
         }}
       >
-        {/* banner and avatar  */}
         <Paper sx={{ bgcolor: "background.navbar" }}>
           <Box>
+            {/* banner and avatar  */}
             <Paper
               sx={[
                 { overflow: "hidden" },
@@ -100,17 +128,37 @@ const Profile = () => {
                 }),
               ]}
             >
+              {/* // anh bia */}
               <Box
                 sx={{
+                  position: "relative",
                   width: "100%",
                   height: { xs: 200, mobile: 300, sm: 400 },
                 }}
               >
-                <img
+                <Paper
+                  elevation={0}
+                  sx={[
+                    (theme) => ({
+                      borderRadius: 0,
+                      borderBottomLeftRadius: theme.sizes.base,
+                      borderBottomRightRadius: theme.sizes.base,
+                      width: "100%",
+                      height: "100%",
+                      bgcolor: "background.opacity2",
+                    }),
+                  ]}
+                />
+                <Box sx={{ position: "absolute", bottom: 15, right: 40 }}>
+                  <MButton startIcon={icons.CameraIcon} variant="contained">
+                    Thêm ảnh bìa
+                  </MButton>
+                </Box>
+                {/* <img
                   src={avatar}
                   alt="banner"
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
+                /> */}
               </Box>
             </Paper>
 
@@ -124,6 +172,7 @@ const Profile = () => {
                 (theme) => ({ [theme.breakpoints.down("375")]: { px: 1 } }),
               ]}
             >
+              {/* avatar and info */}
               <Stack
                 sx={{
                   width: "100%",
@@ -134,18 +183,72 @@ const Profile = () => {
                   flexDirection: { xs: "column", sm: "row" },
                 }}
               >
-                <Avatar
-                  sx={avatar}
-                  alt="avatar"
-                  // eslint-disable-next-line react/jsx-no-duplicate-props
-                  sx={{
-                    width: { xs: 120, sm: 168 },
-                    height: { xs: 120, sm: 168 },
-                    border: (theme) =>
-                      `3px solid ${theme.palette.background.paper}`,
-                    boxShadow: (theme) => theme.shadows[5],
-                  }}
-                />
+                <Box sx={{ position: "relative" }}>
+                  <Box
+                    sx={{
+                      width: { xs: 120, sm: 168 },
+                      height: { xs: 120, sm: 168 },
+                    }}
+                  >
+                    {isLoading?.avatar ? (
+                      <Box
+                        sx={{
+                          height: "100%",
+                          borderRadius: "50%",
+                          border: (theme) =>
+                            `3px solid ${theme.palette.background.paper}`,
+                          boxShadow: (theme) => theme.shadows[5],
+                        }}
+                      >
+                        <LoadingEllipsisElement />
+                      </Box>
+                    ) : (
+                      <Avatar
+                        src={userProfile?.avatar?.url}
+                        alt="avatar"
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          border: (theme) =>
+                            `3px solid ${theme.palette.background.paper}`,
+                          boxShadow: (theme) => theme.shadows[5],
+                        }}
+                      />
+                    )}
+                  </Box>
+
+                  {/* button upload avatar */}
+                  <Paper
+                    elevation={5}
+                    sx={{
+                      position: "absolute",
+                      bottom: 10,
+                      right: 0,
+                      bgcolor: "background.default",
+                      borderRadius: "50%",
+                      border: (theme) =>
+                        `2px solid ${theme.palette.background.main}`,
+                    }}
+                  >
+                    <IconButton
+                      onClick={() => uploadAvatarRef.current.click()}
+                      sx={{
+                        "& svg": {
+                          fill: (theme) => theme.palette.text.secondary,
+                        },
+                      }}
+                    >
+                      {icons.CameraIcon}
+                    </IconButton>
+                  </Paper>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={uploadAvatarRef}
+                    style={{ display: "none" }}
+                    onChange={handleUploadFileCustom}
+                  />
+                </Box>
                 <Stack
                   sx={{
                     flexGrow: 1,
@@ -255,9 +358,7 @@ const Profile = () => {
             <Box sx={{ px: 3, mt: 0.5 }}>
               <Stack direction="row" spacing={1} ref={menuProfileRef}>
                 {data?.menuProfile?.map((item, index) => {
-                  const getIndex = location.pathname.indexOf(params?.id);
-                  const newString = location.pathname.slice(getIndex);
-                  const match = newString.includes(item.value);
+                  const match = location.pathname.includes(item.value);
                   return (
                     <MButton
                       key={item.label}

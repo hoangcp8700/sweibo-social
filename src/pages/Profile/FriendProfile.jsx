@@ -55,6 +55,48 @@ const list = [
     avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
     mutualFriends: 102,
   },
+  {
+    id: "121242342333",
+    name: "Tấn tài",
+    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
+    mutualFriends: 102,
+  },
+  {
+    id: "1212323433",
+    name: "Tấn tài",
+    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
+    mutualFriends: 102,
+  },
+  {
+    id: "12123123123",
+    name: "Tấn tài",
+    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
+    mutualFriends: 102,
+  },
+  {
+    id: "121233",
+    name: "Tấn tài",
+    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
+    mutualFriends: 102,
+  },
+  {
+    id: "121242342333",
+    name: "Tấn tài",
+    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
+    mutualFriends: 102,
+  },
+  {
+    id: "1212323433",
+    name: "Tấn tài",
+    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
+    mutualFriends: 102,
+  },
+  {
+    id: "12123123123",
+    name: "Tấn tài",
+    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
+    mutualFriends: 102,
+  },
 ];
 
 const FriendProfile = () => {

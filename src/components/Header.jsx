@@ -54,7 +54,7 @@ const Header = () => {
 
   const handleRedirectProfile = (name) => {
     navigate(`${PATH_PAGE.profile.link}`);
-    handleToggleAction(name);
+    name && handleToggleAction(name);
   };
 
   const handleLogoutCustom = async () => {
@@ -156,6 +156,7 @@ const Header = () => {
 
             <Stack direction="row" alignItems="center" spacing={1}>
               <Box
+                onClick={() => handleRedirectProfile()}
                 sx={[
                   (theme) => ({
                     [theme.breakpoints.down("md")]: {

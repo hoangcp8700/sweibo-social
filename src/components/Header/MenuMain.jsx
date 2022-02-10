@@ -24,6 +24,7 @@ const MenuHeader = (props) => {
           <Typography variant="subtitle2">
             {user?.firstName} {user?.lastName}
           </Typography>
+          <Typography variant="body2">{user?.email}</Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
             Xem trang thông tin cá nhân
           </Typography>
