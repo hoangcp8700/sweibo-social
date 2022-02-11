@@ -75,7 +75,7 @@ const initialize = {
 };
 
 const PopupCreatePost = (props) => {
-  const { open, onClose, onSubmit } = props;
+  const { open, onClose, handleSubmitPost } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuth();
 
@@ -102,49 +102,50 @@ const PopupCreatePost = (props) => {
       if (form?.files?.length) {
         form.files = form.files.map((item) => item.file);
       }
-      await onSubmit(form);
+      await handleSubmitPost(form);
       setForm(initialize);
       setIsSubmitting(false);
     } catch (error) {
       setIsSubmitting(false);
-
       console.log("error", error);
     }
-  }, [isSubmitting]);
+  }, [isSubmitting, form, handleSubmitPost]);
 
   const handleToggleOpenEmoji = () => setOpenEmoji(!openEmoji);
   const handleToggleOpenLightBox = React.useCallback(
     (value) => {
-      console.log("handleToggleOpenLightBox");
       setOpenLightBox(value);
     },
     [openLightBox]
   );
 
-  const handleUploadFilePost = async (e) => {
-    setIsLoading(true);
-    try {
-      const response = await handleUploadFile(e);
-      if (response.error) {
-        setIsLoading(false);
-        return enqueueSnackbar(response.message, { variant: "error" });
-      }
-
-      setTimeout(() => {
-        setForm({
-          ...form,
-          files: !isAddFilePost ? response : [...form.files, ...response],
-        });
-        if (isAddFilePost) {
-          setIsAddFilePost(false);
+  const handleUploadFilePost = React.useCallback(
+    async (e) => {
+      setIsLoading(true);
+      try {
+        const response = await handleUploadFile(e);
+        if (response.error) {
+          setIsLoading(false);
+          return enqueueSnackbar(response.message, { variant: "error" });
         }
+
+        setTimeout(() => {
+          setForm({
+            ...form,
+            files: !isAddFilePost ? response : [...form.files, ...response],
+          });
+          if (isAddFilePost) {
+            setIsAddFilePost(false);
+          }
+          setIsLoading(false);
+        }, 1000);
+      } catch (error) {
+        console.log("err", error);
         setIsLoading(false);
-      }, 1000);
-    } catch (error) {
-      console.log("err", error);
-      setIsLoading(false);
-    }
-  };
+      }
+    },
+    [form, isLoading, isAddFilePost]
+  );
 
   return (
     <>
@@ -330,7 +331,6 @@ const PopupCreatePost = (props) => {
                 }}
               >
                 <Box
-                  
                   sx={{
                     borderRadius: 2,
                     overflow: "hidden",
@@ -342,7 +342,7 @@ const PopupCreatePost = (props) => {
                   }}
                 >
                   <Box onClick={() => handleToggleOpenLightBox(true)}>
-                  <Masonry lists={form?.files} />
+                    <Masonry lists={form?.files} />
                   </Box>
                   <Box
                     sx={{

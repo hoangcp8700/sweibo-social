@@ -4,7 +4,7 @@ import { useAuth } from "hooks";
 import PopupCreatePost from "./PopupCreatePost";
 
 const InputCreatePost = (props) => {
-  const { onSubmit, open, onClick } = props;
+  const { handleSubmitPost, open, onClick } = props;
   const { user } = useAuth();
 
   return (
@@ -14,7 +14,11 @@ const InputCreatePost = (props) => {
         bgcolor: "background.navbar",
       }}
     >
-      <PopupCreatePost open={open} onClose={onClick} onSubmit={onSubmit} />
+      <PopupCreatePost
+        open={open}
+        onClose={onClick}
+        handleSubmitPost={handleSubmitPost}
+      />
 
       <Stack direction="row" spacing={2} sx={{ p: 2 }}>
         <Avatar src={user?.avatar?.url} />

@@ -7,10 +7,21 @@ import {
   PostItem,
 } from "components";
 import { Box, Stack } from "@mui/material";
+import { usePost } from "hooks";
 
 const PostProfile = () => {
+  const { handleCreatePost } = usePost();
   const [isCreate, setIsCreate] = React.useState(false);
   const handleToggleIsCreate = () => setIsCreate(!isCreate);
+
+  const handleSubmitPost = async (form) => {
+    try {
+      const response = await handleCreatePost(form);
+      console.log("handleSubmitPost", response);
+    } catch (error) {
+      console.log("err", error);
+    }
+  };
 
   return (
     <Box sx={{ position: "relative" }}>
@@ -42,7 +53,11 @@ const PostProfile = () => {
             minWidth: { xs: "inherit", sm: 350, md: 320 },
           }}
         >
-          <InputCreatePost open={isCreate} onClick={handleToggleIsCreate} />
+          <InputCreatePost
+            open={isCreate}
+            onClick={handleToggleIsCreate}
+            handleSubmitPost={handleSubmitPost}
+          />
 
           <PostItem />
           <PostItem />

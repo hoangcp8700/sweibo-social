@@ -20,7 +20,14 @@ const users = (id) => {
     albums: `/users/albums`,
   };
 };
+
+const posts = (id) => {
+  return {
+    create: `/posts/add`,
+  };
+};
 export default {
   authentication,
   users,
+  posts,
 };
