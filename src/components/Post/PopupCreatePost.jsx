@@ -22,14 +22,14 @@ import { useAuth } from "hooks";
 import handleUploadFile from "utils/uploadFile";
 
 import { MButton, MSelect } from "components/MUI";
-import { LoadingEllipsisElement } from "components";
+import { LoadingEllipsisElement, Masonry } from "components";
 import { EmojiPicker } from "components";
 import ImageGroupCreatePost from "./ImageGroupCreatePost";
 
 const IconButtonStyle = styled(IconButton)(({ theme }) => ({
   "& svg": {
     fontSize: 18,
-    fill: theme.palette.background.opacity3,
+    fill: theme.palette.text.primary,
   },
 }));
 
@@ -38,15 +38,46 @@ const status = [
   { label: "Chỉ mình tôi", value: "Pravite", icon: icons.LockOpenIcon },
 ];
 
+const images = [
+  {
+    name: "fol1.png",
+    url: `https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png`,
+  },
+  {
+    name: "fol1.png",
+    url: `https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png`,
+  },
+  {
+    name: "fol1.png",
+    url: `https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png`,
+  },
+  {
+    name: "fol1.png",
+    url: `https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png`,
+  },
+  {
+    name: "fol1.png",
+    url: `https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png`,
+  },
+  {
+    name: "fol1.png",
+    url: `https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png`,
+  },
+];
+
 const initialize = {
   content: "",
   status: "",
 };
 
-export default function PopupCreatePost(props) {
+const PopupCreatePost = (props) => {
   const { open, onClose } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuth();
+
+  React.useEffect(() => {
+    if (!open) return;
+  }, [open]);
 
   const [form, setForm] = React.useState(initialize);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -74,7 +105,7 @@ export default function PopupCreatePost(props) {
       }
       setTimeout(() => {
         console.log("response", response);
-        setForm({ ...form, files: response });
+        setForm({ ...form, files: images });
         // const newAvatar = await handleUploadAvatar(response);
         // setAvatarDetail(newAvatar);
         setIsLoading(false);
@@ -84,6 +115,7 @@ export default function PopupCreatePost(props) {
       setIsLoading(false);
     }
   };
+
   return (
     <Dialog fullWidth={true} maxWidth="mobile" open={open} onClose={onClose}>
       {openEmoji ? (
@@ -105,6 +137,8 @@ export default function PopupCreatePost(props) {
         <Box sx={{ position: "relative" }}>
           <DialogTitle sx={{ textAlign: "center" }}>Tạo bài viết</DialogTitle>
           <Divider />
+
+          {/* //btnclose */}
           <Paper
             elevation={5}
             sx={{
@@ -127,10 +161,13 @@ export default function PopupCreatePost(props) {
               {icons.CloseIcon}
             </IconButton>
           </Paper>
-        </Box>
 
-        <DialogContent sx={{ minHeight: 480 }}>
-          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
+            sx={{ px: 3, mt: 2 }}
+          >
             <Avatar sx={{ width: 48, height: 48 }} src={user?.avatar?.url} />
             <Stack spacing={0.5}>
               <Typography variant="subtitle2">
@@ -147,10 +184,33 @@ export default function PopupCreatePost(props) {
               />
             </Stack>
           </Stack>
+        </Box>
+
+        <DialogContent
+          sx={{
+            minHeight: 400,
+            maxHeight: 440,
+            "&::-webkit-scrollbar-track": {
+              // boxShadow: "inset 0 0 6px rgba(0,0,0,0.3)",
+              borderRadius: "10px",
+              bgcolor: (theme) => theme.palette.background.opacity,
+            },
+
+            "&::-webkit-scrollbar": {
+              width: 10,
+              backgroundColor: "transparent",
+            },
+
+            "&::-webkit-scrollbar-thumb": {
+              bgcolor: (theme) => theme.palette.grey[500],
+              borderRadius: "10px",
+            },
+          }}
+        >
           <Box
             sx={{
-              border: (theme) => `1px solid ${theme.palette.grey[300]}`,
-              borderRadius: 1,
+              border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+              borderRadius: 2,
               mb: 2,
             }}
           >
@@ -163,34 +223,37 @@ export default function PopupCreatePost(props) {
             >
               <Typography variant="body2">Thêm vào bài viết</Typography>
               <Stack direction="row" alignItems="center" spacing={0.5}>
-                <IconButtonStyle onClick={() => setForm(initialize)}>
-                  {icons.ReplayIcon}
-                </IconButtonStyle>
-                <IconButtonStyle
-                  onClick={() => uploadAvatarRef.current.click()}
-                >
-                  {icons.PhotoIcon}
-                </IconButtonStyle>
-
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={uploadAvatarRef}
-                  style={{ display: "none" }}
-                  onChange={handleUploadFilePost}
-                  multiple
-                />
+                <Box>
+                  <IconButtonStyle
+                    onClick={() => uploadAvatarRef.current.click()}
+                  >
+                    {icons.PhotoIcon}
+                  </IconButtonStyle>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={uploadAvatarRef}
+                    style={{ display: "none" }}
+                    onChange={handleUploadFilePost}
+                    multiple
+                  />
+                </Box>
                 <IconButtonStyle
                   ref={anchorRef}
                   onClick={handleToggleOpenEmoji}
                 >
                   {icons.EmojiEmotionsIcon}
                 </IconButtonStyle>
+                <IconButtonStyle onClick={() => setForm(initialize)}>
+                  {icons.ReplayIcon}
+                </IconButtonStyle>
               </Stack>
             </Stack>
           </Box>
+
           <TextareaAutosize
-            maxRows={form?.files?.length ? 13 : 20}
+            // maxRows={form?.files?.length ? 13 : 20}
+            minRow={15}
             placeholder="Bạn đang nghĩ gì?"
             style={{
               width: "100%",
@@ -206,6 +269,7 @@ export default function PopupCreatePost(props) {
             name="content"
             onChange={handleChangeForm}
           />
+
           {isLoading ? (
             <Box sx={{ position: "absolute", bottom: 50, width: "90%" }}>
               <LoadingEllipsisElement />
@@ -213,9 +277,55 @@ export default function PopupCreatePost(props) {
           ) : (
             ""
           )}
-          {form?.files?.length ? <ImageGroupCreatePost /> : ""}
-        </DialogContent>
 
+          {/* masonry */}
+          {form?.files?.length ? (
+            <Box
+              sx={{
+                mt: 1,
+                position: "relative",
+                borderRadius: 2,
+                border: (theme) => `1px solid ${theme.palette.grey[200]}`,
+                overflow: "hidden",
+                p: 1,
+              }}
+            >
+              <Box
+                sx={{
+                  borderRadius: 2,
+                  overflow: "hidden",
+                }}
+              >
+                <Masonry lists={form?.files} />
+
+                <Paper
+                  elevation={5}
+                  sx={{
+                    position: "absolute",
+                    top: 15,
+                    right: 15,
+                    bgcolor: "background.main",
+                    borderRadius: "50%",
+                  }}
+                >
+                  <IconButton
+                    onClick={() => setForm({ ...form, files: [] })}
+                    sx={{
+                      "& svg": {
+                        fill: (theme) => theme.palette.text.primary,
+                        fontSize: 14,
+                      },
+                    }}
+                  >
+                    {icons.CloseIcon}
+                  </IconButton>
+                </Paper>
+              </Box>
+            </Box>
+          ) : (
+            ""
+          )}
+        </DialogContent>
         <DialogActions>
           <MButton
             fullWidth
@@ -229,4 +339,6 @@ export default function PopupCreatePost(props) {
       </Paper>
     </Dialog>
   );
-}
+};
+
+export default PopupCreatePost;

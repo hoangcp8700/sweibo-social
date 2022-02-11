@@ -39,7 +39,16 @@ export default function MSelect(props) {
                 sx={{ fontSize: 14 }}
               >
                 {item.icon ? (
-                  <IconButton sx={{ p: 0, mr: 1, "& svg": { fontSize: 14 } }}>
+                  <IconButton
+                    sx={{
+                      p: 0,
+                      mr: 1,
+                      "& svg": {
+                        fontSize: 14,
+                        fill: (theme) => theme.palette.text.primary,
+                      },
+                    }}
+                  >
                     {item.icon}
                   </IconButton>
                 ) : (

@@ -37,3 +37,5 @@ export { default as SaveItem } from "./Save/SaveItem";
 export { default as MenuActionSave } from "./Save/MenuActionSave";
 
 export { default as AvatarDetail } from "./AvatarDetail";
+
+export { default as Masonry } from "./Masonry";

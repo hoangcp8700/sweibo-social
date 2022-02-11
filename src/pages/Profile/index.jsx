@@ -386,7 +386,6 @@ const Profile = () => {
             </Stack>
 
             <Divider sx={{ mt: 2, mx: 3 }} />
-
             <Box sx={{ px: 3, mt: 0.5 }}>
               <Stack direction="row" spacing={1} ref={menuProfileRef}>
                 {data?.menuProfile?.map((item, index) => {
