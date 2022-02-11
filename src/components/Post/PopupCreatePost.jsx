@@ -75,7 +75,7 @@ const initialize = {
 };
 
 const PopupCreatePost = (props) => {
-  const { open, onClose } = props;
+  const { open, onClose, onSubmit } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuth();
 
@@ -85,6 +85,7 @@ const PopupCreatePost = (props) => {
 
   const [form, setForm] = React.useState(initialize);
   const [isAddFilePost, setIsAddFilePost] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [openEmoji, setOpenEmoji] = React.useState(false);
   const [openLightBox, setOpenLightBox] = React.useState(false);
@@ -95,12 +96,30 @@ const PopupCreatePost = (props) => {
   const handleChangeForm = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async () => {
-    console.log("form", form);
-  };
+  const handleSubmit = React.useCallback(async () => {
+    setIsSubmitting(true);
+    try {
+      if (form?.files?.length) {
+        form.files = form.files.map((item) => item.file);
+      }
+      await onSubmit(form);
+      setForm(initialize);
+      setIsSubmitting(false);
+    } catch (error) {
+      setIsSubmitting(false);
+
+      console.log("error", error);
+    }
+  }, [isSubmitting]);
 
   const handleToggleOpenEmoji = () => setOpenEmoji(!openEmoji);
-  const handleToggleOpenLightBox = () => setOpenLightBox(!openLightBox);
+  const handleToggleOpenLightBox = React.useCallback(
+    (value) => {
+      console.log("handleToggleOpenLightBox");
+      setOpenLightBox(value);
+    },
+    [openLightBox]
+  );
 
   const handleUploadFilePost = async (e) => {
     setIsLoading(true);
@@ -119,8 +138,6 @@ const PopupCreatePost = (props) => {
         if (isAddFilePost) {
           setIsAddFilePost(false);
         }
-        // const newAvatar = await handleUploadAvatar(response);
-        // setAvatarDetail(newAvatar);
         setIsLoading(false);
       }, 1000);
     } catch (error) {
@@ -131,10 +148,10 @@ const PopupCreatePost = (props) => {
 
   return (
     <>
-      {openLightBox ? (
+      {openLightBox && form?.files?.length ? (
         <ImageLightBox
           open={openLightBox}
-          onClose={handleToggleOpenLightBox}
+          onClose={() => handleToggleOpenLightBox(false)}
           images={form.files}
         />
       ) : (
@@ -313,7 +330,7 @@ const PopupCreatePost = (props) => {
                 }}
               >
                 <Box
-                  onClick={handleToggleOpenLightBox}
+                  
                   sx={{
                     borderRadius: 2,
                     overflow: "hidden",
@@ -324,7 +341,9 @@ const PopupCreatePost = (props) => {
                     },
                   }}
                 >
+                  <Box onClick={() => handleToggleOpenLightBox(true)}>
                   <Masonry lists={form?.files} />
+                  </Box>
                   <Box
                     sx={{
                       position: "absolute",
@@ -380,11 +399,12 @@ const PopupCreatePost = (props) => {
           <DialogActions>
             <MButton
               fullWidth
-              disabled={!form?.content || !form?.status}
+              disabled={!form?.content || !form?.status || isSubmitting}
               onClick={handleSubmit}
               variant="contained"
+              loading={isSubmitting}
             >
-              Đăng
+              {isSubmitting ? "Đang đăng bài viết" : "Đăng"}
             </MButton>
           </DialogActions>
         </Paper>

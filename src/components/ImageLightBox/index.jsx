@@ -10,20 +10,18 @@ const LightBox = (props) => {
   return (
     open && (
       <Lightbox
-        mainSrc={images[photoIndex].url}
-        nextSrc={images[(photoIndex + 1) % images.length].url}
-        prevSrc={images[(photoIndex + images.length - 1) % images.length].url}
+        mainSrc={images[photoIndex]?.url}
+        nextSrc={images[(photoIndex + 1) % images?.length]?.url}
+        prevSrc={
+          images[(photoIndex + images?.length - 1) % images?.length]?.url
+        }
         onCloseRequest={onClose}
         onMovePrevRequest={() =>
-          setPhotoIndex((photoIndex + images.length - 1) % images.length)
+          setPhotoIndex((photoIndex + images?.length - 1) % images?.length)
         }
         onMoveNextRequest={() =>
-          setPhotoIndex((photoIndex + 1) % images.length)
+          setPhotoIndex((photoIndex + 1) % images?.length)
         }
-        // reactModalStyle={{
-
-        // }}
-        style={{ zIndex: 1400 }}
       />
     )
   );

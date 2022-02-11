@@ -9,6 +9,9 @@ import {
 import { Box, Stack } from "@mui/material";
 
 const PostProfile = () => {
+  const [isCreate, setIsCreate] = React.useState(false);
+  const handleToggleIsCreate = () => setIsCreate(!isCreate);
+
   return (
     <Box sx={{ position: "relative" }}>
       <Stack
@@ -39,7 +42,8 @@ const PostProfile = () => {
             minWidth: { xs: "inherit", sm: 350, md: 320 },
           }}
         >
-          <InputCreatePost />
+          <InputCreatePost open={isCreate} onClick={handleToggleIsCreate} />
+
           <PostItem />
           <PostItem />
           <PostItem />

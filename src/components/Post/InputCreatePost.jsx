@@ -3,12 +3,9 @@ import { Paper, Stack, Avatar, TextField } from "@mui/material";
 import { useAuth } from "hooks";
 import PopupCreatePost from "./PopupCreatePost";
 
-const InputCreatePost = () => {
+const InputCreatePost = (props) => {
+  const { onSubmit, open, onClick } = props;
   const { user } = useAuth();
-
-  const [isCreate, setIsCreate] = React.useState(false);
-
-  const handleToggleIsCreate = () => setIsCreate(!isCreate);
 
   return (
     <Paper
@@ -17,12 +14,13 @@ const InputCreatePost = () => {
         bgcolor: "background.navbar",
       }}
     >
-      <PopupCreatePost open={isCreate} onClose={handleToggleIsCreate} />
+      <PopupCreatePost open={open} onClose={onClick} onSubmit={onSubmit} />
+
       <Stack direction="row" spacing={2} sx={{ p: 2 }}>
         <Avatar src={user?.avatar?.url} />
         <TextField
           fullWidth
-          onClick={handleToggleIsCreate}
+          onClick={onClick}
           InputProps={{
             readOnly: true,
           }}
