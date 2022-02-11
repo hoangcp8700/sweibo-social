@@ -1,0 +1,22 @@
+.ReactModal__Overlay--after-open {
+  z-index: 1400 !important;
+}
+
+.ReactModal__Content .ril__image {
+  object-fit: scale-down;
+  min-width: 1300px;
+  min-height: 1300px;
+}
+
+@media only screen and (max-width: 1024px) {
+  .ReactModal__Content .ril__image {
+    object-fit: scale-down;
+    min-width: 0;
+    min-height: 0;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .ReactModalPortal {
+    display: none;
+  }
+}

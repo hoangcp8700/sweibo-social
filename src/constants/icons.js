@@ -68,6 +68,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import FacebookIcon from "@mui/icons-material/Facebook";
 
 import PhotoCameraOutlinedIcon from "@mui/icons-material/PhotoCameraOutlined";
+import AddPhotoAlternateOutlinedIcon from "@mui/icons-material/AddPhotoAlternateOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import ReplayIcon from "@mui/icons-material/Replay";
 
@@ -144,4 +145,5 @@ export default {
   CameraIcon: <PhotoCameraOutlinedIcon />,
   CloseIcon: <CloseIcon />,
   ReplayIcon: <ReplayIcon />,
+  AddPhotoIcon: <AddPhotoAlternateOutlinedIcon />,
 };

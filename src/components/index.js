@@ -39,3 +39,4 @@ export { default as MenuActionSave } from "./Save/MenuActionSave";
 export { default as AvatarDetail } from "./AvatarDetail";
 
 export { default as Masonry } from "./Masonry";
+export { default as ImageLightBox } from "./ImageLightBox";
