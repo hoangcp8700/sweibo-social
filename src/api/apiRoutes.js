@@ -24,6 +24,8 @@ const users = (id) => {
 const posts = (id) => {
   return {
     create: `/posts/add`,
+    getAll: `/posts`,
+    getPostUser: `/posts/user`,
   };
 };
 export default {

@@ -17,7 +17,7 @@ export default function LoadingEllipsis() {
         justifyContent: "center",
       }}
     >
-      <div class="lds-ellipsis">
+      <div className="lds-ellipsis">
         <div></div>
         <div></div>
         <div></div>

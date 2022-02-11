@@ -1,4 +1,5 @@
 import React from "react";
+import LazyLoad from "react-lazyload";
 import {
   Paper,
   Stack,
@@ -13,6 +14,7 @@ import {
 import { styled } from "@mui/styles";
 import { icons } from "constants";
 import { lineClampStyle } from "utils/lineClampStyle";
+import { Masonry, ImageLightBox } from "components";
 
 const ButtonStyle = styled(Button)(({ theme }) => ({
   color: theme.palette.text.secondary,
@@ -52,7 +54,28 @@ const TypographyCustom = ({ children }) => {
     </Typography>
   );
 };
+const images = [
+  {
+    url: "https://cdn.pixabay.com/photo/2018/03/15/02/50/doll-3227004_960_720.jpg",
+  },
+  {
+    url: "https://cdn.pixabay.com/photo/2018/11/09/18/24/human-rights-3805188_960_720.jpg",
+  },
+  {
+    url: "https://cdn.pixabay.com/photo/2018/03/02/09/10/woman-3192674_960_720.jpg",
+  },
+  {
+    url: "https://cdn.pixabay.com/photo/2018/03/15/02/50/doll-3227004_960_720.jpg",
+  },
+  {
+    url: "https://cdn.pixabay.com/photo/2015/02/11/16/38/coil-632650_960_720.jpg",
+  },
+  {
+    url: "https://cdn.pixabay.com/photo/2016/11/19/15/50/chair-1840011_960_720.jpg",
+  },
+];
 const PostItem = (props) => {
+  const { post, handleLightBox } = props;
   const theme = useTheme();
   const isMobileRes = theme.breakpoints.down("sm");
 
@@ -75,7 +98,9 @@ const PostItem = (props) => {
           <Stack direction="row" alignItems="center" spacing={1}>
             <Avatar sx={{ width: 36, height: 36 }} />
             <Stack>
-              <Typography variant="subtitle2">Hoang Cong Phan</Typography>
+              <Typography variant="subtitle2">
+                {post?.createdBy?.firstName} {post?.createdBy?.lastName}
+              </Typography>
               <Typography variant="caption">2 gio</Typography>
             </Stack>
           </Stack>
@@ -85,17 +110,15 @@ const PostItem = (props) => {
         {/* content */}
         <Stack>
           <Box sx={{ px: 2 }}>
-            <Typography>
-              Giữa người với người đừng nghĩ quá kĩ. Nghĩ thông rồi sẽ đau lòng.
-            </Typography>
+            <Typography>{post?.content}</Typography>
           </Box>
-          <Stack direction="row" sx={{ mt: 1 }}>
-            <Box sx={{ flex: 1 }}>
-              <img src={"https://i.pravatar.cc/300"} alt="aa" />
-            </Box>
-            <Box sx={{ flex: 1 }}>
-              <img src={"https://i.pravatar.cc/300"} alt="aa" />
-            </Box>
+          <Stack
+            direction="row"
+            sx={{ mt: 1 }}
+            // onClick={() => handleLightBox(post?.images )}
+            onClick={() => handleLightBox(images)}
+          >
+            <Masonry lists={images} />
           </Stack>
         </Stack>
 

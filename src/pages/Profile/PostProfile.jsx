@@ -8,11 +8,33 @@ import {
 } from "components";
 import { Box, Stack } from "@mui/material";
 import { usePost } from "hooks";
+import { ImageLightBox } from "components";
 
 const PostProfile = () => {
-  const { handleCreatePost } = usePost();
+  const { handleCreatePost, handleGetPostUser } = usePost();
+
   const [isCreate, setIsCreate] = React.useState(false);
-  const handleToggleIsCreate = () => setIsCreate(!isCreate);
+  const [posts, setPosts] = React.useState([]);
+  const [nextPage, setNextPage] = React.useState(1);
+  const [openLightBox, setOpenLightBox] = React.useState({
+    open: false,
+    images: [],
+  });
+
+  const handleGetPost = async () => {
+    const response = await handleGetPostUser(nextPage);
+    if (response.hasNextPage) {
+      setNextPage(response.next);
+    }
+    setPosts(response.data);
+  };
+
+  React.useEffect(() => {
+    const getPost = async () => {
+      handleGetPost();
+    };
+    getPost();
+  }, []);
 
   const handleSubmitPost = async (form) => {
     try {
@@ -23,8 +45,27 @@ const PostProfile = () => {
     }
   };
 
+  // ----------------------- actions
+  const handleToggleOpenLightBox = (lists) => {
+    setOpenLightBox({
+      open: !openLightBox.open,
+      images: lists || [],
+    });
+  };
+
+  const handleToggleIsCreate = () => setIsCreate(!isCreate);
+
   return (
     <Box sx={{ position: "relative" }}>
+      {openLightBox.open && openLightBox?.images?.length ? (
+        <ImageLightBox
+          open={openLightBox}
+          onClose={() => handleToggleOpenLightBox()}
+          images={openLightBox?.images}
+        />
+      ) : (
+        ""
+      )}
       <Stack
         sx={{
           flexDirection: { xs: "column", sm: "row" },
@@ -59,14 +100,15 @@ const PostProfile = () => {
             handleSubmitPost={handleSubmitPost}
           />
 
-          <PostItem />
-          <PostItem />
-          <PostItem />
-          <PostItem />
-          <PostItem />
-          <PostItem />
-          <PostItem />
-          <PostItem />
+          {posts.length
+            ? posts.map((post) => (
+                <PostItem
+                  key={post._id}
+                  post={post}
+                  handleLightBox={(lists) => handleToggleOpenLightBox(lists)}
+                />
+              ))
+            : ""}
         </Stack>
       </Stack>
     </Box>

@@ -14,10 +14,25 @@ import {
   StickySidebar,
 } from "components";
 import { icons } from "constants";
+import { usePost } from "hooks";
 
 const Home = () => {
+  const { handleGetPostAll } = usePost();
+
   const [users, setUsers] = React.useState([]);
   const [advertises, setAdvertises] = React.useState([]);
+  const [posts, setPosts] = React.useState([]);
+  const [nextPage, setNextPage] = React.useState(1);
+
+  const handleGetPost = async () => {
+    const response = await handleGetPostAll(nextPage);
+    if (response.hasNextPage) {
+      setNextPage(response.next);
+    }
+    setPosts(response.data);
+  };
+
+  React.useEffect(() => {}, []);
 
   React.useEffect(() => {
     const getUsers = async () => {
@@ -29,8 +44,13 @@ const Home = () => {
       const resposne = fakeData.GET_ADVERTISE();
       setAdvertises(resposne);
     };
+
+    const getPost = async () => {
+      handleGetPost();
+    };
     getAdvertises();
     getUsers();
+    getPost();
   }, []);
 
   return (
@@ -85,8 +105,9 @@ const Home = () => {
               />
               <InputCreatePost />
               <Stack spacing={3}>
-                <PostItem />
-                <PostItem />
+                {posts.length
+                  ? posts.map((post) => <PostItem key={post._id} post={post} />)
+                  : ""}
               </Stack>
             </Stack>
           </Box>
