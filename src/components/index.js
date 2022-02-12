@@ -9,9 +9,15 @@ export { default as AdvertiseItem } from "./AdvertiseItem";
 export { default as ActivityStatus } from "./ActivityStatus";
 export { default as AlbumImage } from "./AlbumImage";
 export { default as LoadingPage } from "./Loading/LoadingPage";
+
+// post
 export { default as InputCreatePost } from "./Post/InputCreatePost";
 export { default as PostItem } from "./Post/PostItem";
+export { default as PopupLikeOfPost } from "./Post/PopupLikeOfPost";
+export { default as PopupCommentOfPost } from "./Post/PopupCommentOfPost";
+export { default as PopupShareOfPost } from "./Post/PopupShareOfPost";
 
+// sidebar
 export { default as SidebarHome } from "./Sidebar/SidebarHome";
 export { default as SidebarItem } from "./Sidebar/SidebarItem";
 export { default as SidebarHeader } from "./Sidebar/SidebarHeader";

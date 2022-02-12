@@ -14,6 +14,7 @@ const usePost = () => {
       });
 
       const response = await axios.post(routes.posts().create, formData);
+      return response.data.data;
       console.log("handleCreatePost ", response);
     } catch (error) {
       console.log("err", error);

@@ -14,10 +14,11 @@ import {
 import { styled } from "@mui/styles";
 import { icons } from "constants";
 import { lineClampStyle } from "utils/lineClampStyle";
-import { Masonry, ImageLightBox } from "components";
+import { Masonry } from "components";
+import { fToNow } from "utils/formatTime";
 
 const ButtonStyle = styled(Button)(({ theme }) => ({
-  color: theme.palette.text.secondary,
+  color: theme.palette.text.primary,
   flex: 1,
   textTransform: "capitalize",
   fontWeight: 400,
@@ -25,9 +26,9 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
     backgroundColor: "transparent",
     color: theme.palette.text.primary,
   },
-  '& svg': {
+  "& svg": {
     fill: theme.palette.text.primary,
-  }
+  },
   [theme.breakpoints.down("480")]: {
     fontSize: 12,
     padding: theme.spacing(0.5, 0),
@@ -42,13 +43,15 @@ const EmojiButtonStyle = styled(IconButton)(({ theme }) => ({
   padding: 0,
 }));
 
-const TypographyCustom = ({ children }) => {
+const TypographyCustom = ({ children, ...props }) => {
   return (
     <Typography
+      {...props}
       variant="body2"
       sx={[
         { ...lineClampStyle(1), color: "text.primary" },
         (theme) => ({
+          cursor: "pointer",
           [theme.breakpoints.down("480")]: { fontSize: 12 },
         }),
       ]}
@@ -78,9 +81,13 @@ const images = [
   // },
 ];
 const PostItem = (props) => {
-  const { post, handleLightBox, containerStyle } = props;
+  const { post, handleLightBox, containerStyle, handleActionPost } = props;
   const theme = useTheme();
   const isMobileRes = theme.breakpoints.down("sm");
+
+  const [isLike, setIsLike] = React.useState(false);
+
+  const handleLikePost = () => setIsLike(!isLike);
 
   return (
     <Paper
@@ -105,7 +112,24 @@ const PostItem = (props) => {
               <Typography variant="subtitle2">
                 {post?.createdBy?.firstName} {post?.createdBy?.lastName}
               </Typography>
-              <Typography variant="caption">2 gio</Typography>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <Typography variant="caption">
+                  {post?.createdAt && fToNow(post?.createdAt)}
+                </Typography>
+                <IconButton
+                  sx={{
+                    p: 0,
+                    "& svg": {
+                      fontSize: 14,
+                      fill: (theme) => theme.palette.text.primary,
+                    },
+                  }}
+                >
+                  {post?.status === "Public"
+                    ? icons.PublicIcon
+                    : icons.LockOpenIcon}
+                </IconButton>
+              </Stack>
             </Stack>
           </Stack>
           <IconButton>{icons.MoreHorizIcon}</IconButton>
@@ -145,22 +169,37 @@ const PostItem = (props) => {
               {icons.HeartIcon}
             </EmojiButtonStyle>
             <Box sx={{ ml: !isMobileRes ? 2 : 1 }}>
-              <TypographyCustom>
+              <TypographyCustom
+                onClick={() => handleActionPost("like", post?._id)}
+              >
                 {!isMobileRes ? `Phạm thanh tùng và 20k người khác` : 2321}
               </TypographyCustom>
             </Box>
           </Stack>
 
           <Stack direction="row" alignItems="center" spacing={2}>
-            <TypographyCustom>388 bình luận</TypographyCustom>
-            <TypographyCustom>22 chia sẽ</TypographyCustom>
+            <TypographyCustom
+              onClick={() => handleActionPost("comment", post?._id)}
+            >
+              388 bình luận
+            </TypographyCustom>
+            <TypographyCustom
+              onClick={() => handleActionPost("share", post?._id)}
+            >
+              22 chia sẽ
+            </TypographyCustom>
           </Stack>
         </Stack>
 
         <Divider />
         {/* action footer */}
         <Stack direction="row" alignItems="center">
-          <ButtonStyle startIcon={icons.LikeIcon}>Thích</ButtonStyle>
+          <ButtonStyle
+            startIcon={isLike ? icons.LikeIcon : icons.NoLikeIcon}
+            onClick={handleLikePost}
+          >
+            Thích
+          </ButtonStyle>
           <ButtonStyle startIcon={icons.CommentIcon}>Bình luận</ButtonStyle>
           <ButtonStyle startIcon={icons.ShareIcon}>Chia sẽ</ButtonStyle>
         </Stack>

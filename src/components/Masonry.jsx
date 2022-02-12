@@ -26,7 +26,7 @@ const MasonryComponent = ({ lists, columnsCount = 2 }) => {
   const countMore = lists?.length >= 5 ? lists?.length - 5 : "";
 
   return lists?.length ? (
-    <Masonry gutter="10px" columnsCount={columnsCount}>
+    <Masonry gutter="10px" columnsCount={lists?.length <= 1 ? 1 : columnsCount}>
       {lists.slice(0, 5).map((item, key) => (
         <Box
           key={key}

@@ -8,7 +8,12 @@ import {
 } from "components";
 import { Box, Stack } from "@mui/material";
 import { usePost } from "hooks";
-import { ImageLightBox } from "components";
+import {
+  ImageLightBox,
+  PopupLikeOfPost,
+  PopupCommentOfPost,
+  PopupShareOfPost,
+} from "components";
 import { InfiniteScroll } from "providers";
 
 const initialize = {
@@ -20,7 +25,13 @@ const initialize = {
 const PostProfile = () => {
   const { handleCreatePost, handleGetPostUser } = usePost();
 
+  const [actionPost, setActionPost] = React.useState({
+    name: "",
+    postID: null,
+  });
+
   const [isCreate, setIsCreate] = React.useState(false);
+
   const [paginate, setPaginate] = React.useState(initialize);
   const [openLightBox, setOpenLightBox] = React.useState({
     open: false,
@@ -30,7 +41,6 @@ const PostProfile = () => {
   const handleGetPost = async () => {
     if (!paginate.isNextPage) return;
     const response = await handleGetPostUser(paginate.page);
-    console.log("get post", response);
     setPaginate({
       page: response.next,
       isNextPage: response.hasNextPage ? true : false,
@@ -38,7 +48,6 @@ const PostProfile = () => {
       totalLength: response.totalLength,
     });
   };
-  console.log("pagiante", paginate);
 
   React.useEffect(() => {
     const getPost = async () => {
@@ -50,6 +59,11 @@ const PostProfile = () => {
   const handleSubmitPost = async (form) => {
     try {
       const response = await handleCreatePost(form);
+      if (response) {
+        setPaginate({ ...paginate, data: [response, ...paginate.data] });
+        handleToggleIsCreate();
+      }
+
       console.log("handleSubmitPost", response);
     } catch (error) {
       console.log("err", error);
@@ -66,8 +80,14 @@ const PostProfile = () => {
 
   const handleToggleIsCreate = () => setIsCreate(!isCreate);
 
+  const handleActionPost = React.useCallback(
+    (name, postID) => setActionPost({ name, postID }),
+    [actionPost]
+  );
+
   return (
     <Box sx={{ position: "relative" }}>
+      {/* /// ------------------- other */}
       {openLightBox.open && openLightBox?.images?.length ? (
         <ImageLightBox
           open={openLightBox}
@@ -77,6 +97,24 @@ const PostProfile = () => {
       ) : (
         ""
       )}
+      {/* ---------------------  action post */}
+      <PopupLikeOfPost
+        open={actionPost.name === "like"}
+        postID={actionPost?.postID}
+        onClose={() => handleActionPost({ name: "", postID: null })}
+      />
+      <PopupCommentOfPost
+        open={actionPost.name === "comment"}
+        postID={actionPost?.postID}
+        onClose={() => handleActionPost({ name: "", postID: null })}
+      />
+      <PopupShareOfPost
+        open={actionPost.name === "share"}
+        postID={actionPost?.postID}
+        onClose={() => handleActionPost({ name: "", postID: null })}
+      />
+
+      {/* // ------------------------------------- */}
       <Stack
         sx={{
           flexDirection: { xs: "column", sm: "row" },
@@ -121,6 +159,7 @@ const PostProfile = () => {
                 <PostItem
                   key={post._id}
                   post={post}
+                  handleActionPost={handleActionPost}
                   handleLightBox={(lists) => handleToggleOpenLightBox(lists)}
                   containerStyle={{ mt: 2 }}
                 />

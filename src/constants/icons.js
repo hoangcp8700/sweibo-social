@@ -26,6 +26,8 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
+
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
@@ -100,6 +102,8 @@ export default {
   MoreHorizIcon: <MoreHorizIcon />,
 
   LikeIcon: <ThumbUpIcon />,
+  NoLikeIcon: <ThumbUpOutlinedIcon />,
+
   UnlikeIcon: <ThumbDownAltIcon />,
   CommentIcon: <ChatBubbleOutlineOutlinedIcon />,
   ShareIcon: <ShareOutlinedIcon />,
