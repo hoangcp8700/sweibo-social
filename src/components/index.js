@@ -17,7 +17,7 @@ export { default as PopupLikeOfPost } from "./Post/PopupLikeOfPost";
 export { default as PopupCommentOfPost } from "./Post/PopupCommentOfPost";
 export { default as PopupShareOfPost } from "./Post/PopupShareOfPost";
 export { default as PopupDetailPost } from "./Post/PopupDetailPost";
-export { default as CarouselImage } from "./Post/CarouselImage";
+export { default as CommentItem } from "./Post/CommentItem";
 
 // sidebar
 export { default as SidebarHome } from "./Sidebar/SidebarHome";
