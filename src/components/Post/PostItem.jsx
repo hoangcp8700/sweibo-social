@@ -25,6 +25,9 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
     backgroundColor: "transparent",
     color: theme.palette.text.primary,
   },
+  '& svg': {
+    fill: theme.palette.text.primary,
+  }
   [theme.breakpoints.down("480")]: {
     fontSize: 12,
     padding: theme.spacing(0.5, 0),
@@ -44,7 +47,7 @@ const TypographyCustom = ({ children }) => {
     <Typography
       variant="body2"
       sx={[
-        { ...lineClampStyle(1), color: "text.secondary" },
+        { ...lineClampStyle(1), color: "text.primary" },
         (theme) => ({
           [theme.breakpoints.down("480")]: { fontSize: 12 },
         }),
@@ -58,24 +61,24 @@ const images = [
   {
     url: "https://cdn.pixabay.com/photo/2018/03/15/02/50/doll-3227004_960_720.jpg",
   },
-  {
-    url: "https://cdn.pixabay.com/photo/2018/11/09/18/24/human-rights-3805188_960_720.jpg",
-  },
-  {
-    url: "https://cdn.pixabay.com/photo/2018/03/02/09/10/woman-3192674_960_720.jpg",
-  },
-  {
-    url: "https://cdn.pixabay.com/photo/2018/03/15/02/50/doll-3227004_960_720.jpg",
-  },
-  {
-    url: "https://cdn.pixabay.com/photo/2015/02/11/16/38/coil-632650_960_720.jpg",
-  },
-  {
-    url: "https://cdn.pixabay.com/photo/2016/11/19/15/50/chair-1840011_960_720.jpg",
-  },
+  // {
+  //   url: "https://cdn.pixabay.com/photo/2018/11/09/18/24/human-rights-3805188_960_720.jpg",
+  // },
+  // {
+  //   url: "https://cdn.pixabay.com/photo/2018/03/02/09/10/woman-3192674_960_720.jpg",
+  // },
+  // {
+  //   url: "https://cdn.pixabay.com/photo/2018/03/15/02/50/doll-3227004_960_720.jpg",
+  // },
+  // {
+  //   url: "https://cdn.pixabay.com/photo/2015/02/11/16/38/coil-632650_960_720.jpg",
+  // },
+  // {
+  //   url: "https://cdn.pixabay.com/photo/2016/11/19/15/50/chair-1840011_960_720.jpg",
+  // },
 ];
 const PostItem = (props) => {
-  const { post, handleLightBox } = props;
+  const { post, handleLightBox, containerStyle } = props;
   const theme = useTheme();
   const isMobileRes = theme.breakpoints.down("sm");
 
@@ -85,6 +88,7 @@ const PostItem = (props) => {
       sx={{
         borderRadius: (theme) => theme.sizes.minBase,
         bgcolor: "background.navbar",
+        ...containerStyle,
       }}
     >
       <Stack>
@@ -93,7 +97,7 @@ const PostItem = (props) => {
           direction="row"
           alignItems="center"
           justifyContent="space-between"
-          sx={{ px: 2, py: 1 }}
+          sx={{ p: 2 }}
         >
           <Stack direction="row" alignItems="center" spacing={1}>
             <Avatar sx={{ width: 36, height: 36 }} />

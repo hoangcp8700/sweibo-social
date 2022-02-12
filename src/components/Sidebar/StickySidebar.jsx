@@ -1,7 +1,7 @@
 import React from "react";
 import StickyBox from "react-sticky-box";
 
-import { Box, Stack, styled } from "@mui/material";
+import { Box, Stack, styled, useTheme } from "@mui/material";
 
 const Container = styled(Box)(({ theme }) => ({
   maxWidth: theme.sizes.sidebar,
@@ -39,15 +39,12 @@ const Container = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StickySidebarCustom = ({
-  isShowSidebar,
-  containerStyle,
-  contentStyle,
-  children,
-  sx,
-}) => {
+const StickySidebarCustom = (props) => {
+  const { isShowSidebar, containerStyle, contentStyle, children, sx } = props;
+
+  const theme = useTheme();
   return (
-    <StickyBox>
+    <StickyBox offsetTop={theme.sizes.header}>
       <Box sx={{ position: "relative", zIndex: 2, ...sx }}>
         <Container sx={containerStyle}>
           <Stack spacing={1} className="content-scroll" sx={contentStyle}>

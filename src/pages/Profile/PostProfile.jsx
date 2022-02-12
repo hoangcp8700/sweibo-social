@@ -9,25 +9,36 @@ import {
 import { Box, Stack } from "@mui/material";
 import { usePost } from "hooks";
 import { ImageLightBox } from "components";
+import { InfiniteScroll } from "providers";
 
+const initialize = {
+  page: 1,
+  isNextPage: true,
+  data: [],
+  length: 0,
+};
 const PostProfile = () => {
   const { handleCreatePost, handleGetPostUser } = usePost();
 
   const [isCreate, setIsCreate] = React.useState(false);
-  const [posts, setPosts] = React.useState([]);
-  const [nextPage, setNextPage] = React.useState(1);
+  const [paginate, setPaginate] = React.useState(initialize);
   const [openLightBox, setOpenLightBox] = React.useState({
     open: false,
     images: [],
   });
 
   const handleGetPost = async () => {
-    const response = await handleGetPostUser(nextPage);
-    if (response.hasNextPage) {
-      setNextPage(response.next);
-    }
-    setPosts(response.data);
+    if (!paginate.isNextPage) return;
+    const response = await handleGetPostUser(paginate.page);
+    console.log("get post", response);
+    setPaginate({
+      page: response.next,
+      isNextPage: response.hasNextPage ? true : false,
+      data: [...paginate.data, ...response.data],
+      totalLength: response.totalLength,
+    });
   };
+  console.log("pagiante", paginate);
 
   React.useEffect(() => {
     const getPost = async () => {
@@ -87,7 +98,6 @@ const PostProfile = () => {
         </Stack>
 
         <Stack
-          spacing={2}
           sx={{
             flex: 1,
             width: "100%",
@@ -99,16 +109,26 @@ const PostProfile = () => {
             onClick={handleToggleIsCreate}
             handleSubmitPost={handleSubmitPost}
           />
-
-          {posts.length
-            ? posts.map((post) => (
+          {paginate?.totalLength > 0 ? (
+            <InfiniteScroll
+              isNextPage={paginate?.isNextPage}
+              data={paginate?.data}
+              fetch={handleGetPost}
+              handleRefresh={() => console.log("refreshh")}
+              endMessage={`Tổng cộng ${paginate?.totalLength} bài viết`}
+            >
+              {paginate?.data?.map((post) => (
                 <PostItem
                   key={post._id}
                   post={post}
                   handleLightBox={(lists) => handleToggleOpenLightBox(lists)}
+                  containerStyle={{ mt: 2 }}
                 />
-              ))
-            : ""}
+              ))}
+            </InfiniteScroll>
+          ) : (
+            ""
+          )}
         </Stack>
       </Stack>
     </Box>

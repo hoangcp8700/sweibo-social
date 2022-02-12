@@ -138,8 +138,17 @@ const Profile = () => {
           m: "0 auto",
         }}
       >
-        <Paper sx={{ bgcolor: "background.navbar" }}>
-          <Box>
+        <Paper
+          sx={{
+            bgcolor: "background.navbar",
+          }}
+        >
+          <Box
+            sx={{
+              maxWidth: (theme) => theme.breakpoints.values.md,
+              m: "0 auto",
+            }}
+          >
             {/* banner and avatar  */}
             <Paper
               sx={[
@@ -156,7 +165,7 @@ const Profile = () => {
                 sx={{
                   position: "relative",
                   width: "100%",
-                  height: { xs: 200, mobile: 300, sm: 400 },
+                  height: { xs: 150, mobile: 200, sm: 300 },
                 }}
               >
                 <Paper
@@ -173,7 +182,13 @@ const Profile = () => {
                   ]}
                 />
                 {isAuth ? (
-                  <Box sx={{ position: "absolute", bottom: 15, right: 40 }}>
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: { xs: 15, sm: "80%" },
+                      right: { xs: 20, sm: 40 },
+                    }}
+                  >
                     <MButton startIcon={icons.CameraIcon} variant="contained">
                       Thêm ảnh bìa
                     </MButton>
@@ -248,7 +263,13 @@ const Profile = () => {
 
                   {/* button upload avatar */}
                   {isAuth ? (
-                    <Box sx={{ position: "absolute", bottom: 10, right: 0 }}>
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        bottom: { xs: 5, sm: 10 },
+                        right: { xs: -5, sm: 0 },
+                      }}
+                    >
                       <Paper
                         elevation={5}
                         sx={{
@@ -263,6 +284,7 @@ const Profile = () => {
                           sx={{
                             "& svg": {
                               fill: (theme) => theme.palette.text.secondary,
+                              fontSize: { xs: 16, sm: 20 },
                             },
                           }}
                         >
@@ -386,6 +408,8 @@ const Profile = () => {
             </Stack>
 
             <Divider sx={{ mt: 2, mx: 3 }} />
+
+            {/* //menu */}
             <Box sx={{ px: 3, mt: 0.5 }}>
               <Stack direction="row" spacing={1} ref={menuProfileRef}>
                 {data?.menuProfile?.map((item, index) => {
@@ -395,17 +419,21 @@ const Profile = () => {
                       key={item.label}
                       sx={{
                         py: 1,
-                        px: 6,
                         position: "relative",
-                        color: match ? "primary.main" : "text.primary",
 
+                        flex: 1,
                         "&:hover": {
                           bgcolor: "background.opacity",
                         },
                       }}
                       onClick={() => handleRedirect(item.value)}
                     >
-                      {item.label}
+                      <Typography
+                        variant="body2"
+                        sx={{ color: match ? "primary.main" : "text.primary" }}
+                      >
+                        {item.label}
+                      </Typography>
                       <Box
                         sx={{
                           position: "absolute",
@@ -427,9 +455,16 @@ const Profile = () => {
           </Box>
         </Paper>
 
-        <Paper sx={{ bgcolor: "background.main", mt: 2 }}>
+        <Box
+          sx={{
+            maxWidth: (theme) => theme.breakpoints.values.md,
+            m: "0 auto",
+            mt: 2,
+            px: { xs: 1, sm: 3 },
+          }}
+        >
           <Outlet />
-        </Paper>
+        </Box>
       </Box>
     </Box>
   );

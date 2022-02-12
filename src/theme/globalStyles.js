@@ -19,8 +19,24 @@ const GlobalStyles = withStyles((theme) => ({
     body: {
       width: "100%",
       height: "100%",
-      background: "#E5E5E5",
       outline: "none",
+      background: theme.palette.background.main,
+
+      "&::-webkit-scrollbar-track": {
+        // boxShadow: "inset 0 0 6px rgba(0,0,0,0.3)",
+        borderRadius: "10px",
+        backgroundColor: theme.palette.background.opacity,
+      },
+
+      "&::-webkit-scrollbar": {
+        width: 10,
+        backgroundColor: "transparent",
+      },
+
+      "&::-webkit-scrollbar-thumb": {
+        backgroundColor: theme.palette.grey[500],
+        borderRadius: "10px",
+      },
     },
     "#root": {
       width: "100%",
