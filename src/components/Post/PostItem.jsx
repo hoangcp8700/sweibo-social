@@ -81,7 +81,7 @@ const images = [
   // },
 ];
 const PostItem = (props) => {
-  const { post, handleLightBox, containerStyle, handleActionPost } = props;
+  const { post, containerStyle, handleActionPost } = props;
   const theme = useTheme();
   const isMobileRes = theme.breakpoints.down("sm");
 
@@ -136,16 +136,11 @@ const PostItem = (props) => {
         </Stack>
 
         {/* content */}
-        <Stack>
+        <Stack onClick={() => handleActionPost("detail", post?._id)}>
           <Box sx={{ px: 2 }}>
             <Typography>{post?.content}</Typography>
           </Box>
-          <Stack
-            direction="row"
-            sx={{ mt: 1 }}
-            // onClick={() => handleLightBox(post?.images )}
-            onClick={() => handleLightBox(images)}
-          >
+          <Stack direction="row" sx={{ mt: 1 }}>
             <Masonry lists={images} />
           </Stack>
         </Stack>

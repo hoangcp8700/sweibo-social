@@ -15,6 +15,7 @@ import {
   PopupLikeOfPost,
   PopupCommentOfPost,
   PopupShareOfPost,
+  PopupDetailPost,
 } from "components";
 import { InfiniteScroll } from "providers";
 
@@ -111,6 +112,11 @@ const PostProfile = () => {
         postID={actionPost?.postID}
         onClose={() => handleActionPost({ name: "", postID: null })}
       />
+      <PopupDetailPost
+        open={actionPost.name === "detail"}
+        postID={actionPost?.postID}
+        onClose={() => handleActionPost({ name: "", postID: null })}
+      />
       <PopupCommentOfPost
         open={actionPost.name === "comment"}
         postID={actionPost?.postID}
@@ -173,7 +179,6 @@ const PostProfile = () => {
                   key={post._id}
                   post={post}
                   handleActionPost={handleActionPost}
-                  handleLightBox={(lists) => handleToggleOpenLightBox(lists)}
                   containerStyle={{ mt: 2 }}
                 />
               ))}
