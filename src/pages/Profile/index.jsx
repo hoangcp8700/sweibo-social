@@ -51,12 +51,12 @@ const Profile = () => {
   const [avatarDetail, setAvatarDetail] = React.useState(null);
 
   const parsed = queryString.parse(location?.search);
-  const isAuth = parsed.email ? false : true;
+  const isAuth = parsed?.email && parsed?.email !== user?.email ? false : true;
 
   React.useEffect(() => {
     const getProfile = async () => {
       if (!isAuth) {
-        const response = await handleGetUserByEmail(parsed.email);
+        const response = await handleGetUserByEmail(parsed?.email);
         console.log("response profile", response);
         if (!response) {
           return navigate("/404");

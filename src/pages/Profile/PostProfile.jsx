@@ -1,4 +1,6 @@
 import React from "react";
+import queryString from "query-string";
+import { useLocation } from "react-router-dom";
 import {
   InfomationUser,
   AlbumFriends,
@@ -6,7 +8,7 @@ import {
   InputCreatePost,
   PostItem,
 } from "components";
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { usePost } from "hooks";
 import {
   ImageLightBox,
@@ -24,23 +26,29 @@ const initialize = {
 };
 const PostProfile = () => {
   const { handleCreatePost, handleGetPostUser } = usePost();
-
-  const [actionPost, setActionPost] = React.useState({
-    name: "",
-    postID: null,
-  });
+  const location = useLocation();
 
   const [isCreate, setIsCreate] = React.useState(false);
-
   const [paginate, setPaginate] = React.useState(initialize);
   const [openLightBox, setOpenLightBox] = React.useState({
     open: false,
     images: [],
   });
 
+  const [actionPost, setActionPost] = React.useState({
+    name: "",
+    postID: null,
+  });
+
+  const parsed = queryString.parse(location?.search);
+  const isAuth = parsed.email ? false : true;
+
   const handleGetPost = async () => {
     if (!paginate.isNextPage) return;
-    const response = await handleGetPostUser(paginate.page);
+    const response = await handleGetPostUser(
+      paginate.page,
+      !isAuth ? parsed?.email : null
+    );
     setPaginate({
       page: response.next,
       isNextPage: response.hasNextPage ? true : false,
@@ -142,11 +150,16 @@ const PostProfile = () => {
             minWidth: { xs: "inherit", sm: 350, md: 320 },
           }}
         >
-          <InputCreatePost
-            open={isCreate}
-            onClick={handleToggleIsCreate}
-            handleSubmitPost={handleSubmitPost}
-          />
+          {isAuth ? (
+            <InputCreatePost
+              open={isCreate}
+              onClick={handleToggleIsCreate}
+              handleSubmitPost={handleSubmitPost}
+            />
+          ) : (
+            ""
+          )}
+
           {paginate?.totalLength > 0 ? (
             <InfiniteScroll
               isNextPage={paginate?.isNextPage}
@@ -166,7 +179,13 @@ const PostProfile = () => {
               ))}
             </InfiniteScroll>
           ) : (
-            ""
+            <Typography
+              variant="subtitle2"
+              align="center"
+              sx={{ color: "text.secondary", my: 5 }}
+            >
+              Hiện chưa có bài viết nào!
+            </Typography>
           )}
         </Stack>
       </Stack>

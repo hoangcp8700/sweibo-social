@@ -9,13 +9,85 @@ import {
   Box,
   Divider,
   IconButton,
+  Avatar,
+  Stack,
+  Typography,
 } from "@mui/material";
 import { icons } from "constants";
+import { Link } from "react-router-dom";
+import { PATH_PAGE } from "constants/paths";
+import typeLike from "utils/typeLike";
+import { fToNow } from "utils/formatTime";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const UserItem = (props) => {
+  const { item } = props;
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      spacing={1}
+    >
+      <Stack direction="row" spacing={1}>
+        <Avatar />
+        <Stack>
+          <Typography
+            variant="subtitle2"
+            component={Link}
+            sx={{
+              color: "text.primary",
+              "&:hover": { textDecoration: "underline" },
+            }}
+            to={`/${PATH_PAGE.profile.link}/posts?email=${item?.user?.email}`}
+          >
+            {item?.user?.firstName} {item?.user?.lastName}
+          </Typography>
+          <Typography variant="caption" sx={{ cursor: "context-menu" }}>
+            {item?.createdAt && fToNow(item?.createdAt)}
+          </Typography>
+        </Stack>
+      </Stack>
+      {typeLike(item?.type)}
+    </Stack>
+  );
+};
+
+const users = [
+  {
+    user: {
+      firstName: "abc",
+      lastName: "aaa",
+      email: "hoangcp219@gmail.com",
+      _id: 1,
+    },
+    createdAt: new Date(),
+    type: "Like",
+  },
+  {
+    user: {
+      firstName: "abc",
+      lastName: "aaa",
+      email: "hoangcp219@gmail.com",
+      _id: 21,
+    },
+    createdAt: new Date(),
+    type: "Like",
+  },
+  {
+    user: {
+      firstName: "abc",
+      lastName: "aaa",
+      email: "hoangcp219@gmail.com",
+      _id: 31,
+    },
+    createdAt: new Date(),
+    type: "Like",
+  },
+];
 export default function PopupLikeOfPost(props) {
   const { open, postID, onClose } = props;
 
@@ -69,7 +141,11 @@ export default function PopupLikeOfPost(props) {
           </Paper>
         </Box>
         <DialogContent>
-          <DialogContentText>like</DialogContentText>
+          <Stack spacing={2}>
+            {users?.length
+              ? users.map((item) => <UserItem key={item._id} item={item} />)
+              : ""}
+          </Stack>
         </DialogContent>
       </Paper>
     </Dialog>
