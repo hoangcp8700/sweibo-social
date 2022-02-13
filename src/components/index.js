@@ -17,7 +17,8 @@ export { default as PopupLikeOfPost } from "./Post/PopupLikeOfPost";
 export { default as PopupCommentOfPost } from "./Post/PopupCommentOfPost";
 export { default as PopupShareOfPost } from "./Post/PopupShareOfPost";
 export { default as PopupDetailPost } from "./Post/PopupDetailPost";
-export { default as CommentItem } from "./Post/CommentItem";
+export { default as CommentItem } from "./Comments/CommentItem";
+export { default as CommentItemChildren } from "./Comments/CommentItemChildren";
 
 // sidebar
 export { default as SidebarHome } from "./Sidebar/SidebarHome";
@@ -48,3 +49,4 @@ export { default as AvatarDetail } from "./AvatarDetail";
 
 export { default as Masonry } from "./Masonry";
 export { default as ImageLightBox } from "./ImageLightBox";
+export { default as PopupMenu } from "./PopupMenu";

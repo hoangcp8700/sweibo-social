@@ -118,6 +118,7 @@ const palette = {
       secondary: GREY[600],
       disabled: GREY[500],
       reverse: "#fff",
+      comment: GREY[900],
     },
     background: {
       paper: "#fff",
@@ -138,6 +139,7 @@ const palette = {
       secondary: GREY[500],
       disabled: GREY[600],
       reverse: GREY[800],
+      comment: GREY[200],
     },
     background: {
       paper: GREY[800],

@@ -51,7 +51,7 @@ const UserItem = (props) => {
           </Typography>
         </Stack>
       </Stack>
-      {typeLike(item?.type)}
+      {/* {item?.type && typeLike(item?.type)} */}
     </Stack>
   );
 };
