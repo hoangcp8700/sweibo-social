@@ -15,7 +15,7 @@ const TypographyStyle = ({ label, sx, ...props }) => {
       variant="subtitle2"
       sx={{
         fontSize: { xs: 10, sm: 13 },
-        color: "grey.200",
+        color: "text.secondary",
         cursor: "pointer",
         "&:hover": {
           textDecoration: "underline",
@@ -52,7 +52,7 @@ const CommentItem = (props) => {
         >
           <Typography
             variant="subtitle2"
-            sx={{ fontSize: 13, color: "common.white" }}
+            sx={{ fontSize: 13, color: "text.primary" }}
             component={Link}
             to={`/${PATH_PAGE.profile.link}/posts?email=hoangcp219@gmail.com`}
           >
@@ -60,7 +60,7 @@ const CommentItem = (props) => {
           </Typography>
           <Typography
             variant="body2"
-            sx={{ color: "grey.200", cursor: "comtext-menu" }}
+            sx={{ color: "text.primary", cursor: "comtext-menu" }}
           >
             Đầu nem tẹng wà cko mn nek 💌🎉 1. Lì xì ( 10 nqừi ) 💟 2. Fs ( 5
             nqừi )🎉 3. Pão wall 🎊 4. Cnn 💋 5. Xưq hô vk ck ( 7 days )
@@ -70,7 +70,7 @@ const CommentItem = (props) => {
           <TypographyStyle
             label={"Thích"}
             onClick={handleLikeCommentCustom}
-            sx={{ color: isLike ? "info.main" : "grey.200" }}
+            sx={{ color: isLike ? "info.main" : "text.secondary" }}
           />
           <TypographyStyle label={"Bình luận"} />
           <TypographyStyle label={fToNow(new Date())} />

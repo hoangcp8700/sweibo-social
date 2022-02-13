@@ -13,7 +13,10 @@ import {
   styled,
   Button,
   useTheme,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
+import { useAuth } from "hooks";
 import { icons } from "constants";
 import { Link } from "react-router-dom";
 import { PATH_PAGE } from "constants/paths";
@@ -101,6 +104,7 @@ const widthDefault = 380;
 
 export default function PopupLikeOfPost(props) {
   const { open, postID, onClose } = props;
+  const { user } = useAuth();
 
   React.useEffect(() => {
     if (!open || postID) return;
@@ -156,6 +160,7 @@ export default function PopupLikeOfPost(props) {
               overflowY: "auto",
             }}
           >
+            {/* // slide */}
             <Box
               sx={{
                 position: { xs: "relative", md: "sticky" },
@@ -220,14 +225,14 @@ export default function PopupLikeOfPost(props) {
                   <Stack>
                     <Typography
                       variant="subtitle2"
-                      sx={{ color: "common.white" }}
+                      sx={{ color: "text.primary" }}
                     >
                       hoang cp
                     </Typography>
                     <Stack direction="row" alignItems="center" spacing={1}>
                       <Typography
                         variant="caption"
-                        sx={{ color: "common.white" }}
+                        sx={{ color: "text.primary" }}
                       >
                         {fToNow(new Date())}
                       </Typography>
@@ -236,7 +241,7 @@ export default function PopupLikeOfPost(props) {
                           p: 0,
                           "& svg": {
                             fontSize: 14,
-                            fill: (theme) => theme.palette.common.white,
+                            fill: (theme) => theme.palette.text.primary,
                           },
                         }}
                       >
@@ -321,7 +326,7 @@ export default function PopupLikeOfPost(props) {
                         fill: (theme) =>
                           isLike
                             ? theme.palette.info.main
-                            : theme.palette.common.white,
+                            : theme.palette.text.primary,
                       },
                     }}
                     startIcon={isLike ? icons.LikeIcon : icons.NoLikeIcon}
@@ -350,15 +355,45 @@ export default function PopupLikeOfPost(props) {
               {/* // input create comment */}
               <Box
                 sx={{
-                  bgcolor: "primary.main",
+                  bgcolor: "background.navbar",
                   width: "100%",
                   maxWidth: { xs: "auto", md: widthDefault },
-                  height: 50,
+                  height: 60,
                   position: "absolute",
                   bottom: 0,
                 }}
               >
-                asd
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="center"
+                  spacing={1}
+                  sx={{ px: 2, height: "100%" }}
+                >
+                  <Avatar
+                    sx={{ width: 28, height: 28 }}
+                    src={user?.avatar?.url}
+                  />
+                  <TextField
+                    fullWidth
+                    sx={{
+                      "& input": { py: 1, fontSize: 14 },
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: (theme) => theme.sizes.radius,
+                      },
+                    }}
+                    placeholder="Viết bình luận"
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton sx={{ "& svg": { fontSize: 20 } }}>
+                            {icons.EmojiEmotionsIcon}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Stack>
               </Box>
             </Box>
           </Stack>
