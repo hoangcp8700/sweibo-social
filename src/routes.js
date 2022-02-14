@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { Navigate, useRoutes } from "react-router-dom";
+import { Navigate, Outlet, useRoutes } from "react-router-dom";
 
 // layouts
 import MainLayout from "components/layouts/LayoutMain";
@@ -34,6 +34,15 @@ const routes = () => {
       ),
       children: [
         { path: PATH_PAGE.home.link, element: <HomePage /> },
+        {
+          path: PATH_PAGE.post.link,
+          element: <Outlet />,
+          children: [
+            {
+              children: [{ path: ":id", element: <PostDetailPage /> }],
+            },
+          ],
+        },
         {
           path: PATH_PAGE.friend.link,
           element: <FriendPage />,
@@ -178,6 +187,9 @@ const PostProfilePage = Loadable(
 const FriendProfilePage = Loadable(
   lazy(() => import("pages/Profile/FriendProfile"))
 );
+
+// post
+const PostDetailPage = Loadable(lazy(() => import("pages/Post/PostDetail")));
 
 // authentication
 const LoginPage = Loadable(lazy(() => import("pages/Authentication/Login")));

@@ -33,19 +33,23 @@ const ButtonStyle = styled(Button)(({ theme, styleProps }) => {
 
   const styleText = (color) => ({
     color: theme.palette[color].main,
+  });
+
+  const styleCancel = () => ({
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.opacity2,
     "&:hover": {
-      //   backgroundColor: alpha(
-      //     theme.palette[color].main,
-      //     theme.palette.action.hoverOpacity
-      //   ),
+      color: theme.palette.text.primary,
     },
   });
+
   return {
     textTransform: "inherit",
 
     ...(variant === "contained" && { ...styleContained(color) }),
     ...(variant === "outlined" && { ...styleOutlined(color) }),
     ...(variant === "text" && { ...styleText(color) }),
+    ...(variant === "cancel" && { ...styleCancel(color) }),
   };
 });
 

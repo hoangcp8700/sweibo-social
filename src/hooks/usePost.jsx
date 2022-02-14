@@ -30,11 +30,22 @@ const usePost = () => {
       console.log("err", error);
     }
   };
-
   const handleGetPostAll = async (page = 1) => {
     try {
       const link = `?page=${page}`;
       const response = await axios.get(`${routes.posts().getAll}${link}`);
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+    }
+  };
+
+  /// ------------------  comments
+
+  const handleGetComments = async (page = 1, postID) => {
+    try {
+      const link = `?page=${page}`;
+      const response = await axios.get(`${routes.comments(postID).get}${link}`);
       return response.data;
     } catch (error) {
       console.log("err", error);
@@ -52,12 +63,41 @@ const usePost = () => {
       return false;
     }
   };
-
+  const handleSubmitEditComment = async (content, postID, commentID) => {
+    try {
+      const response = await axios.put(
+        routes.comments(postID, commentID).update,
+        {
+          content,
+        }
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log("err", error.response);
+      return false;
+    }
+  };
+  const handleDeleteComment = async (postID, commentID) => {
+    try {
+      const response = await axios.delete(
+        routes.comments(postID, commentID).update
+      );
+      return response.data;
+    } catch (error) {
+      console.log("err", error.response);
+      return false;
+    }
+  };
   return {
     handleCreatePost,
     handleGetPostUser,
     handleGetPostAll,
+
+    // comments
     handleCreateComment,
+    handleGetComments,
+    handleSubmitEditComment,
+    handleDeleteComment,
   };
 };
 

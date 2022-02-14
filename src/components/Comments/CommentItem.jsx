@@ -6,6 +6,7 @@ import {
   Stack,
   Box,
   Typography,
+  TextareaAutosize,
 } from "@mui/material";
 import { PATH_PAGE } from "constants/paths";
 import { Link } from "react-router-dom";
@@ -13,6 +14,7 @@ import { fToNow } from "utils/formatTime";
 import { icons } from "constants";
 import { lineClampStyle } from "utils/lineClampStyle";
 import { PopupMenu, LoadingEllipsisElement } from "components";
+import { MButton } from "components/MUI";
 
 const TypographyStyle = ({ label, sx, ...props }) => {
   return (
@@ -40,34 +42,58 @@ const menus = [
 ];
 
 const CommentItem = (props) => {
-  // const { item, children, handleGetCommentChildren } = props;
-  const { item } = props;
-  const [isLike, setIsLike] = React.useState(false);
-  // const [isLoading, setIsLoading] = React.useState(false);
+  const {
+    item,
+    user,
+    editCommentID,
+    handleIsEditComment,
+    handleSubmitEditComment,
+    handleDeleteComment,
+  } = props;
   const [openMenu, setOpenMenu] = React.useState(false);
+  const [form, setForm] = React.useState({ comment: "" });
 
   const menuRef = React.useRef();
 
-  const handleLikeCommentCustom = () => {
-    setIsLike(!isLike);
+  React.useEffect(() => {
+    if (!editCommentID) return;
+    setForm({ comment: item?.content });
+  }, [editCommentID]);
+
+  const handleToggleOpenMenu = () => setOpenMenu(!openMenu);
+  const handleChangeForm = React.useCallback(
+    (e) => setForm({ ...form, [e.target.name]: e.target.value }),
+    [form]
+  );
+
+  const handleToggleEdit = (commentID) => {
+    handleIsEditComment(commentID || null);
   };
 
-  // const handleGetCommentChildrenCustom = async () => {
-  //   setIsLoading(true);
-  //   const response = await handleGetCommentChildren(item._id);
-  //   console.log("re", response);
-  //   if (response) {
-  //     setIsLoading(false);
-  //   }
-  // };
-  const handleToggleOpenMenu = () => setOpenMenu(!openMenu);
+  const handleActions = (name, commentID) => {
+    console.log(name);
+    if (name === "edit") {
+      handleToggleEdit(commentID);
+    }
+    if (name === "delete") {
+      handleDeleteComment(commentID);
+    }
+    handleToggleOpenMenu();
+  };
 
+  const handleSubmitEditCommentCustom = async () => {
+    if (!form?.comment) return;
+    const response = await handleSubmitEditComment(form?.comment, item?._id);
+    if (response) {
+      setForm({ comment: "" });
+    }
+  };
   return (
     <Box sx={{ position: "relative" }}>
       <PopupMenu
         open={openMenu}
         onClose={handleToggleOpenMenu}
-        onClick={(action) => console.log("action", action)}
+        onClick={(action) => handleActions(action, item?._id)}
         ref={menuRef}
         lists={menus}
       />
@@ -82,7 +108,7 @@ const CommentItem = (props) => {
           >
             <Avatar src={item?.avatar?.url} sx={{ width: 36, height: 36 }} />
           </Typography>
-          <Stack>
+          <Stack sx={{ flexGrow: 1, overflowWrap: "anywhere" }}>
             <Box
               sx={{
                 bgcolor: "background.opacity1",
@@ -116,29 +142,74 @@ const CommentItem = (props) => {
                 >
                   {item?.createdBy?.firstName} {item?.createdBy?.lastName}
                 </Typography>
-                <IconButton
-                  className="dot"
-                  ref={menuRef}
-                  onClick={handleToggleOpenMenu}
-                  sx={{
-                    p: 0,
-                    opacity: 0,
-                    "& svg": {
-                      fill: (theme) => theme.palette.text.primary,
-                      fontSize: 16,
-                    },
-                  }}
-                >
-                  {icons.MoreHorizIcon}
-                </IconButton>
+                {!editCommentID ? (
+                  <IconButton
+                    className="dot"
+                    ref={menuRef}
+                    onClick={handleToggleOpenMenu}
+                    sx={{
+                      p: 0,
+                      opacity: 0,
+                      "& svg": {
+                        fill: (theme) => theme.palette.text.primary,
+                        fontSize: 16,
+                      },
+                    }}
+                  >
+                    {icons.MoreHorizIcon}
+                  </IconButton>
+                ) : (
+                  ""
+                )}
               </Stack>
 
-              <Typography
-                variant="body2"
-                sx={{ color: "text.comment", cursor: "comtext-menu" }}
-              >
-                {item?.content}
-              </Typography>
+              {/* /// comment */}
+              {editCommentID ? (
+                <Box>
+                  <Box sx={{ mb: 1 }}>
+                    <TextareaAutosize
+                      style={{
+                        width: "100%",
+                        fontSize: 14,
+                        background: "transparent",
+                        outline: "none",
+                        border: "none",
+                        resize: "none",
+                        fontFamily: "Public Sans,sans-serif",
+                        color: user?.settings?.isDarkMode
+                          ? "#EAEAEA"
+                          : "#161C24",
+                      }}
+                      value={form?.comment}
+                      name="comment"
+                      onChange={handleChangeForm}
+                    />
+                  </Box>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <MButton
+                      variant="contained"
+                      sx={{ fontSize: 12, py: 0.5 }}
+                      onClick={handleSubmitEditCommentCustom}
+                    >
+                      Sửa
+                    </MButton>
+                    <MButton
+                      variant="cancel"
+                      sx={{ fontSize: 12, py: 0.5 }}
+                      onClick={() => handleToggleEdit()}
+                    >
+                      Hủy bỏ
+                    </MButton>
+                  </Stack>
+                </Box>
+              ) : (
+                <Typography
+                  variant="body2"
+                  sx={{ color: "text.comment", cursor: "comtext-menu" }}
+                >
+                  {item?.content}
+                </Typography>
+              )}
             </Box>
 
             <Stack direction="row" spacing={2} sx={{ ml: 2, mt: 0.25 }}>
@@ -153,27 +224,16 @@ const CommentItem = (props) => {
                   // onClick={handleGetCommentChildrenCustom}
                 />
               </Badge> */}
-              <TypographyStyle label={fToNow(new Date())} />
+              {item?.createdAt ? (
+                <TypographyStyle label={fToNow(item?.createdAt)} />
+              ) : (
+                ""
+              )}
             </Stack>
           </Stack>
         </Stack>
       </Box>
 
-      {/* {isLoading ? (
-        <Box
-          sx={{
-            "& .lds-ellipsis": {
-              width: 30,
-              height: 30,
-              "& div": { width: 8, height: 8, top: 15 },
-            },
-          }}
-        >
-          <LoadingEllipsisElement />
-        </Box>
-      ) : (
-        ""
-      )} */}
       {/* {children ? <Stack sx={{ ml: 7, mt: 2, gap: 1 }}>{children}</Stack> : ""} */}
     </Box>
   );

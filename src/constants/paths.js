@@ -40,6 +40,7 @@ const PATH_PAGE = {
     link: "profiles",
     title: "Thông tin",
   },
+  post: { path: path(ROOTS_PAGE, "/posts"), link: "posts" },
 };
 
 export { PATH_AUTH, PATH_PAGE };

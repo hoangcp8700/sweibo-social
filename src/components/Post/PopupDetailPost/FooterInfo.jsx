@@ -70,15 +70,12 @@ const FooterInfo = (props) => {
         </Stack>
 
         <Stack direction="row" alignItems="center" spacing={2}>
-          {commentLength > 0 ? (
-            <TypographyCustom
-            // onClick={() => handleActionPost("comment", post?._id)}
-            >
-              {commentLength} bình luận
-            </TypographyCustom>
-          ) : (
-            ""
-          )}
+          <TypographyCustom
+          // onClick={() => handleActionPost("comment", post?._id)}
+          >
+            {commentLength} bình luận
+          </TypographyCustom>
+
           <TypographyCustom
           // onClick={() => handleActionPost("share", post?._id)}
           >
