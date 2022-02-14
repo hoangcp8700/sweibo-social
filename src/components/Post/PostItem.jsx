@@ -136,13 +136,21 @@ const PostItem = (props) => {
         </Stack>
 
         {/* content */}
-        <Stack onClick={() => handleActionPost("detail", post?._id)}>
+        <Stack>
           <Box sx={{ px: 2 }}>
             <Typography>{post?.content}</Typography>
           </Box>
-          <Stack direction="row" sx={{ mt: 1 }}>
-            <Masonry lists={images} />
-          </Stack>
+          {post?.images ? (
+            <Stack
+              direction="row"
+              sx={{ mt: 1 }}
+              onClick={() => handleActionPost("detail", post?._id)}
+            >
+              <Masonry lists={post?.images} />
+            </Stack>
+          ) : (
+            ""
+          )}
         </Stack>
 
         {/* footer */}

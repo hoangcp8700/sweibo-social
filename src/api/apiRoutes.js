@@ -28,8 +28,16 @@ const posts = (id) => {
     getPostUser: `/posts/user`,
   };
 };
+
+const comments = (postID, commentID) => {
+  return {
+    get: `/posts/${postID}/comments`,
+    update: `/posts/${postID}/comments/${commentID}`,
+  };
+};
 export default {
   authentication,
   users,
   posts,
+  comments,
 };

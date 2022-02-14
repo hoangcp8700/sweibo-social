@@ -7,7 +7,7 @@ const usePost = () => {
     try {
       const formData = await new FormData();
       await Object.keys(form).map((key) => {
-        if (key === "files") {
+        if (key === "files" && form[key].length) {
           return form[key].map((item) => formData.append(key, item));
         }
         return formData.append(key, form[key]);
@@ -15,9 +15,9 @@ const usePost = () => {
 
       const response = await axios.post(routes.posts().create, formData);
       return response.data.data;
-      console.log("handleCreatePost ", response);
     } catch (error) {
-      console.log("err", error);
+      console.log("err", error.response);
+      return { error: error.response.data };
     }
   };
 
@@ -40,7 +40,25 @@ const usePost = () => {
       console.log("err", error);
     }
   };
-  return { handleCreatePost, handleGetPostUser, handleGetPostAll };
+
+  const handleCreateComment = async (content, postID) => {
+    try {
+      const response = await axios.post(routes.comments(postID).get, {
+        content,
+      });
+      return response.data.data;
+    } catch (error) {
+      console.log("err", error.response);
+      return false;
+    }
+  };
+
+  return {
+    handleCreatePost,
+    handleGetPostUser,
+    handleGetPostAll,
+    handleCreateComment,
+  };
 };
 
 export default usePost;

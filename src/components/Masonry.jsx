@@ -14,6 +14,7 @@ const BoxMore = ({ countMore }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        zIndex: 1,
       }}
     >
       <Typography variant="h3" sx={{ cursor: "context-menu" }}>
@@ -40,7 +41,7 @@ const MasonryComponent = ({ lists, columnsCount = 2 }) => {
           <Box sx={{ width: "100%", height: "100%", position: "relative" }}>
             {/* <LazyLoad height={200}> */}
             <img
-              src={item.url}
+              src={item.url || item?.secure_url}
               style={{
                 width: "100%",
                 height: "100%",

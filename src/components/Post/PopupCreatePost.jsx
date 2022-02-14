@@ -72,6 +72,7 @@ const images = [
 const initialize = {
   content: "",
   status: "",
+  files: [],
 };
 
 const PopupCreatePost = (props) => {
@@ -98,26 +99,21 @@ const PopupCreatePost = (props) => {
 
   const handleSubmit = React.useCallback(async () => {
     setIsSubmitting(true);
-    try {
-      if (form?.files?.length) {
-        form.files = form.files.map((item) => item.file);
-      }
-      await handleSubmitPost(form);
-      setForm(initialize);
-      setIsSubmitting(false);
-    } catch (error) {
-      setIsSubmitting(false);
-      console.log("error", error);
+    const response = await handleSubmitPost({
+      ...form,
+      files: form?.files?.length ? form.files.map((item) => item.file) : [],
+    });
+    setIsSubmitting(false);
+    if (response) {
+      await setForm(initialize);
     }
-  }, [isSubmitting, form, handleSubmitPost]);
+  }, [form, handleSubmitPost]);
 
   const handleToggleOpenEmoji = () => setOpenEmoji(!openEmoji);
-  const handleToggleOpenLightBox = React.useCallback(
-    (value) => {
-      setOpenLightBox(value);
-    },
-    [openLightBox]
-  );
+
+  const handleToggleOpenLightBox = React.useCallback((value) => {
+    setOpenLightBox(value);
+  }, []);
 
   const handleUploadFilePost = React.useCallback(
     async (e) => {
@@ -144,7 +140,7 @@ const PopupCreatePost = (props) => {
         setIsLoading(false);
       }
     },
-    [form, isLoading, isAddFilePost]
+    [enqueueSnackbar, form, isAddFilePost]
   );
 
   return (
@@ -232,6 +228,8 @@ const PopupCreatePost = (props) => {
             sx={{
               minHeight: 400,
               maxHeight: 440,
+              pt: 0,
+              mt: 2,
               "&::-webkit-scrollbar-track": {
                 // boxShadow: "inset 0 0 6px rgba(0,0,0,0.3)",
                 borderRadius: "10px",

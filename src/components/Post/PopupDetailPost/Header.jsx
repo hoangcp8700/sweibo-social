@@ -4,7 +4,7 @@ import { fToNow } from "utils/formatTime";
 import { icons } from "constants";
 
 const Header = React.forwardRef((props, ref) => {
-  const { handleToggleOpenMenu } = props;
+  const { handleToggleOpenMenu, post } = props;
   return (
     <Stack
       direction="row"
@@ -13,14 +13,17 @@ const Header = React.forwardRef((props, ref) => {
       sx={{ px: 2 }}
     >
       <Stack direction="row" alignItems="center" spacing={1}>
-        <Avatar sx={{ width: 36, height: 36 }} />
+        <Avatar
+          sx={{ width: 36, height: 36 }}
+          src={post?.createdBy?.avatar?.url}
+        />
         <Stack>
           <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
-            hoang cp
+            {post?.createdBy?.firstName} {post?.createdBy?.lastName}
           </Typography>
           <Stack direction="row" alignItems="center" spacing={1}>
             <Typography variant="caption" sx={{ color: "text.primary" }}>
-              {fToNow(new Date())}
+              {post?.createdAt && fToNow(post?.createdAt)}
             </Typography>
             <IconButton
               sx={{

@@ -18,6 +18,7 @@ import {
   PopupDetailPost,
 } from "components";
 import { InfiniteScroll } from "providers";
+import { useSnackbar } from "notistack";
 
 const initialize = {
   page: 1,
@@ -28,6 +29,7 @@ const initialize = {
 const PostProfile = () => {
   const { handleCreatePost, handleGetPostUser } = usePost();
   const location = useLocation();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [isCreate, setIsCreate] = React.useState(false);
   const [paginate, setPaginate] = React.useState(initialize);
@@ -68,12 +70,13 @@ const PostProfile = () => {
   const handleSubmitPost = async (form) => {
     try {
       const response = await handleCreatePost(form);
-      if (response) {
+      if (!response.error) {
         setPaginate({ ...paginate, data: [response, ...paginate.data] });
         handleToggleIsCreate();
+        return true;
       }
-
-      console.log("handleSubmitPost", response);
+      enqueueSnackbar(response.error.message, { variant: "warning" });
+      return false;
     } catch (error) {
       console.log("err", error);
     }
@@ -90,8 +93,14 @@ const PostProfile = () => {
   const handleToggleIsCreate = () => setIsCreate(!isCreate);
 
   const handleActionPost = React.useCallback(
-    (name, postID) => setActionPost({ name, postID }),
-    [actionPost]
+    (name, postID) => {
+      if (name === "detail") {
+        const getPost = paginate?.data?.filter((item) => item?._id === postID);
+        return setActionPost({ name, postID, post: getPost[0] });
+      }
+      setActionPost({ name, postID });
+    },
+    [paginate]
   );
 
   return (
@@ -115,6 +124,7 @@ const PostProfile = () => {
       <PopupDetailPost
         open={actionPost.name === "detail"}
         postID={actionPost?.postID}
+        post={actionPost?.post}
         onClose={() => handleActionPost({ name: "", postID: null })}
       />
       <PopupCommentOfPost

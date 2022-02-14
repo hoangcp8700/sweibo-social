@@ -9,7 +9,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useAuth } from "hooks";
+import { useAuth, usePost } from "hooks";
 import { icons } from "constants";
 import { Link } from "react-router-dom";
 import { PATH_PAGE } from "constants/paths";
@@ -34,8 +34,10 @@ const exampleComments = [
         url: "https://cdn.pixabay.com/photo/2018/03/15/02/50/doll-3227004_960_720.jpg",
       },
     },
-    content:
-      "Máy tính của bạn trở nên quá tải đến từ các nguyên nhân như WMI Provider Host (WmiPrvSE.EXE), System Idle Process, Svchost.exe (netscvs), các tiến trình chạy ngầm hay trình diệt virus và sự xuất hiện của virus cũng sẽ khiến máy hoạt động chậm đi, cụ thể như s",
+    comment: {
+      content:
+        "Máy tính của bạn trở nên quá tải đến từ các nguyên nhân như WMI Provider Host (WmiPrvSE.EXE), System Idle Process, Svchost.exe (netscvs), các tiến trình chạy ngầm hay trình diệt virus và sự xuất hiện của virus cũng sẽ khiến máy hoạt động chậm đi, cụ thể như s",
+    },
     _id: "11232312a",
   },
   {
@@ -66,8 +68,9 @@ const initialize = {
 };
 
 export default function PopupDetailPost(props) {
-  const { open, postID, onClose } = props;
+  const { open, postID, onClose, post } = props;
   const { user } = useAuth();
+  const { handleCreateComment } = usePost();
 
   const [comments, setComments] = React.useState(exampleComments);
   const [form, setForm] = React.useState({ comment: "" });
@@ -98,22 +101,13 @@ export default function PopupDetailPost(props) {
 
   const handleSubmitComment = React.useCallback(async () => {
     if (!form.comment) return;
-    console.log("form", form);
-    const newComment = {
-      createdBy: {
-        firstName: "Nguyễn Thị",
-        lastName: "Uyên",
-        avatar: {
-          url: "https://cdn.pixabay.com/photo/2018/03/15/02/50/doll-3227004_960_720.jpg",
-        },
-      },
-      content: form.comment,
-      _id: "12312a",
-    };
-
-    setComments([newComment, ...comments]);
-    setForm({ comment: "" });
-  }, [form]);
+    const response = await handleCreateComment(form.comment, postID);
+    if (response) {
+      setComments([response, ...comments]);
+      setForm({ comment: "" });
+    }
+    console.log("resss", response);
+  }, [comments, form.comment, postID]);
 
   // const handleGetCommentChildren = async (commentID) => {
   //   const newComments = comments.map((item) => {
@@ -203,7 +197,7 @@ export default function PopupDetailPost(props) {
             }}
           >
             {/* // slide */}
-            <SlideImage />
+            <SlideImage post={post} />
 
             {/* content */}
             <Box
@@ -215,19 +209,13 @@ export default function PopupDetailPost(props) {
             >
               <Header
                 ref={menuRef}
+                post={post}
                 handleToggleOpenMenu={handleToggleOpenMenu}
               />
 
               {/* content */}
               <Box sx={{ m: 2 }}>
-                <Typography>
-                  Đầu nem tẹng wà cko mn nek 💌🎉 1. Lì xì ( 10 nqừi ) 💟 2. Fs
-                  ( 5 nqừi )🎉 3. Pão wall 🎊 4. Cnn 💋 5. Xưq hô vk ck ( 7 days
-                  ) ❤ 6. Pão tjm avatar ( hết lun ) 💕 7. Avatar ckéo ( 1 nqừi
-                  may mắn nke ) 💙 8. Đi chơy 3 chung ngày 3 đim 9. Ib lwen .
-                  Hợp iu lun nek 💌 10. Cho 🍭 Mấy pn ckọn ik nek 💫 iu lém á 😙
-                  :)))
-                </Typography>
+                <Typography>{post?.content}</Typography>
               </Box>
 
               {/* footer */}

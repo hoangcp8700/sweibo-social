@@ -34,7 +34,7 @@ const images = [
 ];
 
 const SlideImage = (props) => {
-  const { lists } = props;
+  const { post } = props;
   return (
     <Box
       sx={{
@@ -66,17 +66,19 @@ const SlideImage = (props) => {
     >
       <Box>
         <Slider {...settings}>
-          {images.map((item, index) => (
-            <Box
-              key={index}
-              sx={{
-                width: "100%",
-                height: { xs: "50vh", md: "100vh" },
-              }}
-            >
-              <img src={item.url} alt={index} />
-            </Box>
-          ))}
+          {post?.images?.length
+            ? post?.images?.map((item, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    width: "100%",
+                    height: { xs: "50vh", md: "100vh" },
+                  }}
+                >
+                  <img src={item.url || item.secure_url} alt={index} />
+                </Box>
+              ))
+            : ""}
         </Slider>
       </Box>
     </Box>
