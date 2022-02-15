@@ -79,7 +79,7 @@ export default function PopupDetailPost(props) {
     handleGetComments,
     handleSubmitEditComment,
     handleDeleteComment,
-    handleGetPostById,
+    handleToggleLike,
   } = usePost();
 
   const [comments, setComments] = React.useState(exampleComments);
@@ -112,11 +112,13 @@ export default function PopupDetailPost(props) {
     };
   }, [open, postID]);
 
-  const [isLike, setIsLike] = React.useState(false);
-
-  const handleLikePost = () => setIsLike(!isLike);
   const handleToggleOpenMenu = () => setOpenMenu(!openMenu);
 
+  const isLike = post?.likes?.length ? post?.likes?.includes(user?._id) : false;
+  const handleLikePostCustom = async () => {
+    const response = await handleToggleLike(postID);
+    console.log("handleToggleLike", response);
+  };
   // const handleGetCommentChildren = async (commentID) => {
   //   const newComments = comments.map((item) => {
   //     if (item._id !== commentID) return item;
@@ -274,12 +276,15 @@ export default function PopupDetailPost(props) {
 
               {/* footer */}
               <FooterInfo
-                likeLength={post?.likes}
+                likeLength={post?.likes?.length}
                 commentLength={paginate?.totalLength}
               />
 
               {/* action footer */}
-              <FooterActions isLike={isLike} handleLikePost={handleLikePost} />
+              <FooterActions
+                isLike={isLike}
+                handleLikePost={handleLikePostCustom}
+              />
 
               {/* // comments */}
               <Box sx={{ px: 2 }}>

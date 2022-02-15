@@ -35,7 +35,7 @@ const EmojiButtonStyle = styled(IconButton)(({ theme }) => ({
 }));
 
 const FooterInfo = (props) => {
-  const { commentLength } = props;
+  const { commentLength, likeLength } = props;
   const theme = useTheme();
   const isMobileRes = theme.breakpoints.down("sm");
 
@@ -53,18 +53,12 @@ const FooterInfo = (props) => {
           >
             {icons.LikeIcon}
           </EmojiButtonStyle>
-          <EmojiButtonStyle
-            sx={{
-              svg: { fill: (theme) => theme.palette.error.main },
-            }}
-          >
-            {icons.HeartIcon}
-          </EmojiButtonStyle>
-          <Box sx={{ ml: !isMobileRes ? 2 : 1 }}>
+
+          <Box sx={{ ml: 0.5 }}>
             <TypographyCustom
             // onClick={() => handleActionPost("like", post?._id)}
             >
-              {!isMobileRes ? `Phạm thanh tùng và 20k người khác` : 2321}
+              {likeLength}
             </TypographyCustom>
           </Box>
         </Stack>

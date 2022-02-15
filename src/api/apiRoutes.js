@@ -37,7 +37,8 @@ const comments = (postID, commentID) => {
 };
 const likes = (postID) => {
   return {
-    get: `/posts/${postID}/likes`,
+    get: `/posts/${postID}/likes/action`,
+    lists: `/posts/${postID}/likes/lists`,
   };
 };
 export default {

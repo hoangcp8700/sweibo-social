@@ -33,6 +33,10 @@ const FooterActions = ({ isLike, handleLikePost }) => {
               fill: (theme) =>
                 isLike ? theme.palette.info.main : theme.palette.text.primary,
             },
+            color: isLike ? "info.main" : "text.primary",
+            "&:hover": {
+              color: isLike ? "info.main" : "text.secondary",
+            },
           }}
           startIcon={isLike ? icons.LikeIcon : icons.NoLikeIcon}
           onClick={handleLikePost}

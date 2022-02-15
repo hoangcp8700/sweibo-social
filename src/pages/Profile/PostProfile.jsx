@@ -31,7 +31,6 @@ const PostProfile = () => {
   const { handleCreatePost, handleGetPostUser } = usePost();
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
-  const navigate = useNavigate();
 
   const [isCreate, setIsCreate] = React.useState(false);
   const [paginate, setPaginate] = React.useState(initialize);
@@ -40,7 +39,6 @@ const PostProfile = () => {
     images: [],
   });
 
-  console.log("paginate", paginate);
   const [actionPost, setActionPost] = React.useState({
     name: "",
     postID: null,

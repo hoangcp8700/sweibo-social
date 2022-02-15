@@ -109,9 +109,9 @@ const usePost = () => {
     }
   };
 
-  const handleToggleLike = async (postID, action) => {
+  const handleToggleLike = async (postID) => {
     try {
-      const response = await axios.post(routes.likes(postID).get, { action });
+      const response = await axios.get(routes.likes(postID).get);
       return response.data;
     } catch (error) {
       console.log("err", error.response);
