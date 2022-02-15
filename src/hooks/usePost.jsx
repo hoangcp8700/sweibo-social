@@ -48,6 +48,14 @@ const usePost = () => {
       console.log("err", error);
     }
   };
+  const handleDeletePost = async (postID) => {
+    try {
+      const response = await axios.delete(`${routes.posts().getAll}/${postID}`);
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+    }
+  };
 
   /// ------------------  comments
 
@@ -111,7 +119,7 @@ const usePost = () => {
 
   const handleToggleLike = async (postID) => {
     try {
-      const response = await axios.get(routes.likes(postID).get);
+      const response = await axios.get(routes.likes(postID).action);
       return response.data;
     } catch (error) {
       console.log("err", error.response);
@@ -124,6 +132,7 @@ const usePost = () => {
     handleGetPostUser,
     handleGetPostAll,
     handleGetPostById,
+    handleDeletePost,
 
     // comments
     handleCreateComment,

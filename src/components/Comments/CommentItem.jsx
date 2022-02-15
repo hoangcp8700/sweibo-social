@@ -106,7 +106,10 @@ const CommentItem = (props) => {
             component={Link}
             to={`/${PATH_PAGE.profile.link}/posts?email=hoangcp219@gmail.com`}
           >
-            <Avatar src={item?.avatar?.url} sx={{ width: 36, height: 36 }} />
+            <Avatar
+              src={item?.createdBy?.avatar?.url}
+              sx={{ width: 36, height: 36 }}
+            />
           </Typography>
           <Stack sx={{ flexGrow: 1, overflowWrap: "anywhere" }}>
             <Box

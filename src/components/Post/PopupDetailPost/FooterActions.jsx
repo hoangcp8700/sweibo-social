@@ -23,7 +23,7 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
   },
 }));
 
-const FooterActions = ({ isLike, handleLikePost }) => {
+const FooterActions = ({ isLike, handleLikePost, handleGetComments }) => {
   return (
     <Box>
       <Stack direction="row" alignItems="center">
@@ -43,8 +43,10 @@ const FooterActions = ({ isLike, handleLikePost }) => {
         >
           Thích
         </ButtonStyle>
-        <ButtonStyle startIcon={icons.CommentIcon}>Bình luận</ButtonStyle>
-        <ButtonStyle startIcon={icons.ShareIcon}>Chia sẽ</ButtonStyle>
+        <ButtonStyle startIcon={icons.CommentIcon} onClick={handleGetComments}>
+          Bình luận
+        </ButtonStyle>
+        <ButtonStyle startIcon={icons.ShareIcon}>Chia sẻ</ButtonStyle>
       </Stack>
     </Box>
   );

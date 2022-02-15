@@ -18,22 +18,26 @@ import { Link } from "react-router-dom";
 import { PATH_PAGE } from "constants/paths";
 import typeLike from "utils/typeLike";
 import { fToNow } from "utils/formatTime";
+import { usePost } from "hooks";
+
+import { InfiniteScroll } from "providers";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const UserItem = (props) => {
-  const { item } = props;
+  const { item, containerStyle } = props;
   return (
     <Stack
       direction="row"
       alignItems="center"
       justifyContent="space-between"
       spacing={1}
+      sx={containerStyle}
     >
       <Stack direction="row" spacing={1}>
-        <Avatar />
+        <Avatar src={item?.createdBy?.avatar?.url} />
         <Stack>
           <Typography
             variant="subtitle2"
@@ -42,9 +46,9 @@ const UserItem = (props) => {
               color: "text.primary",
               "&:hover": { textDecoration: "underline" },
             }}
-            to={`/${PATH_PAGE.profile.link}/posts?email=${item?.user?.email}`}
+            to={`/${PATH_PAGE.profile.link}/posts?email=${item?.createdBy?.email}`}
           >
-            {item?.user?.firstName} {item?.user?.lastName}
+            {item?.createdBy?.firstName} {item?.createdBy?.lastName}
           </Typography>
           <Typography variant="caption" sx={{ cursor: "context-menu" }}>
             {item?.createdAt && fToNow(item?.createdAt)}
@@ -56,51 +60,39 @@ const UserItem = (props) => {
   );
 };
 
-const users = [
-  {
-    user: {
-      firstName: "abc",
-      lastName: "aaa",
-      email: "hoangcp219@gmail.com",
-      _id: 1,
-    },
-    createdAt: new Date(),
-    type: "Like",
-  },
-  {
-    user: {
-      firstName: "abc",
-      lastName: "aaa",
-      email: "hoangcp219@gmail.com",
-      _id: 21,
-    },
-    createdAt: new Date(),
-    type: "Like",
-  },
-  {
-    user: {
-      firstName: "abc",
-      lastName: "aaa",
-      email: "hoangcp219@gmail.com",
-      _id: 31,
-    },
-    createdAt: new Date(),
-    type: "Like",
-  },
-];
+const initialize = {
+  page: 1,
+  isNextPage: true,
+  data: [],
+  totalLength: 0,
+  isLoading: false,
+};
+
 export default function PopupLikeOfPost(props) {
   const { open, postID, onClose } = props;
+  const { handleGetLikes } = usePost();
+
+  const [paginate, setPaginate] = React.useState(initialize); // likes
+
+  const handleGetLikesCustom = React.useCallback(async () => {
+    if (!paginate.isNextPage) return;
+    setPaginate({ ...paginate, isLoading: true });
+    const response = await handleGetLikes(paginate.page, postID);
+    setPaginate({
+      page: response.next,
+      isNextPage: response.hasNextPage ? true : false,
+      data: [...response.data, ...paginate.data],
+      totalLength: response.totalLength,
+      isLoading: false,
+    });
+  }, [paginate, postID]);
 
   React.useEffect(() => {
-    if (!open || postID) return;
-    const getUserLike = () => {
-      try {
-        // const response  = await
-      } catch (error) {
-        console.log("err", error);
-      }
+    if (!open || !postID) return;
+    handleGetLikesCustom();
+    return () => {
+      setPaginate(initialize);
     };
-    getUserLike();
   }, [open, postID]);
 
   return (
@@ -111,10 +103,13 @@ export default function PopupLikeOfPost(props) {
       onClose={onClose}
       fullWidth={true}
       maxWidth="mobile"
+      sx={{ zIndex: 1400 }}
     >
       <Paper sx={{ bgcolor: "background.navbar" }}>
         <Box sx={{ position: "relative" }}>
-          <DialogTitle sx={{ textAlign: "center" }}>Tất cả</DialogTitle>
+          <DialogTitle sx={{ textAlign: "center" }}>
+            Những người yêu thích bài viết
+          </DialogTitle>
           <Divider />
           {/* btn close */}
           <Paper
@@ -142,9 +137,31 @@ export default function PopupLikeOfPost(props) {
         </Box>
         <DialogContent>
           <Stack spacing={2}>
-            {users?.length
-              ? users.map((item) => <UserItem key={item._id} item={item} />)
-              : ""}
+            {paginate?.totalLength > 0 ? (
+              <InfiniteScroll
+                isNextPage={paginate?.isNextPage}
+                data={paginate?.data}
+                fetch={handleGetLikes}
+                handleRefresh={() => console.log("refreshh")}
+                endMessage={`Tổng: ${paginate?.totalLength} người thích`}
+              >
+                {paginate?.data?.map((item) => (
+                  <UserItem
+                    key={item._id}
+                    item={item}
+                    containerStyle={{ mt: 2 }}
+                  />
+                ))}
+              </InfiniteScroll>
+            ) : (
+              <Typography
+                variant="subtitle2"
+                align="center"
+                sx={{ color: "text.secondary", my: 5 }}
+              >
+                Hiện chưa bài viết chưa có người nào yêu thích!
+              </Typography>
+            )}
           </Stack>
         </DialogContent>
       </Paper>

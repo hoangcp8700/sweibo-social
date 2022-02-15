@@ -15,9 +15,11 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { PATH_PAGE } from "constants/paths";
 import {
   CommentItem,
-  CommentItemChildren,
   LoadingEllipsisElement,
   PopupMenu,
+  ImageLightBox,
+  PopupLikeOfPost,
+  PopupShareOfPost,
 } from "components";
 
 // components
@@ -29,38 +31,18 @@ import InputCreateComment from "./InputCreateComment";
 
 const widthDefault = 380;
 
-const exampleComments = [
-  {
-    createdBy: {
-      firstName: "Nguyễn Thị Trà Cúc Mai Lan Tíu Tíu",
-      lastName:
-        "uyễn Thị Trà Cúc Mai Lan Tíu Tíu uyễn Thị Trà Cúc Mai Lan Tíu Tíu",
-      avatar: {
-        url: "https://cdn.pixabay.com/photo/2018/03/15/02/50/doll-3227004_960_720.jpg",
-      },
-    },
-    content:
-      "Máy tính của bạn trở nên quá tải đến từ các nguyên nhân như WMI Provider Host (WmiPrvSE.EXE), System Idle Process, Svchost.exe (netscvs), các tiến trình chạy ngầm hay trình diệt virus và sự xuất hiện của virus cũng sẽ khiến máy hoạt động chậm đi, cụ thể như s",
-
-    _id: "11232312a",
-  },
-  {
-    createdBy: {
-      firstName: "John",
-      lastName: "aab222b",
-      avatar: {
-        url: "https://cdn.pixabay.com/photo/2018/03/15/02/50/doll-3227004_960_720.jpg",
-      },
-    },
-    content: "Heelo 123",
-    _id: "1123423123",
-  },
-];
-
 const menus = [
-  { label: "Lưu", icon: icons.BookmarkBorderOutlinedIcon, value: "save" },
-  { label: "Sửa", icon: icons.EditIcon, value: "edit" },
-  { label: "Xóa bài viết", icon: icons.DeleteForeverIcon, value: "delete" },
+  {
+    label: "Lưu 123",
+    icon: icons.BookmarkBorderOutlinedIcon,
+    value: "save-post",
+  },
+  { label: "Sửa", icon: icons.EditIcon, value: "edit-post" },
+  {
+    label: "Xóa bài viết",
+    icon: icons.DeleteForeverIcon,
+    value: "delete-post",
+  },
 ];
 
 const initialize = {
@@ -72,7 +54,8 @@ const initialize = {
 };
 
 export default function PopupDetailPost(props) {
-  const { open, postID, onClose, post } = props;
+  const { open, postID, onClose, post, handleCommentLength, handleActionPost } =
+    props;
   const { user } = useAuth();
   const {
     handleCreateComment,
@@ -82,11 +65,14 @@ export default function PopupDetailPost(props) {
     handleToggleLike,
   } = usePost();
 
-  const [comments, setComments] = React.useState(exampleComments);
   const [form, setForm] = React.useState({ comment: "" });
   const [openMenu, setOpenMenu] = React.useState(false);
   const [paginate, setPaginate] = React.useState(initialize); // COMMENTS
   const [editCommentID, setEditCommentID] = React.useState(null);
+  const [actionPost, setActionPost] = React.useState({
+    name: "",
+    postID: null,
+  });
 
   const menuRef = React.useRef();
 
@@ -94,7 +80,6 @@ export default function PopupDetailPost(props) {
     if (!paginate.isNextPage) return;
     setPaginate({ ...paginate, isLoading: true });
     const response = await handleGetComments(paginate.page, postID);
-    console.log("handleGetCommentsCustom", response);
     setPaginate({
       page: response.next,
       isNextPage: response.hasNextPage ? true : false,
@@ -115,35 +100,7 @@ export default function PopupDetailPost(props) {
   const handleToggleOpenMenu = () => setOpenMenu(!openMenu);
 
   const isLike = post?.likes?.length ? post?.likes?.includes(user?._id) : false;
-  const handleLikePostCustom = async () => {
-    const response = await handleToggleLike(postID);
-    console.log("handleToggleLike", response);
-  };
-  // const handleGetCommentChildren = async (commentID) => {
-  //   const newComments = comments.map((item) => {
-  //     if (item._id !== commentID) return item;
-  //     return {
-  //       ...item,
-  //       replies: [
-  //         {
-  //           createdBy: {
-  //             firstName: "Nguyễn Thị",
-  //             lastName: "Uyên",
-  //             avatar: {
-  //               url: "https://cdn.pixabay.com/photo/2018/03/15/02/50/doll-3227004_960_720.jpg",
-  //             },
-  //           },
-  //           content: "hello 123",
-  //           _id: "12312a",
-  //         },
-  //       ],
-  //     };
-  //   });
-  //   setComments(newComments);
-  //   return true;
-  // };
 
-  // -------------------- comment
   // -------------------- comment ---//
 
   const handleIsEditComment = (commentID) =>
@@ -156,13 +113,12 @@ export default function PopupDetailPost(props) {
       setPaginate({
         ...paginate,
         totalLength: paginate.totalLength + 1,
-        data: [response, ...paginate.data],
+        data: [...paginate.data, response],
       });
-      setComments([response, ...comments]);
       setForm({ comment: "" });
+      handleCommentLength(postID, true);
     }
-    console.log("resss", response);
-  }, [comments, form, postID]);
+  }, [form, paginate, postID]);
 
   const handleSubmitEditCommentCustom = async (content, commentID) => {
     const response = await handleSubmitEditComment(content, postID, commentID);
@@ -186,18 +142,29 @@ export default function PopupDetailPost(props) {
       data: paginate.data.filter((item) => item?._id !== commentID),
     };
     setPaginate(newPaginate);
+    handleCommentLength(postID, false);
     return true;
   };
 
+  /// ---- actions --------------------------------
+  const handleActionPostCustom = async (name, postID) => {
+    setActionPost({ name, postID });
+  };
   return (
     <Dialog open={open} keepMounted onClose={onClose} fullScreen>
       <Paper sx={{ bgcolor: "background.navbar", overflow: "hidden" }}>
         <PopupMenu
           open={openMenu}
           onClose={handleToggleOpenMenu}
-          onClick={(action) => console.log("action", action)}
+          onClick={(action) => handleActionPost(action, postID)}
           ref={menuRef}
           lists={menus}
+        />
+        {/* ---------------------  action post */}
+        <PopupLikeOfPost
+          open={actionPost?.postID && actionPost.name === "like"}
+          postID={actionPost?.postID}
+          onClose={() => handleActionPostCustom("like", null)}
         />
 
         <DialogContent
@@ -274,16 +241,19 @@ export default function PopupDetailPost(props) {
                 <Typography>{post?.content}</Typography>
               </Box>
 
-              {/* footer */}
+              {/* footer info */}
               <FooterInfo
                 likeLength={post?.likes?.length}
                 commentLength={paginate?.totalLength}
+                handleGetLikes={() => handleActionPostCustom("like", post?._id)}
+                handleGetComments={() => {}}
               />
 
               {/* action footer */}
               <FooterActions
                 isLike={isLike}
-                handleLikePost={handleLikePostCustom}
+                handleLikePost={() => handleActionPost("like-post", post?._id)}
+                handleGetComments={() => {}}
               />
 
               {/* // comments */}

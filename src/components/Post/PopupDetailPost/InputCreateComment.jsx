@@ -28,7 +28,7 @@ const InputCreateComment = ({
         sx={{
           bgcolor: "background.navbar",
           width: "100%",
-          maxWidth: { xs: "auto", md: widthDefault },
+          maxWidth: { xs: "auto", md: widthDefault || "auto" },
           height: 60,
           position: "absolute",
           bottom: 0,

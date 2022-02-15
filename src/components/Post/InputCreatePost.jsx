@@ -4,7 +4,7 @@ import { useAuth } from "hooks";
 import PopupCreatePost from "./PopupCreatePost";
 
 const InputCreatePost = (props) => {
-  const { handleSubmitPost, open, onClick } = props;
+  const { handleSubmitPost, open, onClick, postEdit } = props;
   const { user } = useAuth();
 
   return (
@@ -15,6 +15,7 @@ const InputCreatePost = (props) => {
       }}
     >
       <PopupCreatePost
+        postEdit={postEdit}
         open={open}
         onClose={onClick}
         handleSubmitPost={handleSubmitPost}

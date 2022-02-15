@@ -9,7 +9,7 @@ import {
   PostItem,
 } from "components";
 import { Box, Stack, Typography } from "@mui/material";
-import { usePost } from "hooks";
+import { useAuth, usePost } from "hooks";
 import { PATH_PAGE } from "constants/paths";
 import {
   ImageLightBox,
@@ -28,18 +28,25 @@ const initialize = {
   length: 0,
 };
 const PostProfile = () => {
-  const { handleCreatePost, handleGetPostUser } = usePost();
+  const {
+    handleCreatePost,
+    handleGetPostUser,
+    handleDeletePost,
+    handleToggleLike,
+  } = usePost();
+  const { user } = useAuth();
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
 
   const [isCreate, setIsCreate] = React.useState(false);
-  const [paginate, setPaginate] = React.useState(initialize);
+  const [paginate, setPaginate] = React.useState(initialize); // POST
   const [openLightBox, setOpenLightBox] = React.useState({
     open: false,
     images: [],
   });
 
   const [actionPost, setActionPost] = React.useState({
+    detail: false,
     name: "",
     postID: null,
   });
@@ -53,6 +60,7 @@ const PostProfile = () => {
       paginate.page,
       !isAuth ? parsed?.email : null
     );
+    console.log("handleGetPost", response);
     setPaginate({
       page: response.next,
       isNextPage: response.hasNextPage ? true : false,
@@ -93,12 +101,82 @@ const PostProfile = () => {
 
   const handleToggleIsCreate = () => setIsCreate(!isCreate);
 
-  const handleActionPost = (name, postID) => {
+  const handleActionPost = async (name, postID, post) => {
+    console.log("handleActionPost", name);
     if (name === "detail") {
+      if (!postID) return setActionPost({ name, postID, detail: false });
       const getPost = paginate?.data?.filter((item) => item?._id === postID);
-      return setActionPost({ name, postID, post: getPost[0] });
+      return setActionPost({ name, postID, post: getPost[0], detail: true });
     }
-    setActionPost({ name, postID });
+    if (name === "like-post") {
+      if (!postID) return setActionPost({ ...actionPost, name, postID });
+      const response = await handleToggleLike(postID);
+      if (response) {
+        let newPost;
+        if (response.isLike) {
+          newPost = paginate.data.map((item) => {
+            if (item?._id !== postID) return item;
+            return { ...item, likes: [user?._id, ...item.likes] };
+          });
+        } else {
+          newPost = paginate.data.map((item) => {
+            if (item?._id !== postID) return item;
+            return {
+              ...item,
+              likes: item.likes.filter((itemLike) => itemLike !== user?._id),
+            };
+          });
+        }
+        const getNewPost = newPost.filter((item) => item?._id === postID);
+        setPaginate({
+          ...paginate,
+          data: newPost,
+        });
+        return setActionPost({
+          ...actionPost,
+          name,
+          postID,
+          post: getNewPost[0],
+        });
+      }
+      return;
+    }
+
+    if (name === "delete-post") {
+      const response = await handleDeletePost(postID);
+      if (response) {
+        const newPosts = paginate?.data?.filter((item) => item?._id !== postID);
+        setPaginate({
+          ...paginate,
+          data: newPosts,
+        });
+        return setActionPost({
+          detail: false,
+          name: "",
+          postID: "",
+        });
+      }
+      return;
+    }
+
+    setActionPost({
+      ...actionPost,
+      name,
+      postID,
+    });
+  };
+  const handleCommentLength = (postID, type) => {
+    const newPost = paginate.data.map((item) => {
+      if (item?._id !== postID) return item;
+      return {
+        ...item,
+        commentCount: type ? item.commentCount + 1 : item.commentCount - 1,
+      };
+    });
+    return setPaginate({
+      ...paginate,
+      data: newPost,
+    });
   };
 
   return (
@@ -115,25 +193,32 @@ const PostProfile = () => {
       )}
       {/* ---------------------  action post */}
       <PopupLikeOfPost
-        open={actionPost.name === "like"}
+        open={actionPost?.postID && actionPost.name === "like"}
         postID={actionPost?.postID}
-        onClose={() => handleActionPost("", null)}
+        onClose={() => handleActionPost("like", null)}
       />
       <PopupDetailPost
-        open={actionPost.name === "detail"}
+        open={
+          (actionPost?.postID && actionPost.name === "detail") ||
+          actionPost.detail
+        }
         postID={actionPost?.postID}
         post={actionPost?.post}
-        onClose={() => handleActionPost("", null)}
+        onClose={() => handleActionPost("detail", null)}
+        handleCommentLength={handleCommentLength}
+        handleActionPost={handleActionPost}
+        actionPost={actionPost}
       />
       <PopupCommentOfPost
-        open={actionPost.name === "comment"}
+        open={actionPost?.postID && actionPost.name === "comment"}
         postID={actionPost?.postID}
-        onClose={() => handleActionPost("", null)}
+        onClose={() => handleActionPost("comment", null)}
+        handleCommentLength={handleCommentLength}
       />
       <PopupShareOfPost
-        open={actionPost.name === "share"}
+        open={actionPost?.postID && actionPost.name === "share"}
         postID={actionPost?.postID}
-        onClose={() => handleActionPost("", null)}
+        onClose={() => handleActionPost("share", null)}
       />
 
       {/* // ------------------------------------- */}
@@ -166,6 +251,11 @@ const PostProfile = () => {
         >
           {isAuth ? (
             <InputCreatePost
+              postEdit={
+                actionPost?.postID && actionPost?.name === "edit-post"
+                  ? actionPost?.post
+                  : null
+              }
               open={isCreate}
               onClick={handleToggleIsCreate}
               handleSubmitPost={handleSubmitPost}
@@ -186,6 +276,11 @@ const PostProfile = () => {
                 <PostItem
                   key={post._id}
                   post={post}
+                  isLike={
+                    post?.likes?.length
+                      ? post?.likes?.includes(user?._id)
+                      : false
+                  }
                   handleActionPost={handleActionPost}
                   containerStyle={{ mt: 2 }}
                 />
