@@ -9,7 +9,6 @@ import {
   Button,
   Divider,
   Box,
-  useTheme,
 } from "@mui/material";
 import { styled } from "@mui/styles";
 import { icons } from "constants";
@@ -82,8 +81,6 @@ const images = [
 ];
 const PostItem = (props) => {
   const { post, containerStyle, handleActionPost } = props;
-  const theme = useTheme();
-  const isMobileRes = theme.breakpoints.down("sm");
 
   const [isLike, setIsLike] = React.useState(false);
 
@@ -161,31 +158,37 @@ const PostItem = (props) => {
           sx={{ px: 2, py: 1 }}
         >
           <Stack direction="row">
-            <EmojiButtonStyle
-              sx={{ svg: { fill: (theme) => theme.palette.info.main } }}
-            >
-              {icons.LikeIcon}
-            </EmojiButtonStyle>
-            <EmojiButtonStyle
-              sx={{ svg: { fill: (theme) => theme.palette.error.main } }}
-            >
-              {icons.HeartIcon}
-            </EmojiButtonStyle>
-            <Box sx={{ ml: !isMobileRes ? 2 : 1 }}>
-              <TypographyCustom
-                onClick={() => handleActionPost("like", post?._id)}
-              >
-                {!isMobileRes ? `Phạm thanh tùng và 20k người khác` : 2321}
-              </TypographyCustom>
-            </Box>
+            {post?.likes?.length ? (
+              <>
+                <EmojiButtonStyle
+                  sx={{ svg: { fill: (theme) => theme.palette.info.main } }}
+                >
+                  {icons.LikeIcon}
+                </EmojiButtonStyle>
+
+                <Box sx={{ ml: 0.5 }}>
+                  <TypographyCustom
+                    onClick={() => handleActionPost("like", post?._id)}
+                  >
+                    {post?.likes?.length}
+                  </TypographyCustom>
+                </Box>
+              </>
+            ) : (
+              ""
+            )}
           </Stack>
 
           <Stack direction="row" alignItems="center" spacing={2}>
-            <TypographyCustom
-              onClick={() => handleActionPost("comment", post?._id)}
-            >
-              388 bình luận
-            </TypographyCustom>
+            {post?.commentCount ? (
+              <TypographyCustom
+                onClick={() => handleActionPost("comment", post?._id)}
+              >
+                {post?.commentCount} bình luận
+              </TypographyCustom>
+            ) : (
+              " "
+            )}
             <TypographyCustom
               onClick={() => handleActionPost("share", post?._id)}
             >

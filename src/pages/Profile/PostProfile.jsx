@@ -1,6 +1,6 @@
 import React from "react";
 import queryString from "query-string";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   InfomationUser,
   AlbumFriends,
@@ -10,6 +10,7 @@ import {
 } from "components";
 import { Box, Stack, Typography } from "@mui/material";
 import { usePost } from "hooks";
+import { PATH_PAGE } from "constants/paths";
 import {
   ImageLightBox,
   PopupLikeOfPost,
@@ -30,6 +31,7 @@ const PostProfile = () => {
   const { handleCreatePost, handleGetPostUser } = usePost();
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   const [isCreate, setIsCreate] = React.useState(false);
   const [paginate, setPaginate] = React.useState(initialize);
@@ -38,6 +40,7 @@ const PostProfile = () => {
     images: [],
   });
 
+  console.log("paginate", paginate);
   const [actionPost, setActionPost] = React.useState({
     name: "",
     postID: null,
@@ -92,16 +95,13 @@ const PostProfile = () => {
 
   const handleToggleIsCreate = () => setIsCreate(!isCreate);
 
-  const handleActionPost = React.useCallback(
-    (name, postID) => {
-      if (name === "detail") {
-        const getPost = paginate?.data?.filter((item) => item?._id === postID);
-        return setActionPost({ name, postID, post: getPost[0] });
-      }
-      setActionPost({ name, postID });
-    },
-    [paginate]
-  );
+  const handleActionPost = (name, postID) => {
+    if (name === "detail") {
+      const getPost = paginate?.data?.filter((item) => item?._id === postID);
+      return setActionPost({ name, postID, post: getPost[0] });
+    }
+    setActionPost({ name, postID });
+  };
 
   return (
     <Box sx={{ position: "relative" }}>
@@ -119,23 +119,23 @@ const PostProfile = () => {
       <PopupLikeOfPost
         open={actionPost.name === "like"}
         postID={actionPost?.postID}
-        onClose={() => handleActionPost({ name: "", postID: null })}
+        onClose={() => handleActionPost("", null)}
       />
       <PopupDetailPost
         open={actionPost.name === "detail"}
         postID={actionPost?.postID}
         post={actionPost?.post}
-        onClose={() => handleActionPost({ name: "", postID: null })}
+        onClose={() => handleActionPost("", null)}
       />
       <PopupCommentOfPost
         open={actionPost.name === "comment"}
         postID={actionPost?.postID}
-        onClose={() => handleActionPost({ name: "", postID: null })}
+        onClose={() => handleActionPost("", null)}
       />
       <PopupShareOfPost
         open={actionPost.name === "share"}
         postID={actionPost?.postID}
-        onClose={() => handleActionPost({ name: "", postID: null })}
+        onClose={() => handleActionPost("", null)}
       />
 
       {/* // ------------------------------------- */}

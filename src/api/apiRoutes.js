@@ -35,9 +35,15 @@ const comments = (postID, commentID) => {
     update: `/posts/${postID}/comments/${commentID}`,
   };
 };
+const likes = (postID) => {
+  return {
+    get: `/posts/${postID}/likes`,
+  };
+};
 export default {
   authentication,
   users,
   posts,
   comments,
+  likes,
 };

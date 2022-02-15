@@ -39,7 +39,7 @@ const routes = () => {
           element: <Outlet />,
           children: [
             {
-              children: [{ path: ":id", element: <PostDetailPage /> }],
+              children: [{ path: ":postID", element: <PostDetailPage /> }],
             },
           ],
         },

@@ -79,6 +79,7 @@ export default function PopupDetailPost(props) {
     handleGetComments,
     handleSubmitEditComment,
     handleDeleteComment,
+    handleGetPostById,
   } = usePost();
 
   const [comments, setComments] = React.useState(exampleComments);
@@ -185,6 +186,7 @@ export default function PopupDetailPost(props) {
     setPaginate(newPaginate);
     return true;
   };
+
   return (
     <Dialog open={open} keepMounted onClose={onClose} fullScreen>
       <Paper sx={{ bgcolor: "background.navbar", overflow: "hidden" }}>
@@ -271,7 +273,10 @@ export default function PopupDetailPost(props) {
               </Box>
 
               {/* footer */}
-              <FooterInfo commentLength={paginate?.totalLength} />
+              <FooterInfo
+                likeLength={post?.likes}
+                commentLength={paginate?.totalLength}
+              />
 
               {/* action footer */}
               <FooterActions isLike={isLike} handleLikePost={handleLikePost} />

@@ -40,6 +40,15 @@ const usePost = () => {
     }
   };
 
+  const handleGetPostById = async (postID) => {
+    try {
+      const response = await axios.get(`${routes.posts().getAll}/${postID}`);
+      return response.data.data;
+    } catch (error) {
+      console.log("err", error);
+    }
+  };
+
   /// ------------------  comments
 
   const handleGetComments = async (page = 1, postID) => {
@@ -88,16 +97,43 @@ const usePost = () => {
       return false;
     }
   };
+
+  // --------------------like
+  const handleGetLikes = async (page = 1, postID) => {
+    try {
+      const link = `?page=${page}`;
+      const response = await axios.get(`${routes.likes(postID).get}${link}`);
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+    }
+  };
+
+  const handleToggleLike = async (postID, action) => {
+    try {
+      const response = await axios.post(routes.likes(postID).get, { action });
+      return response.data;
+    } catch (error) {
+      console.log("err", error.response);
+      return false;
+    }
+  };
+
   return {
     handleCreatePost,
     handleGetPostUser,
     handleGetPostAll,
+    handleGetPostById,
 
     // comments
     handleCreateComment,
     handleGetComments,
     handleSubmitEditComment,
     handleDeleteComment,
+
+    // like
+    handleToggleLike,
+    handleGetLikes,
   };
 };
 
