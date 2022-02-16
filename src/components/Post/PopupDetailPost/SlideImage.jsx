@@ -34,7 +34,7 @@ const images = [
 ];
 
 const SlideImage = (props) => {
-  const { post } = props;
+  const { images } = props;
   return (
     <Box
       sx={{
@@ -66,8 +66,8 @@ const SlideImage = (props) => {
     >
       <Box>
         <Slider {...settings}>
-          {post?.images?.length
-            ? post?.images?.map((item, index) => (
+          {images && images?.length
+            ? images.map((item, index) => (
                 <Box
                   key={index}
                   sx={{

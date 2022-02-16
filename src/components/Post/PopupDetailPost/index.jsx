@@ -20,6 +20,7 @@ import {
   ImageLightBox,
   PopupLikeOfPost,
   PopupShareOfPost,
+  PopupCreatePost as PopupEditPost,
 } from "components";
 
 // components
@@ -33,7 +34,7 @@ const widthDefault = 380;
 
 const menus = [
   {
-    label: "Lưu 123",
+    label: "Lưu",
     icon: icons.BookmarkBorderOutlinedIcon,
     value: "save-post",
   },
@@ -54,15 +55,21 @@ const initialize = {
 };
 
 export default function PopupDetailPost(props) {
-  const { open, postID, onClose, post, handleCommentLength, handleActionPost } =
-    props;
+  const {
+    open,
+    postID,
+    onClose,
+    post,
+    handleCommentLength,
+    handleActionPost,
+    handleSubmitEditPost,
+  } = props;
   const { user } = useAuth();
   const {
     handleCreateComment,
     handleGetComments,
     handleSubmitEditComment,
     handleDeleteComment,
-    handleToggleLike,
   } = usePost();
 
   const [form, setForm] = React.useState({ comment: "" });
@@ -147,24 +154,41 @@ export default function PopupDetailPost(props) {
   };
 
   /// ---- actions --------------------------------
-  const handleActionPostCustom = async (name, postID) => {
-    setActionPost({ name, postID });
+  const handleActionPostCustom = async (name, postID, post) => {
+    setActionPost({ name, postID, post });
+    if (name === "delete-post") {
+      handleActionPost(name, postID);
+    }
+    if (postID) {
+      handleToggleOpenMenu();
+    }
   };
+
   return (
     <Dialog open={open} keepMounted onClose={onClose} fullScreen>
-      <Paper sx={{ bgcolor: "background.navbar", overflow: "hidden" }}>
+      <Box sx={{ overflow: "hidden" }}>
         <PopupMenu
           open={openMenu}
           onClose={handleToggleOpenMenu}
-          onClick={(action) => handleActionPost(action, postID)}
+          onClick={(action) => handleActionPostCustom(action, postID, post)}
           ref={menuRef}
           lists={menus}
         />
+
         {/* ---------------------  action post */}
         <PopupLikeOfPost
-          open={actionPost?.postID && actionPost.name === "like"}
+          open={(actionPost?.postID && actionPost.name === "like") || false}
           postID={actionPost?.postID}
           onClose={() => handleActionPostCustom("like", null)}
+        />
+        {/* // edit post */}
+        <PopupEditPost
+          open={
+            (actionPost?.postID && actionPost.name === "edit-post") || false
+          }
+          onClose={() => handleActionPostCustom("edit-post", null)}
+          postEdit={actionPost?.post}
+          handleSubmitPost={handleSubmitEditPost}
         />
 
         <DialogContent
@@ -201,6 +225,7 @@ export default function PopupDetailPost(props) {
               flexDirection: { xs: "column", md: "row" },
               alignItems: "flex-start",
               height: "100vh",
+
               overflowY: "auto",
               "&::-webkit-scrollbar-track": {
                 boxShadow: "inset 0 0 6px rgba(0,0,0,0.3)",
@@ -220,14 +245,17 @@ export default function PopupDetailPost(props) {
             }}
           >
             {/* // slide */}
-            <SlideImage post={post} />
+            <SlideImage images={post?.images} />
 
             {/* content */}
-            <Box
+            <Paper
               sx={{
                 flex: 1,
+                maxWidth: { xs: "auto", md: widthDefault },
                 minWidth: { xs: "auto", md: widthDefault },
                 py: 2,
+                bgcolor: "background.navbar",
+                minHeight: "100vh",
               }}
             >
               <Header
@@ -334,10 +362,10 @@ export default function PopupDetailPost(props) {
                   setForm({ ...form, [name]: value })
                 }
               />
-            </Box>
+            </Paper>
           </Stack>
         </DialogContent>
-      </Paper>
+      </Box>
     </Dialog>
   );
 }

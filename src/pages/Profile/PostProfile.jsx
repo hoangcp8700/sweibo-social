@@ -65,7 +65,6 @@ const PostProfile = () => {
       paginate.page,
       !isAuth ? parsed?.email : null
     );
-    console.log("handleGetPost", response);
     setPaginate({
       page: response.next,
       isNextPage: response.hasNextPage ? true : false,
@@ -104,13 +103,18 @@ const PostProfile = () => {
             ...paginate,
             data: newPosts,
           });
+
+          if (actionPost?.detail) {
+            setActionPost({ ...actionPost, post: response.data });
+          }
         }
       }
 
       enqueueSnackbar(response.message || response.error.message, {
         variant: response?.success ? "success" : "warning",
       });
-      return false;
+
+      return true;
     } catch (error) {
       console.log("err", error);
     }
@@ -128,7 +132,6 @@ const PostProfile = () => {
   const handleToggleIsLoading = (value) => setIsLoading(value);
 
   const handleActionPost = async (name, postID, post) => {
-    console.log("handleActionPost", name);
     if (name === "detail") {
       if (!postID) return setActionPost({ name, postID, detail: false });
       const getPost = paginate?.data?.filter((item) => item?._id === postID);
@@ -137,6 +140,7 @@ const PostProfile = () => {
     if (name === "like-post") {
       if (!postID) return setActionPost({ ...actionPost, name, postID });
       const response = await handleToggleLike(postID);
+
       if (response) {
         let newPost;
         if (response.isLike) {
@@ -154,6 +158,7 @@ const PostProfile = () => {
           });
         }
         const getNewPost = newPost.filter((item) => item?._id === postID);
+
         setPaginate({
           ...paginate,
           data: newPost,
@@ -242,37 +247,38 @@ const PostProfile = () => {
       )}
       {/* ---------------------  action post */}
       <PopupLikeOfPost
-        open={actionPost?.postID && actionPost.name === "like"}
+        open={(actionPost?.postID && actionPost.name === "like") || false}
         postID={actionPost?.postID}
         onClose={() => handleActionPost("like", null)}
       />
       <PopupDetailPost
         open={
           (actionPost?.postID && actionPost.name === "detail") ||
-          actionPost.detail
+          actionPost.detail ||
+          false
         }
         postID={actionPost?.postID}
         post={actionPost?.post}
         onClose={() => handleActionPost("detail", null)}
         handleCommentLength={handleCommentLength}
         handleActionPost={handleActionPost}
-        actionPost={actionPost}
+        handleSubmitEditPost={handleSubmitPost}
       />
       <PopupCommentOfPost
-        open={actionPost?.postID && actionPost.name === "comment"}
+        open={(actionPost?.postID && actionPost.name === "comment") || false}
         postID={actionPost?.postID}
         onClose={() => handleActionPost("comment", null)}
         handleCommentLength={handleCommentLength}
       />
       <PopupShareOfPost
-        open={actionPost?.postID && actionPost.name === "share"}
+        open={(actionPost?.postID && actionPost.name === "share") || false}
         postID={actionPost?.postID}
         onClose={() => handleActionPost("share", null)}
       />
 
       {/* // edit post */}
       <PopupEditPost
-        open={actionPost?.postID && actionPost.name === "edit-post"}
+        open={(actionPost?.postID && actionPost.name === "edit-post") || false}
         onClose={() => handleActionPost("edit-post", null)}
         postEdit={actionPost?.post}
         handleSubmitPost={handleSubmitPost}
