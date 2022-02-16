@@ -20,6 +20,9 @@ import FooterActions from "./PopupDetailPost/FooterActions";
 
 const menus = [
   { label: "Lưu", icon: icons.BookmarkBorderOutlinedIcon, value: "save-post" },
+];
+const menusFull = [
+  { label: "Lưu", icon: icons.BookmarkBorderOutlinedIcon, value: "save-post" },
   { label: "Sửa", icon: icons.EditIcon, value: "edit-post" },
   {
     label: "Xóa bài viết",
@@ -29,13 +32,17 @@ const menus = [
 ];
 
 const PostItem = (props) => {
-  const { post, isLike, containerStyle, handleActionPost } = props;
+  const { post, isAuth, isLike, containerStyle, handleActionPost } = props;
   const [openMenu, setOpenMenu] = React.useState(false);
 
   const menuRef = React.useRef();
 
   const handleToggleOpenMenu = () => setOpenMenu(!openMenu);
 
+  const handleActionPostCustom = async (action, postID, post) => {
+    await handleActionPost(action, postID, post);
+    handleToggleOpenMenu();
+  };
   return (
     <Paper
       elevation={5}
@@ -48,9 +55,9 @@ const PostItem = (props) => {
       <PopupMenu
         open={openMenu}
         onClose={handleToggleOpenMenu}
-        onClick={(action) => handleActionPost(action, post?._id)}
+        onClick={(action) => handleActionPostCustom(action, post?._id, post)}
         ref={menuRef}
-        lists={menus}
+        lists={isAuth ? menusFull : menus}
       />
 
       <Stack sx={{ pt: 2 }}>
@@ -64,7 +71,7 @@ const PostItem = (props) => {
 
         {/* content */}
         <Stack>
-          <Box sx={{ px: 2 }}>
+          <Box sx={{ px: 2, mt: 1 }}>
             <Typography>{post?.content}</Typography>
           </Box>
 

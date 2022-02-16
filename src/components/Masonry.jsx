@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Paper, IconButton, Typography } from "@mui/material";
 import Masonry from "react-responsive-masonry";
 import LazyLoad from "react-lazyload";
+import { icons } from "constants";
 
 const BoxMore = ({ countMore }) => {
   return (
@@ -23,7 +24,14 @@ const BoxMore = ({ countMore }) => {
     </Box>
   );
 };
-const MasonryComponent = ({ lists, columnsCount = 2 }) => {
+
+const MasonryComponent = ({
+  lists,
+  handleToggleOpenLightBox,
+  handleDeleteFile,
+  columnsCount = 2,
+  isDisabledDelete = true,
+}) => {
   const countMore = lists?.length >= 5 ? lists?.length - 5 : "";
 
   return lists?.length ? (
@@ -33,26 +41,60 @@ const MasonryComponent = ({ lists, columnsCount = 2 }) => {
           key={key}
           sx={{ width: "100%", height: "100%", position: "relative" }}
         >
-          {lists.length > 5 && key + 1 === 4 && countMore > 0 ? (
-            <BoxMore countMore={countMore} />
+          <Box
+            sx={{ width: "100%", height: "100%" }}
+            onClick={() => handleToggleOpenLightBox(true)}
+          >
+            {lists.length > 5 && key + 1 === 4 && countMore > 0 ? (
+              <BoxMore countMore={countMore} />
+            ) : (
+              ""
+            )}
+            <Box sx={{ width: "100%", height: "100%", position: "relative" }}>
+              {/* <LazyLoad height={200}> */}
+              <img
+                src={item.url || item?.secure_url}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                  cursor: "pointer",
+                }}
+                loading="lazy"
+                alt={item?.name || `mansory-${key}`}
+              />
+
+              {/* </LazyLoad> */}
+            </Box>
+          </Box>
+          {!isDisabledDelete ? (
+            <Paper
+              elevation={5}
+              sx={{
+                position: "absolute",
+                top: 15,
+                right: 15,
+                bgcolor: "background.main",
+                borderRadius: "50%",
+                zIndex: 10,
+              }}
+            >
+              <IconButton
+                onClick={() => handleDeleteFile(item?.public_id)}
+                sx={{
+                  "& svg": {
+                    fill: (theme) => theme.palette.text.primary,
+                    fontSize: 14,
+                  },
+                }}
+              >
+                {icons.CloseIcon}
+              </IconButton>
+            </Paper>
           ) : (
             ""
           )}
-          <Box sx={{ width: "100%", height: "100%", position: "relative" }}>
-            {/* <LazyLoad height={200}> */}
-            <img
-              src={item.url || item?.secure_url}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                display: "block",
-              }}
-              loading="lazy"
-              alt={item?.name || `mansory-${key}`}
-            />
-            {/* </LazyLoad> */}
-          </Box>
         </Box>
       ))}
     </Masonry>

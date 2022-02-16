@@ -2,7 +2,7 @@ import * as React from "react";
 import { Box } from "@mui/material";
 import "./LoadingEllipsis.css";
 
-export default function LoadingEllipsis() {
+export default function LoadingEllipsis({ sx }) {
   return (
     <Box
       sx={{
@@ -15,6 +15,8 @@ export default function LoadingEllipsis() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        zIndex: 1500,
+        ...sx,
       }}
     >
       <div className="lds-ellipsis">

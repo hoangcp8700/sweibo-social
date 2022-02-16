@@ -7,17 +7,20 @@ import {
   AlbumImage,
   InputCreatePost,
   PostItem,
-} from "components";
-import { Box, Stack, Typography } from "@mui/material";
-import { useAuth, usePost } from "hooks";
-import { PATH_PAGE } from "constants/paths";
-import {
+  LoadingEllipsis,
+
+  //posts
   ImageLightBox,
   PopupLikeOfPost,
   PopupCommentOfPost,
   PopupShareOfPost,
   PopupDetailPost,
+  PopupCreatePost as PopupEditPost,
 } from "components";
+import { Box, Stack, Typography } from "@mui/material";
+import { useAuth, usePost } from "hooks";
+import { PATH_PAGE } from "constants/paths";
+
 import { InfiniteScroll } from "providers";
 import { useSnackbar } from "notistack";
 
@@ -27,9 +30,10 @@ const initialize = {
   data: [],
   length: 0,
 };
+
 const PostProfile = () => {
   const {
-    handleCreatePost,
+    handleCreateOrEditPost,
     handleGetPostUser,
     handleDeletePost,
     handleToggleLike,
@@ -39,6 +43,7 @@ const PostProfile = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [isCreate, setIsCreate] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
   const [paginate, setPaginate] = React.useState(initialize); // POST
   const [openLightBox, setOpenLightBox] = React.useState({
     open: false,
@@ -52,7 +57,7 @@ const PostProfile = () => {
   });
 
   const parsed = queryString.parse(location?.search);
-  const isAuth = parsed.email ? false : true;
+  const isAuth = !parsed.email ? true : false;
 
   const handleGetPost = async () => {
     if (!paginate.isNextPage) return;
@@ -78,13 +83,33 @@ const PostProfile = () => {
 
   const handleSubmitPost = async (form) => {
     try {
-      const response = await handleCreatePost(form);
-      if (!response.error) {
-        setPaginate({ ...paginate, data: [response, ...paginate.data] });
-        handleToggleIsCreate();
-        return true;
+      handleToggleIsLoading(true);
+      const response = await handleCreateOrEditPost(form);
+      handleToggleIsLoading(false);
+      if (response.success) {
+        // create post
+        if (!form?._id) {
+          setPaginate({
+            ...paginate,
+            data: [response.data, ...paginate.data],
+            totalLength: paginate?.totalLength + 1,
+          });
+          handleToggleIsCreate();
+        } else {
+          const newPosts = paginate.data.map((item) => {
+            if (item?._id !== form?._id) return item;
+            return response.data;
+          });
+          setPaginate({
+            ...paginate,
+            data: newPosts,
+          });
+        }
       }
-      enqueueSnackbar(response.error.message, { variant: "warning" });
+
+      enqueueSnackbar(response.message || response.error.message, {
+        variant: response?.success ? "success" : "warning",
+      });
       return false;
     } catch (error) {
       console.log("err", error);
@@ -100,6 +125,7 @@ const PostProfile = () => {
   };
 
   const handleToggleIsCreate = () => setIsCreate(!isCreate);
+  const handleToggleIsLoading = (value) => setIsLoading(value);
 
   const handleActionPost = async (name, postID, post) => {
     console.log("handleActionPost", name);
@@ -143,13 +169,19 @@ const PostProfile = () => {
     }
 
     if (name === "delete-post") {
+      handleToggleIsLoading(true);
       const response = await handleDeletePost(postID);
+      handleToggleIsLoading(false);
+
       if (response) {
         const newPosts = paginate?.data?.filter((item) => item?._id !== postID);
         setPaginate({
           ...paginate,
+          totalLength: paginate.totalLength - 1,
           data: newPosts,
         });
+        enqueueSnackbar(response.message, { variant: "success" });
+
         return setActionPost({
           detail: false,
           name: "",
@@ -159,12 +191,23 @@ const PostProfile = () => {
       return;
     }
 
+    if (name === "edit-post") {
+      if (postID)
+        return setActionPost({
+          ...actionPost,
+          name,
+          postID,
+          post,
+        });
+    }
+
     setActionPost({
       ...actionPost,
       name,
       postID,
     });
   };
+
   const handleCommentLength = (postID, type) => {
     const newPost = paginate.data.map((item) => {
       if (item?._id !== postID) return item;
@@ -181,6 +224,12 @@ const PostProfile = () => {
 
   return (
     <Box sx={{ position: "relative" }}>
+      {isLoading ? (
+        <LoadingEllipsis sx={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
+      ) : (
+        ""
+      )}
+
       {/* /// ------------------- other */}
       {openLightBox.open && openLightBox?.images?.length ? (
         <ImageLightBox
@@ -221,6 +270,14 @@ const PostProfile = () => {
         onClose={() => handleActionPost("share", null)}
       />
 
+      {/* // edit post */}
+      <PopupEditPost
+        open={actionPost?.postID && actionPost.name === "edit-post"}
+        onClose={() => handleActionPost("edit-post", null)}
+        postEdit={actionPost?.post}
+        handleSubmitPost={handleSubmitPost}
+      />
+
       {/* // ------------------------------------- */}
       <Stack
         sx={{
@@ -251,11 +308,6 @@ const PostProfile = () => {
         >
           {isAuth ? (
             <InputCreatePost
-              postEdit={
-                actionPost?.postID && actionPost?.name === "edit-post"
-                  ? actionPost?.post
-                  : null
-              }
               open={isCreate}
               onClick={handleToggleIsCreate}
               handleSubmitPost={handleSubmitPost}
@@ -274,6 +326,7 @@ const PostProfile = () => {
             >
               {paginate?.data?.map((post) => (
                 <PostItem
+                  isAuth={isAuth}
                   key={post._id}
                   post={post}
                   isLike={

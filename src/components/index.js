@@ -17,6 +17,8 @@ export { default as PopupLikeOfPost } from "./Post/PopupLikeOfPost";
 export { default as PopupCommentOfPost } from "./Post/PopupCommentOfPost";
 export { default as PopupShareOfPost } from "./Post/PopupShareOfPost";
 export { default as PopupDetailPost } from "./Post/PopupDetailPost";
+export { default as PopupCreatePost } from "./Post/PopupCreatePost";
+
 export { default as CommentItem } from "./Comments/CommentItem";
 export { default as CommentItemChildren } from "./Comments/CommentItemChildren";
 

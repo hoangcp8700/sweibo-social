@@ -17,7 +17,7 @@ const blobToData = (file) => {
   });
 };
 
-const uploadFile = async (e) => {
+const uploadFile = async (e, folder) => {
   const { files } = e.target;
 
   if (!files?.length) return;
@@ -34,7 +34,9 @@ const uploadFile = async (e) => {
     listFiles.push({
       file,
       url: resData,
-      // id: Math.floor(Math.random() * 912736128),
+      public_id: `${folder ? `${folder}/` : ""}${Math.floor(
+        Math.random() * 912736128
+      )}`,
     });
   }
   return listFiles;

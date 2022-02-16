@@ -34,10 +34,9 @@ const Header = React.forwardRef((props, ref) => {
                 },
               }}
             >
-              {/* {post?.status === "Public"
-              ? icons.PublicIcon
-              : icons.LockOpenIcon} */}
-              {icons.PublicIcon}
+              {post?.status === "Public"
+                ? icons.PublicIcon
+                : icons.LockOpenIcon}
             </IconButton>
           </Stack>
         </Stack>

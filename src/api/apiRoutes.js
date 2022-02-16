@@ -26,6 +26,7 @@ const posts = (id) => {
     create: `/posts/add`,
     getAll: `/posts`,
     getPostUser: `/posts/user`,
+    byID: `/posts/${id}`,
   };
 };
 

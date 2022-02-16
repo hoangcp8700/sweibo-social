@@ -39,34 +39,7 @@ const IconButtonStyle = styled(IconButton)(({ theme }) => ({
 
 const status = [
   { label: "Công khai", value: "Public", icon: icons.PublicIcon },
-  { label: "Chỉ mình tôi", value: "Pravite", icon: icons.LockOpenIcon },
-];
-
-const images = [
-  {
-    name: "fol1.png",
-    url: `https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png`,
-  },
-  {
-    name: "fol1.png",
-    url: `https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png`,
-  },
-  {
-    name: "fol1.png",
-    url: `https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png`,
-  },
-  {
-    name: "fol1.png",
-    url: `https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png`,
-  },
-  {
-    name: "fol1.png",
-    url: `https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png`,
-  },
-  {
-    name: "fol1.png",
-    url: `https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png`,
-  },
+  { label: "Chỉ mình tôi", value: "Private", icon: icons.LockOpenIcon },
 ];
 
 const initialize = {
@@ -76,16 +49,28 @@ const initialize = {
 };
 
 const PopupCreatePost = (props) => {
-  const { open, onClose, handleSubmitPost } = props;
+  const { open, onClose, handleSubmitPost, postEdit } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuth();
 
   React.useEffect(() => {
     if (!open) return;
-  }, [open]);
+    if (!postEdit) return;
+    setForm({
+      content: postEdit?.content,
+      status: postEdit?.status,
+      files: postEdit?.images,
+      listImageDelete: [],
+      _id: postEdit?._id,
+    });
+    return () => {
+      if (postEdit) {
+        setForm(initialize);
+      }
+    };
+  }, [open, postEdit]);
 
   const [form, setForm] = React.useState(initialize);
-  const [isAddFilePost, setIsAddFilePost] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [openEmoji, setOpenEmoji] = React.useState(false);
@@ -101,9 +86,12 @@ const PopupCreatePost = (props) => {
     setIsSubmitting(true);
     const response = await handleSubmitPost({
       ...form,
-      files: form?.files?.length ? form.files.map((item) => item.file) : [],
+      files: form?.files?.length
+        ? form.files.filter((item) => item.file).map((item) => item.file)
+        : [],
     });
     setIsSubmitting(false);
+    onClose();
     if (response) {
       await setForm(initialize);
     }
@@ -119,7 +107,7 @@ const PopupCreatePost = (props) => {
     async (e) => {
       setIsLoading(true);
       try {
-        const response = await handleUploadFile(e);
+        const response = await handleUploadFile(e, "post");
         if (response.error) {
           setIsLoading(false);
           return enqueueSnackbar(response.message, { variant: "error" });
@@ -128,11 +116,9 @@ const PopupCreatePost = (props) => {
         setTimeout(() => {
           setForm({
             ...form,
-            files: !isAddFilePost ? response : [...form.files, ...response],
+            files: [...form.files, ...response],
           });
-          if (isAddFilePost) {
-            setIsAddFilePost(false);
-          }
+
           setIsLoading(false);
         }, 1000);
       } catch (error) {
@@ -140,8 +126,26 @@ const PopupCreatePost = (props) => {
         setIsLoading(false);
       }
     },
-    [enqueueSnackbar, form, isAddFilePost]
+    [enqueueSnackbar, form]
   );
+
+  const handleDeleteFile = (publicID) => {
+    const newFiles = form?.files?.filter(
+      (item) => item?.public_id !== publicID
+    );
+    if (form?._id) {
+      return setForm({
+        ...form,
+        files: newFiles,
+        listImageDelete: [publicID, ...form?.listImageDelete],
+      });
+    }
+    setForm({ ...form, files: newFiles });
+  };
+
+  const textSubmit = !form?._id ? "Đăng" : "Sửa";
+  const textHandleSubmit =
+    isSubmitting && !form?._id ? "Đăng tải bài viết" : "Chờ vài giây...";
 
   return (
     <>
@@ -173,7 +177,9 @@ const PopupCreatePost = (props) => {
 
         <Paper sx={{ bgcolor: "background.navbar" }}>
           <Box sx={{ position: "relative" }}>
-            <DialogTitle sx={{ textAlign: "center" }}>Tạo bài viết</DialogTitle>
+            <DialogTitle sx={{ textAlign: "center" }}>
+              {!form?._id ? "Tạo bài viết" : "Sửa bài viết"}
+            </DialogTitle>
             <Divider />
 
             {/* //btnclose */}
@@ -309,7 +315,14 @@ const PopupCreatePost = (props) => {
             />
 
             {isLoading ? (
-              <Box sx={{ position: "absolute", bottom: 50, width: "90%" }}>
+              <Box
+                sx={{
+                  position: "absolute",
+                  bottom: 50,
+                  width: "90%",
+                  zIndex: 10,
+                }}
+              >
                 <LoadingEllipsisElement />
               </Box>
             ) : (
@@ -339,8 +352,13 @@ const PopupCreatePost = (props) => {
                     },
                   }}
                 >
-                  <Box onClick={() => handleToggleOpenLightBox(true)}>
-                    <Masonry lists={form?.files} />
+                  <Box>
+                    <Masonry
+                      lists={form?.files}
+                      handleToggleOpenLightBox={handleToggleOpenLightBox}
+                      handleDeleteFile={handleDeleteFile}
+                      isDisabledDelete={false}
+                    />
                   </Box>
                   <Box
                     sx={{
@@ -359,35 +377,12 @@ const PopupCreatePost = (props) => {
                         "& svg": { fontSize: "14px!important" },
                       }}
                       onClick={() => {
-                        setIsAddFilePost(true);
                         uploadPostRef.current.click();
                       }}
                     >
                       Thêm ảnh
                     </MButton>
                   </Box>
-                  <Paper
-                    elevation={5}
-                    sx={{
-                      position: "absolute",
-                      top: 15,
-                      right: 15,
-                      bgcolor: "background.main",
-                      borderRadius: "50%",
-                    }}
-                  >
-                    <IconButton
-                      onClick={() => setForm({ ...form, files: [] })}
-                      sx={{
-                        "& svg": {
-                          fill: (theme) => theme.palette.text.primary,
-                          fontSize: 14,
-                        },
-                      }}
-                    >
-                      {icons.CloseIcon}
-                    </IconButton>
-                  </Paper>
                 </Box>
               </Box>
             ) : (
@@ -397,12 +392,16 @@ const PopupCreatePost = (props) => {
           <DialogActions>
             <MButton
               fullWidth
-              disabled={!form?.content || !form?.status || isSubmitting}
+              disabled={
+                (!form?.content && !form?.files?.length) ||
+                !form?.status ||
+                isSubmitting
+              }
               onClick={handleSubmit}
               variant="contained"
               loading={isSubmitting}
             >
-              {isSubmitting ? "Đang đăng bài viết" : "Đăng"}
+              {isSubmitting ? textHandleSubmit : textSubmit}
             </MButton>
           </DialogActions>
         </Paper>

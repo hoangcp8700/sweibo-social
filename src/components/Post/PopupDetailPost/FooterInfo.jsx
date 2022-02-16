@@ -57,14 +57,14 @@ const FooterInfo = (props) => {
 
           <Box sx={{ ml: 0.5 }}>
             <TypographyCustom onClick={handleGetLikes}>
-              {likeLength}
+              {likeLength || 0}
             </TypographyCustom>
           </Box>
         </Stack>
 
         <Stack direction="row" alignItems="center" spacing={2}>
           <TypographyCustom onClick={handleGetComments}>
-            {commentLength} bình luận
+            {commentLength || 0} bình luận
           </TypographyCustom>
 
           <TypographyCustom

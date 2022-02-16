@@ -3,18 +3,24 @@ import axios from "utils/axios";
 import routes from "api/apiRoutes";
 
 const usePost = () => {
-  const handleCreatePost = async (form) => {
+  const handleCreateOrEditPost = async (form) => {
     try {
+      const { _id, ...restForm } = form;
       const formData = await new FormData();
-      await Object.keys(form).map((key) => {
-        if (key === "files" && form[key].length) {
-          return form[key].map((item) => formData.append(key, item));
+      await Object.keys(restForm).map((key) => {
+        if (key === "files" && restForm[key].length) {
+          return restForm[key].map((item) => formData.append(key, item));
         }
-        return formData.append(key, form[key]);
+        return formData.append(key, restForm[key]);
       });
-
-      const response = await axios.post(routes.posts().create, formData);
-      return response.data.data;
+      let response;
+      if (!_id) {
+        response = await axios.post(routes.posts().create, formData);
+      } else {
+        response = await axios.put(routes.posts(_id).byID, formData);
+      }
+      console.log("handleCreateOrEditPost", response);
+      return response.data;
     } catch (error) {
       console.log("err", error.response);
       return { error: error.response.data };
@@ -128,7 +134,7 @@ const usePost = () => {
   };
 
   return {
-    handleCreatePost,
+    handleCreateOrEditPost,
     handleGetPostUser,
     handleGetPostAll,
     handleGetPostById,
