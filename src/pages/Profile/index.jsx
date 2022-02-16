@@ -40,15 +40,18 @@ const Profile = () => {
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   const { handleGetUserByEmail } = useUser();
-  const { user, handleUploadAvatar } = useAuth();
+  const { user, handleUploadAvatar, handleRemoveAvatar, handleUploadThumnail } =
+    useAuth();
 
   const menuProfileRef = React.useRef();
   const uploadAvatarRef = React.useRef();
+  const uploadThumnailRef = React.useRef();
 
   const [pageLoading, setPageLoading] = React.useState(true);
   const [avatarLoading, setAvatarLoading] = React.useState(false);
+  const [thumbnaiLoading, setThumbnaiLoading] = React.useState(false);
   const [userProfile, setUserProfile] = React.useState(null);
-  const [avatarDetail, setAvatarDetail] = React.useState(null);
+  const [isOpenAvatar, setIsOpenAvatar] = React.useState(false);
 
   const parsed = queryString.parse(location?.search);
   const isAuth = parsed?.email && parsed?.email !== user?.email ? false : true;
@@ -105,12 +108,28 @@ const Profile = () => {
         setAvatarLoading(false);
         return enqueueSnackbar(response.message, { variant: "error" });
       }
-      const newAvatar = await handleUploadAvatar(response);
-      setAvatarDetail(newAvatar);
+      console.log("form", response);
+      const newAvatar = await handleUploadAvatar(response[0].file);
+      setUserProfile({ ...userProfile, avatar: newAvatar });
       setAvatarLoading(false);
     } catch (error) {
       console.log("err", error);
       setAvatarLoading(false);
+    }
+  };
+  const handleUploadFileThumbail = async (e) => {
+    setThumbnaiLoading(true);
+    try {
+      const response = await handleUploadFile(e);
+      if (response.error) {
+        setThumbnaiLoading(false);
+        return enqueueSnackbar(response.message, { variant: "error" });
+      }
+      await handleUploadThumnail(response[0].file);
+      setThumbnaiLoading(false);
+    } catch (error) {
+      console.log("err", error);
+      setThumbnaiLoading(false);
     }
   };
 
@@ -118,18 +137,24 @@ const Profile = () => {
     return <LoadingEllipsis />;
   }
 
-  const handleShowAvatar = (isNull = false) => {
-    setAvatarDetail(!isNull ? userProfile.avatar : null);
+  const handleToggleShowAvatar = () => setIsOpenAvatar(!isOpenAvatar);
+
+  const handleRemoveAvatarCustom = async () => {
+    await handleRemoveAvatar();
+    handleToggleShowAvatar();
   };
 
   return (
     <Box>
       <AvatarDetail
-        open={Boolean(avatarDetail)}
-        avatar={avatarDetail}
-        onClose={() => handleShowAvatar(true)}
+        open={isOpenAvatar}
+        avatar={
+          userProfile?.avatar?.detail?.custom[0] || userProfile?.avatar?.url
+        }
+        onClose={handleToggleShowAvatar}
         isLoading={avatarLoading}
         handleUploadAvatar={() => uploadAvatarRef.current.click()}
+        handleRemoveAvatar={handleRemoveAvatarCustom}
       />
 
       <Box
@@ -168,19 +193,43 @@ const Profile = () => {
                   height: { xs: 150, mobile: 200, sm: 300 },
                 }}
               >
-                <Paper
-                  elevation={0}
-                  sx={[
-                    (theme) => ({
-                      borderRadius: 0,
-                      borderBottomLeftRadius: theme.sizes.base,
-                      borderBottomRightRadius: theme.sizes.base,
+                {thumbnaiLoading ? (
+                  <Box
+                    sx={{
+                      height: "100%",
+                    }}
+                  >
+                    <LoadingEllipsisElement />
+                  </Box>
+                ) : (
+                  ""
+                )}
+                {!user?.coverImage?.url ? (
+                  <Paper
+                    elevation={0}
+                    sx={[
+                      (theme) => ({
+                        borderRadius: 0,
+                        borderBottomLeftRadius: theme.sizes.base,
+                        borderBottomRightRadius: theme.sizes.base,
+                        width: "100%",
+                        height: "100%",
+                        bgcolor: "background.opacity2",
+                      }),
+                    ]}
+                  />
+                ) : (
+                  <img
+                    src={user?.coverImage?.url}
+                    alt="banner"
+                    style={{
                       width: "100%",
                       height: "100%",
-                      bgcolor: "background.opacity2",
-                    }),
-                  ]}
-                />
+                      objectFit: "cover",
+                    }}
+                  />
+                )}
+
                 {isAuth ? (
                   <Box
                     sx={{
@@ -189,18 +238,24 @@ const Profile = () => {
                       right: { xs: 20, sm: 40 },
                     }}
                   >
-                    <MButton startIcon={icons.CameraIcon} variant="contained">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={uploadThumnailRef}
+                      style={{ display: "none" }}
+                      onChange={handleUploadFileThumbail}
+                    />
+                    <MButton
+                      startIcon={icons.CameraIcon}
+                      variant="contained"
+                      onClick={() => uploadThumnailRef.current.click()}
+                    >
                       Thêm ảnh bìa
                     </MButton>
                   </Box>
                 ) : (
                   ""
                 )}
-                {/* <img
-                  src={avatar}
-                  alt="banner"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                /> */}
               </Box>
             </Paper>
 
@@ -246,7 +301,7 @@ const Profile = () => {
                       </Box>
                     ) : (
                       <Avatar
-                        onClick={() => handleShowAvatar()}
+                        onClick={handleToggleShowAvatar}
                         src={userProfile?.avatar?.url}
                         alt="avatar"
                         sx={{
@@ -256,6 +311,9 @@ const Profile = () => {
                             `3px solid ${theme.palette.background.paper}`,
                           boxShadow: (theme) => theme.shadows[5],
                           cursor: "pointer",
+                          pointerEvents: userProfile?.avatar?.url
+                            ? "auto"
+                            : "none",
                         }}
                       />
                     )}

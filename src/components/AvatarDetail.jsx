@@ -39,7 +39,7 @@ export default function AvatarDetail(props) {
             <LoadingEllipsisElement />
           ) : (
             <img
-              src={avatar?.detail?.custom[0] || avatar?.url}
+              src={avatar}
               alt="banner"
               style={{
                 width: "100%",

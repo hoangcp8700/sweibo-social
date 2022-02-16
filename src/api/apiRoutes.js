@@ -10,6 +10,9 @@ const authentication = () => {
     resetPassword: "/auth/reset-password",
     logout: "/auth/logout",
     updateAvatar: "/users/avatar/update",
+    deleteAvatar: "/users/avatar/delete",
+    updateThumbnail: "/users/thumbnail/update",
+    deleteThumbnail: "/users/thumbnail/delete",
   };
 };
 

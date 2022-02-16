@@ -132,7 +132,6 @@ const useAuth = () => {
         newForm
       );
       const newUser = { ...user, avatar: response.data.data.avatar };
-      console.log("newUser avatar", newUser);
       dispatch(SUCCESS_AUTH(newUser));
       return response.data.data.avatar;
     } catch (error) {
@@ -140,6 +139,39 @@ const useAuth = () => {
       return false;
     }
   };
+
+  const handleRemoveAvatar = async () => {
+    try {
+      const response = await axios.put(
+        `${routes.authentication().deleteAvatar}`
+      );
+      const newUser = { ...user, avatar: {} };
+      dispatch(SUCCESS_AUTH(newUser));
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
+
+  const handleUploadThumnail = async (file) => {
+    try {
+      const newForm = await new FormData();
+      await newForm.append("files", file);
+
+      const response = await axios.put(
+        `${routes.authentication().updateThumbnail}`,
+        newForm
+      );
+      const newUser = { ...user, coverImage: response.data.data.coverImage };
+      dispatch(SUCCESS_AUTH(newUser));
+      return response.data.data.coverImage;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
+
   return {
     user,
     isLoading,
@@ -156,6 +188,8 @@ const useAuth = () => {
     handleLogout,
     handleToggleDarkMode,
     handleUploadAvatar,
+    handleRemoveAvatar,
+    handleUploadThumnail,
   };
 };
 
