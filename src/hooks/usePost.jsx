@@ -11,6 +11,9 @@ const usePost = () => {
         if (key === "files" && restForm[key].length) {
           return restForm[key].map((item) => formData.append(key, item));
         }
+        if (key === "listImageDelete" && restForm[key].length) {
+          return restForm[key].map((item) => formData.append(key, item));
+        }
         return formData.append(key, restForm[key]);
       });
       let response;
