@@ -6,10 +6,12 @@ import {
   IconButton,
   Divider,
   Typography,
+  Chip,
 } from "@mui/material";
 import { MTextIcon } from "components/MUI";
-import { icons } from "constants";
+import { icons, data } from "constants";
 import PopupEditProfile from "./PopupEditProfile";
+import { LoadingEllipsis } from "components";
 
 const MTextIconCustom = (props) => {
   return (
@@ -26,7 +28,7 @@ const MTextIconCustom = (props) => {
   );
 };
 const InfomationUser = (props) => {
-  const { isAuth, handleSubmitEditProfile } = props;
+  const { isAuth, user, handleSubmitEditProfile } = props;
   const [isEditProfile, setIsEditProfile] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -36,7 +38,9 @@ const InfomationUser = (props) => {
     setIsLoading(true);
     await handleSubmitEditProfile(form);
     setIsLoading(false);
+    handleToggleIsEditProfile();
   };
+
   return (
     <Paper
       sx={{
@@ -45,11 +49,19 @@ const InfomationUser = (props) => {
         p: 2,
       }}
     >
+      {isLoading ? (
+        <LoadingEllipsis sx={{ backgroundColor: "rgba(0,0,0,0.5)" }} />
+      ) : (
+        ""
+      )}
+
       <PopupEditProfile
+        userContact={user?.contact}
         open={isEditProfile}
         onClose={handleToggleIsEditProfile}
         onSubmit={handleSubmitForm}
       />
+
       <Stack>
         <Box>
           <Stack
@@ -78,31 +90,63 @@ const InfomationUser = (props) => {
             )}
           </Stack>
           <Typography sx={{ textAlign: "center" }}>
-            Love family ❤️ Do you want to be my family?
+            {user?.contact?.bio}
           </Typography>
         </Box>
         <Divider sx={{ my: 2 }} />
         <Stack>
+          {user?.contact?.school ? (
+            <MTextIconCustom
+              startIcon={icons.SchoolOutlinedIcon}
+              label={`Học tại ${user?.contact?.school} `}
+            />
+          ) : (
+            ""
+          )}
+          {user?.contact?.address ? (
+            <MTextIconCustom
+              startIcon={icons.LocationCityIcon}
+              label={`Đến từ ${user?.contact?.address} `}
+            />
+          ) : (
+            ""
+          )}
+          {user?.contact?.relationshipStatus
+            ? data.relationshipStatus
+                .filter(
+                  (item) => user?.contact?.relationshipStatus === item.value
+                )
+                .map((item) => (
+                  <MTextIconCustom
+                    startIcon={item.icon}
+                    label={`${item?.label}`}
+                  />
+                ))
+            : ""}
+
           <MTextIconCustom
-            startIcon={icons.HomeOutlineIcon}
-            label={"Làm việc tại Trường THCS & THPT Phạm Ngũ Lão "}
-          />
-          <MTextIconCustom
-            startIcon={icons.HomeOutlineIcon}
-            label={"Từng học tại Trường THCS Nguyễn Hiền "}
-          />
-          <MTextIconCustom
-            startIcon={icons.HomeOutlineIcon}
-            label={" Đến từ Hưng Yên"}
-          />
-          <MTextIconCustom
-            startIcon={icons.HomeOutlineIcon}
-            label={"Độc thân"}
-          />
-          <MTextIconCustom
-            startIcon={icons.HomeOutlineIcon}
+            startIcon={icons.WifiIcon}
             label={"Có 2.354 người theo dõi"}
           />
+
+          <Stack direction="row" sx={{ flexWrap: "wrap", gap: 1, mt: 1 }}>
+            {data.favorites
+              .filter((item) => user?.contact?.favorites?.includes(item.value))
+              .map((item) => (
+                <Chip
+                  sx={{
+                    pl: 1,
+                    "& .MuiSvgIcon-root ": {
+                      fontSize: 16,
+                    },
+                  }}
+                  key={item.value}
+                  icon={item.icon}
+                  label={item.label}
+                  variant="outlined"
+                />
+              ))}
+          </Stack>
         </Stack>
       </Stack>
     </Paper>

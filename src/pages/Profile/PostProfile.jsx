@@ -38,8 +38,8 @@ const PostProfile = () => {
     handleDeletePost,
     handleToggleLike,
   } = usePost();
-  const { user } = useAuth();
-  const { handleGetUserByEmail } = useUser();
+  const { user, handleUpdateUser } = useAuth();
+  const { handleGetUserByEmail, handleSubmitEditProfile } = useUser();
 
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
@@ -246,6 +246,16 @@ const PostProfile = () => {
     });
   };
 
+  const handleSubmitEditProfileCustom = async (form) => {
+    const response = await handleSubmitEditProfile(userProfile?._id, form);
+    if (response) {
+      setUserProfile({ ...userProfile, contact: response });
+      handleUpdateUser({ ...userProfile, contact: response });
+      enqueueSnackbar("Cập nhập thông tin cá nhân thành công", {
+        variant: "success",
+      });
+    }
+  };
   return (
     <Box sx={{ position: "relative" }}>
       {isLoading ? (
@@ -320,7 +330,11 @@ const PostProfile = () => {
             }),
           ]}
         >
-          <InfomationUser isAuth={isAuth} user={userProfile} />
+          <InfomationUser
+            isAuth={isAuth}
+            user={userProfile}
+            handleSubmitEditProfile={handleSubmitEditProfileCustom}
+          />
           <AlbumImage />
           <AlbumFriends />
         </Stack>

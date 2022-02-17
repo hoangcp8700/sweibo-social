@@ -1,5 +1,6 @@
 import { icons } from "constants";
 import { PATH_PAGE } from "./paths";
+import pcVN from "pc-vn";
 
 const sidebarHome = [
   { ...PATH_PAGE.home, icon: icons.HomeOutlineIcon },
@@ -46,6 +47,61 @@ const menuFriendItem = [
   },
   { icon: icons.BlockIcon, label: "Chặn", labelNo: "Bỏ chặn", value: "block" },
 ];
+
+const favorites = [
+  {
+    label: "Ăn uống",
+    value: "food",
+    icon: icons.FastfoodIcon,
+  },
+  {
+    label: "Nghe nhạc",
+    value: "music",
+    icon: icons.MusicNoteIcon,
+  },
+  {
+    label: "Bóng đá",
+    value: "foofball",
+    icon: icons.SportsSoccerIcon,
+  },
+  {
+    label: "Trò chơi điện tử",
+    value: "game",
+    icon: icons.SportsEsportsIcon,
+  },
+  {
+    label: "Xem phim",
+    value: "watch-movie",
+    icon: icons.LiveTvIcon,
+  },
+  {
+    label: "Ngủ",
+    value: "sleep",
+    icon: icons.LocalHotelIcon,
+  },
+
+  {
+    label: "Đọc sách",
+    value: "read-book",
+    icon: icons.MenuBookIcon,
+  },
+];
+
+const relationshipStatus = [
+  { label: "Bí mật", value: "", icon: icons.LockOpenIcon },
+  { label: "Độc thân", value: "Độc thân", icon: icons.EmojiPeopleIcon },
+  {
+    label: "Đã kết hôn",
+    value: "Đã kết hôn",
+    icon: icons.PeopleAltOutlinedIcon,
+  },
+];
+const provincesOrigin = pcVN.getProvinces();
+const provinces = provincesOrigin.map((item) => ({
+  label: item.name,
+  value: item.name,
+}));
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   sidebarSave,
@@ -53,4 +109,7 @@ export default {
   sidebarFriend,
   menuProfile,
   menuFriendItem,
+  favorites,
+  relationshipStatus,
+  provinces,
 };

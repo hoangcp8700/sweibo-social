@@ -53,7 +53,7 @@ const Header = () => {
   };
 
   const handleRedirectProfile = (name) => {
-    navigate(`${PATH_PAGE.profile.link}`);
+    navigate(`${PATH_PAGE.profile.link}/posts`);
     name && handleToggleAction(name);
   };
 

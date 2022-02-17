@@ -82,6 +82,17 @@ import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 
+import FastfoodIcon from "@mui/icons-material/Fastfood";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import LiveTvIcon from "@mui/icons-material/LiveTv";
+import LocalHotelIcon from "@mui/icons-material/LocalHotel";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
+import WifiIcon from "@mui/icons-material/Wifi";
+
 const ConvertIcon = ({ src }) => {
   return (
     <Icon>
@@ -166,4 +177,16 @@ export default {
   SchoolOutlinedIcon: <SchoolOutlinedIcon />,
   PeopleAltOutlinedIcon: <PeopleAltOutlinedIcon />,
   FavoriteBorderOutlinedIcon: <FavoriteBorderOutlinedIcon />,
+
+  FastfoodIcon: <FastfoodIcon />,
+  MusicNoteIcon: <MusicNoteIcon />,
+  SportsSoccerIcon: <SportsSoccerIcon />,
+  SportsEsportsIcon: <SportsEsportsIcon />,
+  LiveTvIcon: <LiveTvIcon />,
+  LocalHotelIcon: <LocalHotelIcon />,
+  MenuBookIcon: <MenuBookIcon />,
+
+  EmojiPeopleIcon: <EmojiPeopleIcon />,
+  LocationCityIcon: <LocationCityIcon />,
+  WifiIcon: <WifiIcon />,
 };

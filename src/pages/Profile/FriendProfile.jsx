@@ -1,12 +1,7 @@
 import React from "react";
-import {
-  InfomationUser,
-  AlbumFriends,
-  AlbumImage,
-  InputCreatePost,
-  PostItem,
-  FriendItem,
-} from "components";
+import queryString from "query-string";
+
+import { FriendItem } from "components";
 import {
   Box,
   Stack,
@@ -17,6 +12,8 @@ import {
   Typography,
 } from "@mui/material";
 import { icons } from "constants";
+import { useLocation } from "react-router-dom";
+import { useUser } from "hooks";
 
 const list = [
   {
@@ -99,7 +96,33 @@ const list = [
   },
 ];
 
+const initialize = {
+  page: 1,
+  isNextPage: true,
+  data: [],
+  length: 0,
+};
+
 const FriendProfile = () => {
+  const location = useLocation();
+  const [paginate, setPaginate] = React.useState(initialize); // friends
+  const { handleGetFriends } = useUser();
+
+  const parsed = queryString.parse(location?.search);
+  const isAuth = !parsed.email ? true : false;
+
+  React.useEffect(() => {
+    const getFriends = async () => {
+      const response = await handleGetFriends(parsed?.email);
+      console.log("response", response);
+    };
+
+    getFriends();
+    return () => {
+      setPaginate(initialize);
+    };
+  }, [location]);
+
   return (
     <Paper
       sx={{
@@ -113,6 +136,7 @@ const FriendProfile = () => {
           sx={{
             flexDirection: { xs: "column", sm: "row" },
             gap: 1,
+            px: 2,
             alignItems: { xs: "flex-start", sm: "center" },
           }}
           justifyContent="space-between"
@@ -138,6 +162,7 @@ const FriendProfile = () => {
           />
         </Stack>
       </Box>
+
       <Box
         sx={{
           display: "grid",

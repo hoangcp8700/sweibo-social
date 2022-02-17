@@ -21,6 +21,7 @@ const users = (id) => {
     edit: `/users/${id}`,
     users: `/users`,
     albums: `/users/albums`,
+    updateContact: `/users/${id}/contact`,
   };
 };
 

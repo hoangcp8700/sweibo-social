@@ -35,7 +35,24 @@ const useUser = () => {
     }
   };
 
-  return { userSocial, handleGetUserByEmail, handleGetAlbums };
+  const handleSubmitEditProfile = async (userID, form) => {
+    try {
+      const response = await axios.put(
+        routes.users(userID).updateContact,
+        form
+      );
+      return response.data.contact;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
+  return {
+    userSocial,
+    handleGetUserByEmail,
+    handleGetAlbums,
+    handleSubmitEditProfile,
+  };
 };
 
 export default useUser;

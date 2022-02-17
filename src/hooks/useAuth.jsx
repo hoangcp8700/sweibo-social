@@ -172,6 +172,10 @@ const useAuth = () => {
     }
   };
 
+  const handleUpdateUser = (data) => {
+    dispatch(SUCCESS_AUTH(data));
+  };
+
   return {
     user,
     isLoading,
@@ -190,6 +194,7 @@ const useAuth = () => {
     handleUploadAvatar,
     handleRemoveAvatar,
     handleUploadThumnail,
+    handleUpdateUser,
   };
 };
 

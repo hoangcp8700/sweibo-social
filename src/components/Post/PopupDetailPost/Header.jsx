@@ -1,7 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Stack, Avatar, IconButton, Typography } from "@mui/material";
 import { fToNow } from "utils/formatTime";
 import { icons } from "constants";
+import { PATH_PAGE } from "constants/paths";
 
 const Header = React.forwardRef((props, ref) => {
   const { handleToggleOpenMenu, post } = props;
@@ -13,12 +15,23 @@ const Header = React.forwardRef((props, ref) => {
       sx={{ px: 2 }}
     >
       <Stack direction="row" alignItems="center" spacing={1}>
-        <Avatar
-          sx={{ width: 36, height: 36 }}
-          src={post?.createdBy?.avatar?.url}
-        />
+        <Typography
+          component={Link}
+          to={`${PATH_PAGE.profile.link}/posts?email=${post?.createdBy?.email}`}
+        >
+          <Avatar
+            sx={{ width: 36, height: 36 }}
+            src={post?.createdBy?.avatar?.url}
+          />
+        </Typography>
+
         <Stack>
-          <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
+          <Typography
+            variant="subtitle2"
+            sx={{ color: "text.primary" }}
+            component={Link}
+            to={`${PATH_PAGE.profile.link}/posts?email=${post?.createdBy?.email}`}
+          >
             {post?.createdBy?.firstName} {post?.createdBy?.lastName}
           </Typography>
           <Stack direction="row" alignItems="center" spacing={1}>

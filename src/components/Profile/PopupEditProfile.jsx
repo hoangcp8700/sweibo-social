@@ -14,7 +14,7 @@ import {
   Divider,
 } from "@mui/material";
 import { MButton, MSelect } from "components/MUI";
-import { icons } from "constants";
+import { icons, data } from "constants";
 
 const initialize = {
   bio: "",
@@ -23,12 +23,6 @@ const initialize = {
   relationshipStatus: "",
   favorites: [],
 };
-
-const relationshipStatus = [
-  { label: "Bí mật", value: "", icon: icons.PublicIcon },
-  { label: "Độc thân", value: "alone", icon: icons.PublicIcon },
-  { label: "Đã kết hôn", value: "marry", icon: icons.LockOpenIcon },
-];
 
 const TextFieldStyle = styled(TextField)(({ theme }) => ({
   width: "100%",
@@ -79,9 +73,19 @@ const TextFieldCustom = (props) => {
 };
 
 export default function PopupEditProfile(props) {
-  const { onClose, open, onSubmit, user } = props;
-
+  const { onClose, open, onSubmit, userContact } = props;
   const [form, setForm] = React.useState(initialize);
+
+  React.useEffect(() => {
+    if (!open) return;
+    setForm({
+      bio: userContact?.bio,
+      school: userContact?.school,
+      address: userContact?.address,
+      relationshipStatus: userContact?.relationshipStatus,
+      favorites: userContact?.favorites,
+    });
+  }, [open]);
 
   const handleChangeForm = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -98,6 +102,7 @@ export default function PopupEditProfile(props) {
               onChange={handleChangeForm}
               name="bio"
               placeholder="Nhật ký"
+              minRows={2}
               multiline
               maxRows={4}
               sx={{
@@ -119,13 +124,21 @@ export default function PopupEditProfile(props) {
               />
             </FormControlCustom>
 
-            <FormControlCustom label="Địa chỉ" sx={{ flex: 1 }}>
-              <TextFieldCustom
-                value={form.address}
-                onChange={handleChangeForm}
+            <FormControlCustom label="Thành phố / Tỉnh" sx={{ flex: 1 }}>
+              <MSelect
                 name="address"
-                placeholder="Địa chỉ"
-                icon={icons.HomeOutlineIcon}
+                placeholder="Bạn đến từ đâu?"
+                lists={data.provinces}
+                value={form?.address}
+                onChange={handleChangeForm}
+                sx={{
+                  "& .MuiSelect-select": { py: 1.5, px: 3 },
+                  "& svg": {
+                    fontSize: `20px!important`,
+                    fill: (theme) => theme.palette.text.primary,
+                  },
+                  "& .MuiButtonBase-root": { mr: 2 },
+                }}
               />
             </FormControlCustom>
           </Stack>
@@ -134,7 +147,7 @@ export default function PopupEditProfile(props) {
             <MSelect
               name="relationshipStatus"
               placeholder="Tình trạng quan hệ"
-              lists={relationshipStatus}
+              lists={data.relationshipStatus}
               value={form?.relationshipStatus}
               onChange={handleChangeForm}
               sx={{
@@ -149,10 +162,21 @@ export default function PopupEditProfile(props) {
           </FormControlCustom>
 
           <FormControlCustom label="Sở thích">
-            <TextFieldCustom
-              value={form.favorites}
+            <MSelect
+              multiple
+              name="favorites"
               placeholder="Sở thích"
-              icon={icons.FavoriteBorderOutlinedIcon}
+              lists={data.favorites}
+              value={form?.favorites}
+              onChange={handleChangeForm}
+              sx={{
+                "& .MuiSelect-select": { py: 1.5, px: 3 },
+                "& svg": {
+                  fontSize: `20px!important`,
+                  fill: (theme) => theme.palette.text.primary,
+                },
+                "& .MuiButtonBase-root": { mr: 0.5, mt: -0.5 },
+              }}
             />
           </FormControlCustom>
         </Stack>
