@@ -81,7 +81,10 @@ const PostItem = (props) => {
               sx={{ mt: 1, cursor: "pointer" }}
               onClick={() => handleActionPost("detail", post?._id)}
             >
-              <Masonry lists={post?.images} />
+              <Masonry
+                lists={post?.images}
+                handleToggleOpenLightBox={() => console.log("lightbox")}
+              />
             </Stack>
           ) : (
             ""

@@ -52,7 +52,7 @@ const usePost = () => {
 
   const handleGetPostsOfFriend = async (page = 1) => {
     try {
-      const link = `?page=${page}&status=Public`;
+      const link = `?page=${page}`;
       const response = await axios.get(
         `${routes.posts().getPostsOfFriend}${link}`
       );

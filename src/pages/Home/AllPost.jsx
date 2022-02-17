@@ -1,10 +1,6 @@
 import React from "react";
-import queryString from "query-string";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  InfomationUser,
-  AlbumFriends,
-  AlbumImage,
   InputCreatePost,
   PostItem,
   LoadingEllipsis,
@@ -25,13 +21,22 @@ import { InfiniteScroll } from "providers";
 import { useSnackbar } from "notistack";
 import { MButton } from "components/MUI";
 
-const MButtonStyle = styled(MButton)(({ theme, active }) => ({
-  textDecoration: active ? "underline" : "none",
-  "&:hover": {
-    background: "transparent",
-    textDecoration: "underline",
-  },
-}));
+const MButtonStyle = ({ children, active, ...props }) => {
+  return (
+    <MButton
+      {...props}
+      sx={{
+        "&:hover": {
+          background: "transparent",
+          textDecoration: "underline",
+        },
+        textDecoration: active ? "underline" : "none",
+      }}
+    >
+      {children}
+    </MButton>
+  );
+};
 
 const tags = [
   { label: "Tất cả và đang thịnh hành", value: "all" },
@@ -72,10 +77,7 @@ const AllPost = () => {
     postID: null,
   });
 
-  const parsed = queryString.parse(location?.search);
-  const isAuth = !parsed.email ? true : false;
-
-  const handleGetPost = async (tag) => {
+  const handleGetPost = React.useCallback(async () => {
     if (!paginate.isNextPage) return;
     let response;
     if (tag === "all") {
@@ -84,67 +86,69 @@ const AllPost = () => {
       response = await handleGetPostsOfFriend(paginate.page);
     }
 
-    console.log("get post", response);
+    console.log("get post", tag, response);
     setPaginate({
       page: response.next,
       isNextPage: response.hasNextPage ? true : false,
       data: [...paginate.data, ...response.data],
       totalLength: response.totalLength,
     });
-  };
+  }, [tag, paginate]);
 
   React.useEffect(() => {
-    handleGetPost(tag);
-
-    return () => {
-      setPaginate(initialize);
-    };
+    handleGetPost();
   }, [tag]);
 
-  const handleSubmitPost = async (form) => {
-    try {
-      handleToggleIsLoading(true);
-      const response = await handleCreateOrEditPost(form);
-      handleToggleIsLoading(false);
-      if (response.success) {
-        // create post
-        if (!form?._id) {
-          setPaginate({
-            ...paginate,
-            data: [response.data, ...paginate.data],
-            totalLength: paginate?.totalLength + 1,
-          });
-          handleToggleIsCreate();
-        } else {
-          const newPosts = paginate.data.map((item) => {
-            if (item?._id !== form?._id) return item;
-            return response.data;
-          });
-          setPaginate({
-            ...paginate,
-            data: newPosts,
-          });
+  const handleSubmitPost = React.useCallback(
+    async (form) => {
+      try {
+        handleToggleIsLoading(true);
+        const response = await handleCreateOrEditPost(form);
+        handleToggleIsLoading(false);
+        if (response.success) {
+          // create post
+          if (!form?._id) {
+            setPaginate({
+              ...paginate,
+              data: [response.data, ...paginate.data],
+              totalLength: paginate?.totalLength + 1,
+            });
+            handleToggleIsCreate();
+          } else {
+            const newPosts = paginate.data.map((item) => {
+              if (item?._id !== form?._id) return item;
+              return response.data;
+            });
+            setPaginate({
+              ...paginate,
+              data: newPosts,
+            });
 
-          if (actionPost?.detail) {
-            setActionPost({ ...actionPost, post: response.data });
+            if (actionPost?.detail) {
+              setActionPost({ ...actionPost, post: response.data });
+            }
           }
         }
+
+        enqueueSnackbar(response.message || response.error.message, {
+          variant: response?.success ? "success" : "warning",
+        });
+
+        return true;
+      } catch (error) {
+        console.log("err", error);
       }
-
-      enqueueSnackbar(response.message || response.error.message, {
-        variant: response?.success ? "success" : "warning",
-      });
-
-      return true;
-    } catch (error) {
-      console.log("err", error);
-    }
-  };
+    },
+    [actionPost, paginate]
+  );
 
   // ----------------------- actions
   const handleToggleIsCreate = () => setIsCreate(!isCreate);
   const handleToggleIsLoading = (value) => setIsLoading(value);
-  const handleChangeTag = (value) => setTag(value);
+  const handleChangeTag = (value) => {
+    setTag(value);
+    setPaginate(initialize);
+  };
 
   const handleToggleOpenLightBox = (lists) => {
     setOpenLightBox({
@@ -153,87 +157,92 @@ const AllPost = () => {
     });
   };
 
-  const handleActionPost = async (name, postID, post) => {
-    if (name === "detail") {
-      if (!postID) return setActionPost({ name, postID, detail: false });
-      const getPost = paginate?.data?.filter((item) => item?._id === postID);
-      return setActionPost({ name, postID, post: getPost[0], detail: true });
-    }
-    if (name === "like-post") {
-      if (!postID) return setActionPost({ ...actionPost, name, postID });
-      const response = await handleToggleLike(postID);
+  const handleActionPost = React.useCallback(
+    async (name, postID, post) => {
+      if (name === "detail") {
+        if (!postID) return setActionPost({ name, postID, detail: false });
+        const getPost = paginate?.data?.filter((item) => item?._id === postID);
+        return setActionPost({ name, postID, post: getPost[0], detail: true });
+      }
+      if (name === "like-post") {
+        if (!postID) return setActionPost({ ...actionPost, name, postID });
+        const response = await handleToggleLike(postID);
 
-      if (response) {
-        let newPost;
-        if (response.isLike) {
-          newPost = paginate.data.map((item) => {
-            if (item?._id !== postID) return item;
-            return { ...item, likes: [user?._id, ...item.likes] };
+        if (response) {
+          let newPost;
+          if (response.isLike) {
+            newPost = paginate.data.map((item) => {
+              if (item?._id !== postID) return item;
+              return { ...item, likes: [user?._id, ...item.likes] };
+            });
+          } else {
+            newPost = paginate.data.map((item) => {
+              if (item?._id !== postID) return item;
+              return {
+                ...item,
+                likes: item.likes.filter((itemLike) => itemLike !== user?._id),
+              };
+            });
+          }
+          const getNewPost = newPost.filter((item) => item?._id === postID);
+
+          setPaginate({
+            ...paginate,
+            data: newPost,
           });
-        } else {
-          newPost = paginate.data.map((item) => {
-            if (item?._id !== postID) return item;
-            return {
-              ...item,
-              likes: item.likes.filter((itemLike) => itemLike !== user?._id),
-            };
+          return setActionPost({
+            ...actionPost,
+            name,
+            postID,
+            post: getNewPost[0],
           });
         }
-        const getNewPost = newPost.filter((item) => item?._id === postID);
-
-        setPaginate({
-          ...paginate,
-          data: newPost,
-        });
-        return setActionPost({
-          ...actionPost,
-          name,
-          postID,
-          post: getNewPost[0],
-        });
+        return;
       }
-      return;
-    }
 
-    if (name === "delete-post") {
-      handleToggleIsLoading(true);
-      const response = await handleDeletePost(postID);
-      handleToggleIsLoading(false);
+      if (name === "delete-post") {
+        handleToggleIsLoading(true);
+        const response = await handleDeletePost(postID);
+        handleToggleIsLoading(false);
 
-      if (response) {
-        const newPosts = paginate?.data?.filter((item) => item?._id !== postID);
-        setPaginate({
-          ...paginate,
-          totalLength: paginate.totalLength - 1,
-          data: newPosts,
-        });
-        enqueueSnackbar(response.message, { variant: "success" });
+        if (response) {
+          const newPosts = paginate?.data?.filter(
+            (item) => item?._id !== postID
+          );
+          setPaginate({
+            ...paginate,
+            totalLength: paginate.totalLength - 1,
+            data: newPosts,
+          });
+          enqueueSnackbar(response.message, { variant: "success" });
 
-        return setActionPost({
-          detail: false,
-          name: "",
-          postID: "",
-        });
+          return setActionPost({
+            detail: false,
+            name: "",
+            postID: "",
+          });
+        }
+        return;
       }
-      return;
-    }
 
-    if (name === "edit-post") {
-      if (postID)
-        return setActionPost({
-          ...actionPost,
-          name,
-          postID,
-          post,
-        });
-    }
+      if (name === "edit-post") {
+        if (postID)
+          return setActionPost({
+            ...actionPost,
+            name,
+            postID,
+            post,
+          });
+      }
 
-    setActionPost({
-      ...actionPost,
-      name,
-      postID,
-    });
-  };
+      setActionPost({
+        ...actionPost,
+        name,
+        postID,
+      });
+    },
+    [actionPost, paginate, user]
+  );
 
   const handleCommentLength = (postID, type) => {
     const newPost = paginate.data.map((item) => {
@@ -274,6 +283,7 @@ const AllPost = () => {
         onClose={() => handleActionPost("like", null)}
       />
       <PopupDetailPost
+        isAuth={actionPost?.post?.createdBy?._id === user?._id || false}
         open={
           (actionPost?.postID && actionPost.name === "detail") ||
           actionPost.detail ||
@@ -315,15 +325,12 @@ const AllPost = () => {
           minWidth: { xs: "inherit", sm: 350, md: 320 },
         }}
       >
-        {isAuth ? (
-          <InputCreatePost
-            open={isCreate}
-            onClick={handleToggleIsCreate}
-            handleSubmitPost={handleSubmitPost}
-          />
-        ) : (
-          ""
-        )}
+        <InputCreatePost
+          open={isCreate}
+          onClick={handleToggleIsCreate}
+          handleSubmitPost={handleSubmitPost}
+        />
+
         <Stack
           sx={{
             flexDirection: "row",
@@ -337,7 +344,7 @@ const AllPost = () => {
             <MButtonStyle
               key={item.value}
               onClick={() => handleChangeTag(item.value)}
-              active={tag === item.value ? true : false}
+              active={tag === item.value || false}
             >
               {item.label}
             </MButtonStyle>
@@ -354,7 +361,7 @@ const AllPost = () => {
           >
             {paginate?.data?.map((post, index) => (
               <PostItem
-                isAuth={isAuth}
+                isAuth={post?.createdBy?._id === user?._id || false}
                 key={post._id}
                 post={post}
                 isLike={

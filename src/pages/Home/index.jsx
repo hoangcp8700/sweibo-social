@@ -17,22 +17,8 @@ import { icons } from "constants";
 import { usePost } from "hooks";
 
 const Home = () => {
-  const { handleGetPostAll } = usePost();
-
   const [users, setUsers] = React.useState([]);
   const [advertises, setAdvertises] = React.useState([]);
-  const [posts, setPosts] = React.useState([]);
-  const [nextPage, setNextPage] = React.useState(1);
-
-  const handleGetPost = async () => {
-    const response = await handleGetPostAll(nextPage);
-    if (response.hasNextPage) {
-      setNextPage(response.next);
-    }
-    setPosts(response.data);
-  };
-
-  React.useEffect(() => {}, []);
 
   React.useEffect(() => {
     const getUsers = async () => {
@@ -45,16 +31,16 @@ const Home = () => {
       setAdvertises(resposne);
     };
 
-    const getPost = async () => {
-      handleGetPost();
-    };
     getAdvertises();
     getUsers();
-    getPost();
   }, []);
 
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  };
+
   return (
-    <Box>
+    <Box sx={{ position: "relative", scrollBehavior: "smooth" }}>
       <Stack
         direction="row"
         sx={{
@@ -103,8 +89,9 @@ const Home = () => {
                 users={users}
                 maxWidth="calc(100vw - 65px)"
               />
-
-              <Outlet />
+              <Box>
+                <Outlet />
+              </Box>
             </Stack>
           </Box>
         </Box>
@@ -173,6 +160,21 @@ const Home = () => {
           </Box>
         </StickySidebar>
       </Stack>
+
+      <Box sx={{ position: "fixed", bottom: 20, right: 20 }}>
+        <IconButton
+          onClick={handleScrollToTop}
+          sx={{
+            bgcolor: "primary.main",
+            "& svg": { fill: (theme) => theme.palette.common.white },
+            "&:hover": {
+              bgcolor: "primary.dark",
+            },
+          }}
+        >
+          {icons.KeyboardArrowUpIcon}
+        </IconButton>
+      </Box>
     </Box>
   );
 };

@@ -1,7 +1,15 @@
 import React from "react";
-import { Box, Paper, Stack, Divider, Typography } from "@mui/material";
-import { MTextIcon } from "./MUI";
+import {
+  Box,
+  Paper,
+  Stack,
+  IconButton,
+  Divider,
+  Typography,
+} from "@mui/material";
+import { MTextIcon } from "components/MUI";
 import { icons } from "constants";
+import PopupEditProfile from "./PopupEditProfile";
 
 const MTextIconCustom = (props) => {
   return (
@@ -17,7 +25,18 @@ const MTextIconCustom = (props) => {
     />
   );
 };
-const InfomationUser = () => {
+const InfomationUser = (props) => {
+  const { isAuth, handleSubmitEditProfile } = props;
+  const [isEditProfile, setIsEditProfile] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleToggleIsEditProfile = () => setIsEditProfile(!isEditProfile);
+
+  const handleSubmitForm = async (form) => {
+    setIsLoading(true);
+    await handleSubmitEditProfile(form);
+    setIsLoading(false);
+  };
   return (
     <Paper
       sx={{
@@ -26,11 +45,38 @@ const InfomationUser = () => {
         p: 2,
       }}
     >
+      <PopupEditProfile
+        open={isEditProfile}
+        onClose={handleToggleIsEditProfile}
+        onSubmit={handleSubmitForm}
+      />
       <Stack>
         <Box>
-          <Typography variant="h6" sx={{ mb: 1 }}>
-            Giới thiệu
-          </Typography>
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Giới thiệu
+            </Typography>
+            {isAuth ? (
+              <IconButton
+                onClick={handleToggleIsEditProfile}
+                sx={{
+                  "& svg": {
+                    fontSize: 16,
+                    fill: (theme) => theme.palette.text.primary,
+                  },
+                }}
+              >
+                {icons.EditIcon}
+              </IconButton>
+            ) : (
+              ""
+            )}
+          </Stack>
           <Typography sx={{ textAlign: "center" }}>
             Love family ❤️ Do you want to be my family?
           </Typography>

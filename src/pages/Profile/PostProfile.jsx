@@ -18,7 +18,7 @@ import {
   PopupCreatePost as PopupEditPost,
 } from "components";
 import { Box, Stack, Typography } from "@mui/material";
-import { useAuth, usePost } from "hooks";
+import { useAuth, usePost, useUser } from "hooks";
 import { PATH_PAGE } from "constants/paths";
 
 import { InfiniteScroll } from "providers";
@@ -39,6 +39,8 @@ const PostProfile = () => {
     handleToggleLike,
   } = usePost();
   const { user } = useAuth();
+  const { handleGetUserByEmail } = useUser();
+
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -49,6 +51,7 @@ const PostProfile = () => {
     open: false,
     images: [],
   });
+  const [userProfile, setUserProfile] = React.useState(null);
 
   const [actionPost, setActionPost] = React.useState({
     detail: false,
@@ -72,6 +75,22 @@ const PostProfile = () => {
       totalLength: response.totalLength,
     });
   };
+
+  React.useEffect(() => {
+    const getProfile = async () => {
+      if (!isAuth) {
+        const response = await handleGetUserByEmail(parsed?.email);
+        setUserProfile(response);
+      } else {
+        setUserProfile(user);
+      }
+    };
+
+    getProfile();
+    return () => {
+      setUserProfile(null);
+    };
+  }, [location]);
 
   React.useEffect(() => {
     const getPost = async () => {
@@ -252,6 +271,7 @@ const PostProfile = () => {
         onClose={() => handleActionPost("like", null)}
       />
       <PopupDetailPost
+        isAuth={actionPost?.post?.createdBy?._id === user?._id || false}
         open={
           (actionPost?.postID && actionPost.name === "detail") ||
           actionPost.detail ||
@@ -300,7 +320,7 @@ const PostProfile = () => {
             }),
           ]}
         >
-          <InfomationUser />
+          <InfomationUser isAuth={isAuth} user={userProfile} />
           <AlbumImage />
           <AlbumFriends />
         </Stack>

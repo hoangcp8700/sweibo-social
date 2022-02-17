@@ -32,7 +32,7 @@ import InputCreateComment from "./InputCreateComment";
 
 const widthDefault = 380;
 
-const menus = [
+const menusFull = [
   {
     label: "Lưu",
     icon: icons.BookmarkBorderOutlinedIcon,
@@ -46,6 +46,14 @@ const menus = [
   },
 ];
 
+const menus = [
+  {
+    label: "Lưu",
+    icon: icons.BookmarkBorderOutlinedIcon,
+    value: "save-post",
+  },
+];
+
 const initialize = {
   page: 1,
   isNextPage: true,
@@ -56,6 +64,7 @@ const initialize = {
 
 export default function PopupDetailPost(props) {
   const {
+    isAuth,
     open,
     postID,
     onClose,
@@ -172,7 +181,7 @@ export default function PopupDetailPost(props) {
           onClose={handleToggleOpenMenu}
           onClick={(action) => handleActionPostCustom(action, postID, post)}
           ref={menuRef}
-          lists={menus}
+          lists={isAuth ? menusFull : menus}
         />
 
         {/* ---------------------  action post */}

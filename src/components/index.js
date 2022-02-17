@@ -30,7 +30,8 @@ export { default as SidebarList } from "./Sidebar/SidebarList";
 export { default as StickySidebar } from "./Sidebar/StickySidebar";
 export { default as ToggleSidebar } from "./Sidebar/ToggleSidebar";
 
-export { default as InfomationUser } from "./InfomationUser";
+//profile
+export { default as InfomationUser } from "./Profile/InfomationUser";
 
 export { default as BirthdayToday } from "./Friend/BirthdayToday";
 export { default as AlbumFriends } from "./Friend/AlbumFriends";

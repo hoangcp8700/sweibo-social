@@ -18,7 +18,8 @@ const MenuItemStyle = styled(MenuItem)(({ active, theme }) => ({
   gap: theme.spacing(1),
   padding: theme.spacing(2, 1),
   borderRadius: theme.sizes.base,
-  backgroundColor: active ? theme.palette.background.opacity : "none",
+  backgroundColor:
+    active === "true" ? theme.palette.background.opacity : "none",
   "&:hover": {
     backgroundColor: theme.palette.background.opacity,
   },
@@ -41,9 +42,15 @@ const SidebarHome = () => {
           </Typography>
         </MenuItemStyle>
 
-        {data.sidebarHome.map((item) => (
-          <Typography key={item.label} component={Link} to={item.path}>
-            <MenuItemStyle active={location.pathname === item.path}>
+        {data.sidebarHome.map((item, index) => (
+          <Typography
+            key={`${item.label}-${index}`}
+            component={Link}
+            to={item.path}
+          >
+            <MenuItemStyle
+              active={location.pathname === item.path ? "true" : "false"}
+            >
               <ListItemIcon sx={{ "& svg": { fontSize: 28 } }}>
                 {item.icon}
               </ListItemIcon>

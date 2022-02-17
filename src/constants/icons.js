@@ -75,6 +75,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import ReplayIcon from "@mui/icons-material/Replay";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+
+import NoteAltOutlinedIcon from "@mui/icons-material/NoteAltOutlined";
+import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
+import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+
 const ConvertIcon = ({ src }) => {
   return (
     <Icon>
@@ -152,4 +159,11 @@ export default {
   ReplayIcon: <ReplayIcon />,
   AddPhotoIcon: <AddPhotoAlternateOutlinedIcon />,
   DeleteForeverIcon: <DeleteForeverOutlinedIcon />,
+
+  KeyboardArrowUpIcon: <KeyboardArrowUpIcon />,
+
+  NoteAltOutlinedIcon: <NoteAltOutlinedIcon />,
+  SchoolOutlinedIcon: <SchoolOutlinedIcon />,
+  PeopleAltOutlinedIcon: <PeopleAltOutlinedIcon />,
+  FavoriteBorderOutlinedIcon: <FavoriteBorderOutlinedIcon />,
 };
