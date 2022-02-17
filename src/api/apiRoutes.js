@@ -28,6 +28,7 @@ const posts = (id) => {
   return {
     create: `/posts/add`,
     getAll: `/posts`,
+    getPostsOfFriend: `/posts/friend`,
     getPostUser: `/posts/user`,
     byID: `/posts/${id}`,
   };

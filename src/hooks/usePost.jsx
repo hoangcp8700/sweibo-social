@@ -39,10 +39,23 @@ const usePost = () => {
       console.log("err", error);
     }
   };
+
   const handleGetPostAll = async (page = 1) => {
     try {
-      const link = `?page=${page}`;
+      const link = `?page=${page}&status=Public`;
       const response = await axios.get(`${routes.posts().getAll}${link}`);
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+    }
+  };
+
+  const handleGetPostsOfFriend = async (page = 1) => {
+    try {
+      const link = `?page=${page}&status=Public`;
+      const response = await axios.get(
+        `${routes.posts().getPostsOfFriend}${link}`
+      );
       return response.data;
     } catch (error) {
       console.log("err", error);
@@ -140,6 +153,7 @@ const usePost = () => {
     handleCreateOrEditPost,
     handleGetPostUser,
     handleGetPostAll,
+    handleGetPostsOfFriend,
     handleGetPostById,
     handleDeletePost,
 

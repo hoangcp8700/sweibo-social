@@ -33,16 +33,12 @@ const routes = () => {
         </AuthGuard>
       ),
       children: [
-        { path: PATH_PAGE.home.link, element: <HomePage /> },
         {
-          path: PATH_PAGE.post.link,
-          element: <Outlet />,
-          children: [
-            {
-              children: [{ path: ":postID", element: <PostDetailPage /> }],
-            },
-          ],
+          path: PATH_PAGE.home.link,
+          element: <HomePage />,
+          children: [{ path: "", element: <AllPostPage /> }],
         },
+
         {
           path: PATH_PAGE.friend.link,
           element: <FriendPage />,
@@ -147,7 +143,9 @@ export default function Router() {
 // -------------------------------import--------------------------
 // -------------------------------import--------------------------
 // -------------------------------import--------------------------
-const HomePage = Loadable(lazy(() => import("pages/Home")));
+const HomePage = Loadable(lazy(() => import("pages/Home/")));
+const AllPostPage = Loadable(lazy(() => import("pages/Home/AllPost")));
+
 const ChatPage = Loadable(lazy(() => import("pages/Chat")));
 
 // save
@@ -187,9 +185,6 @@ const PostProfilePage = Loadable(
 const FriendProfilePage = Loadable(
   lazy(() => import("pages/Profile/FriendProfile"))
 );
-
-// post
-const PostDetailPage = Loadable(lazy(() => import("pages/Post/PostDetail")));
 
 // authentication
 const LoginPage = Loadable(lazy(() => import("pages/Authentication/Login")));

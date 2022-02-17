@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Outlet } from "react-router-dom";
 import { Box, Stack, Typography, Divider, IconButton } from "@mui/material";
 import { fakeData } from "constants";
 import {
@@ -103,12 +103,8 @@ const Home = () => {
                 users={users}
                 maxWidth="calc(100vw - 65px)"
               />
-              <InputCreatePost />
-              <Stack spacing={3}>
-                {posts.length
-                  ? posts.map((post) => <PostItem key={post._id} post={post} />)
-                  : ""}
-              </Stack>
+
+              <Outlet />
             </Stack>
           </Box>
         </Box>
