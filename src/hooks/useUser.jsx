@@ -5,7 +5,6 @@ import { SET_PROFILE } from "stores/UserSlice";
 
 const useUser = () => {
   const dispatch = useDispatch();
-
   const userSocial = useSelector((state) => state.user.profile);
 
   const handleGetUserByEmail = async (email) => {
@@ -47,11 +46,23 @@ const useUser = () => {
       return false;
     }
   };
+
+  const handleGetFriends = async (page = 1, type) => {
+    try {
+      const response = await axios.get(routes.friends()[type]);
+      console.log("handleGetFriends", response);
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
   return {
     userSocial,
     handleGetUserByEmail,
     handleGetAlbums,
     handleSubmitEditProfile,
+    handleGetFriends,
   };
 };
 

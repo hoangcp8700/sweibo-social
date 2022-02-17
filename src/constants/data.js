@@ -102,6 +102,12 @@ const provinces = provincesOrigin.map((item) => ({
   value: item.name,
 }));
 
+const menuFriends = [
+  { label: "Tất cả bạn bè", value: "active" },
+  { label: "Người theo dõi", value: "accept" },
+  { label: "Đang theo dõi", value: "waiting" },
+];
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   sidebarSave,
@@ -112,4 +118,5 @@ export default {
   favorites,
   relationshipStatus,
   provinces,
+  menuFriends,
 };

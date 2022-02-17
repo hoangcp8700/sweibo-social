@@ -14,6 +14,8 @@ import {
 import { icons } from "constants";
 import { useLocation } from "react-router-dom";
 import { useUser } from "hooks";
+import { MButton } from "components/MUI";
+import { data } from "constants";
 
 const list = [
   {
@@ -111,17 +113,27 @@ const FriendProfile = () => {
   const parsed = queryString.parse(location?.search);
   const isAuth = !parsed.email ? true : false;
 
-  React.useEffect(() => {
-    const getFriends = async () => {
-      const response = await handleGetFriends(parsed?.email);
-      console.log("response", response);
-    };
+  const [tag, setTag] = React.useState("active");
 
-    getFriends();
-    return () => {
-      setPaginate(initialize);
-    };
-  }, [location]);
+  const handleGetFriendsCustom = async () => {
+    if (!paginate.isNextPage) return;
+    const response = await handleGetFriends(paginate.page, tag);
+    setPaginate({
+      page: response.next,
+      isNextPage: response.hasNextPage ? true : false,
+      data: [...paginate.data, ...response.data],
+      totalLength: response.totalLength,
+    });
+  };
+
+  React.useEffect(() => {
+    handleGetFriendsCustom();
+  }, [tag]);
+
+  const handleChangeTag = (value) => {
+    setPaginate(initialize);
+    setTag(value);
+  };
 
   return (
     <Paper
@@ -162,7 +174,46 @@ const FriendProfile = () => {
           />
         </Stack>
       </Box>
-
+      <Box sx={{ px: 2, mb: 3 }}>
+        <Stack direction="row" spacing={1}>
+          {data?.menuFriends?.map((item, index) => {
+            const match = item.value === tag;
+            return (
+              <MButton
+                key={item.label}
+                sx={{
+                  px: 3,
+                  position: "relative",
+                  "&:hover": {
+                    bgcolor: "background.opacity",
+                  },
+                }}
+                onClick={() => handleChangeTag(item.value)}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{ color: match ? "primary.main" : "text.primary" }}
+                >
+                  {item.label}
+                </Typography>
+                <Box
+                  sx={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    borderBottom: (theme) =>
+                      `3px solid ${theme.palette.primary.main}`,
+                    bgcolor: "primary.main",
+                    width: match ? "100%" : "0%",
+                    height: 3,
+                    transition: "width .3s",
+                  }}
+                />
+              </MButton>
+            );
+          })}
+        </Stack>
+      </Box>
       <Box
         sx={{
           display: "grid",

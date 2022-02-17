@@ -25,6 +25,13 @@ const users = (id) => {
   };
 };
 
+const friends = () => {
+  return {
+    active: `/friends/active`,
+    accept: `/friends/accept`,
+    waiting: `/friends/waiting`,
+  };
+};
 const posts = (id) => {
   return {
     create: `/posts/add`,
@@ -53,4 +60,5 @@ export default {
   posts,
   comments,
   likes,
+  friends,
 };
