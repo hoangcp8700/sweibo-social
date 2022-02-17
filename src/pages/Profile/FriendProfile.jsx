@@ -1,7 +1,7 @@
 import React from "react";
 import queryString from "query-string";
 
-import { FriendItem } from "components";
+import { FriendItem, PopupAgainDelete } from "components";
 import {
   Box,
   Stack,
@@ -13,90 +13,9 @@ import {
 } from "@mui/material";
 import { icons } from "constants";
 import { useLocation } from "react-router-dom";
-import { useUser } from "hooks";
+import { useUser, useAuth } from "hooks";
 import { MButton } from "components/MUI";
 import { data } from "constants";
-
-const list = [
-  {
-    id: "123",
-    name: "Tấn tài",
-    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
-    mutualFriends: 102,
-  },
-  {
-    id: "121233",
-    name: "Tấn tài",
-    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
-    mutualFriends: 102,
-  },
-  {
-    id: "112323",
-    name: "Tấn tài",
-    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
-    mutualFriends: 102,
-  },
-  {
-    id: "112323",
-    name: "Tấn tài",
-    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
-    mutualFriends: 102,
-  },
-  {
-    id: "121233",
-    name: "Tấn tài",
-    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
-    mutualFriends: 102,
-  },
-  {
-    id: "121233",
-    name: "Tấn tài",
-    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
-    mutualFriends: 102,
-  },
-  {
-    id: "121242342333",
-    name: "Tấn tài",
-    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
-    mutualFriends: 102,
-  },
-  {
-    id: "1212323433",
-    name: "Tấn tài",
-    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
-    mutualFriends: 102,
-  },
-  {
-    id: "12123123123",
-    name: "Tấn tài",
-    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
-    mutualFriends: 102,
-  },
-  {
-    id: "121233",
-    name: "Tấn tài",
-    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
-    mutualFriends: 102,
-  },
-  {
-    id: "121242342333",
-    name: "Tấn tài",
-    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
-    mutualFriends: 102,
-  },
-  {
-    id: "1212323433",
-    name: "Tấn tài",
-    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
-    mutualFriends: 102,
-  },
-  {
-    id: "12123123123",
-    name: "Tấn tài",
-    avatar: `https://scontent.fsgn5-3.fna.fbcdn.net/v/t1.6435-1/p320x320/35189819_1100456500105531_777321460610891776_n.jpg?_nc_cat=104&ccb=1-5&_nc_sid=7206a8&_nc_ohc=qCwA53P0aDgAX-nG3qa&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_Es2JmgGwnZHfvqf5xJyRSKLM3b4jKNl1ZAWC14VPezQ&oe=620CEFC6`,
-    mutualFriends: 102,
-  },
-];
 
 const initialize = {
   page: 1,
@@ -108,16 +27,23 @@ const initialize = {
 const FriendProfile = () => {
   const location = useLocation();
   const [paginate, setPaginate] = React.useState(initialize); // friends
-  const { handleGetFriends } = useUser();
+  const { user } = useAuth();
+  const { handleGetFriends, userProfile, handleUpdateStatusFriend } = useUser();
 
   const parsed = queryString.parse(location?.search);
-  const isAuth = !parsed.email ? true : false;
+  const newUser =
+    parsed?.email && parsed?.email !== user?.email ? userProfile : user;
 
   const [tag, setTag] = React.useState("active");
+  const [openAgainDelete, setOpenAgainDelete] = React.useState({
+    open: false,
+    id: null,
+  });
 
   const handleGetFriendsCustom = async () => {
     if (!paginate.isNextPage) return;
-    const response = await handleGetFriends(paginate.page, tag);
+    const response = await handleGetFriends(paginate.page, tag, newUser?._id);
+
     setPaginate({
       page: response.next,
       isNextPage: response.hasNextPage ? true : false,
@@ -134,6 +60,24 @@ const FriendProfile = () => {
     setPaginate(initialize);
     setTag(value);
   };
+  const handleOpenAgainDelete = (id) =>
+    setOpenAgainDelete({ open: !openAgainDelete.open, id });
+
+  const handleUpdateStatusFriendCustom = async (friendID) => {
+    const response = await handleUpdateStatusFriend(friendID);
+    console.log("handleUpdateStatusFriendCustom", response);
+
+    const newData = paginate.data.map((item) => {
+      if (item?._id !== response?._id) return item;
+      return response;
+    });
+    setPaginate({ ...paginate, data: newData });
+  };
+
+  const handleDeleteFriendCustom = (friendID, isAccept) => {
+    if (!isAccept) return handleOpenAgainDelete(friendID);
+    console.log("accept detlete");
+  };
 
   return (
     <Paper
@@ -143,6 +87,14 @@ const FriendProfile = () => {
         borderRadius: (theme) => theme.sizes.minbase,
       }}
     >
+      <PopupAgainDelete
+        handleAccept={() => handleDeleteFriendCustom(openAgainDelete?.id, true)}
+        open={openAgainDelete?.open}
+        onClose={() => handleOpenAgainDelete()}
+        title="Hủy kết bạn"
+        label="Bạn đã chắc chắn muốn hủy kết bạn người này chưa?"
+      />
+
       <Box sx={{ position: "relative", mb: 2 }}>
         <Stack
           sx={{
@@ -218,17 +170,24 @@ const FriendProfile = () => {
         sx={{
           display: "grid",
           gridTemplateColumns: {
-            xs: "repeat(auto-fill, minmax(200px, 1fr) )",
-            sm: "repeat(auto-fill, minmax(250px, 1fr) )",
+            xs: "repeat(auto-fill, minmax(250px, 1fr) )",
             md: "repeat(auto-fill, minmax(400px, 1fr) )",
           },
           gap: 2,
           px: 2,
         }}
       >
-        {list.map((item) => (
-          <FriendItem key={item.id} item={item} />
-        ))}
+        {paginate?.data?.length
+          ? paginate?.data.map((item) => (
+              <FriendItem
+                key={item.id}
+                item={item}
+                user={newUser}
+                handleUpdateStatusFriend={handleUpdateStatusFriendCustom}
+                handleDeleteFriend={handleDeleteFriendCustom}
+              />
+            ))
+          : ""}
       </Box>
     </Paper>
   );

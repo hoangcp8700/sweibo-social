@@ -519,6 +519,7 @@ const Profile = () => {
             m: "0 auto",
             mt: 2,
             px: { xs: 1, sm: 3 },
+            pb: 5,
           }}
         >
           <Outlet />

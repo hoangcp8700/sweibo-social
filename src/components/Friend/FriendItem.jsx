@@ -7,48 +7,19 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 import { icons } from "constants";
-import { MMenu } from "components/MUI";
+import { MButton, MMenu } from "components/MUI";
 import { data } from "constants";
-
-const MenuFriend = (props) => {
-  return (
-    <MMenu {...props}>
-      {data.menuFriendItem.map((item) => (
-        <MenuItem sx={{ gap: 1, height: 40 }}>
-          <IconButton
-            sx={{
-              "& svg": {
-                fill: (theme) => theme.palette.text.primary,
-                fontSize: 18,
-              },
-            }}
-          >
-            {item.icon}{" "}
-          </IconButton>
-          <Typography variant="subtitle2">{item.label} </Typography>
-        </MenuItem>
-      ))}
-    </MMenu>
-  );
-};
+import checkCreatedByFriend from "utils/checkCreatedByFriend";
+import { PATH_PAGE } from "constants/paths";
 
 const FriendItem = (props) => {
-  const { item } = props;
-  const { name, mutualFriends } = item;
-
-  const [openMenu, setOpenMenu] = React.useState(false);
-  const menuRef = React.useRef();
-
-  const handleToggleMenu = () => setOpenMenu(!openMenu);
+  const { item, user, handleUpdateStatusFriend, handleDeleteFriend } = props;
+  const nameFriend = checkCreatedByFriend(user, item?.createdBy);
 
   return (
     <Box>
-      <MenuFriend
-        anchor={menuRef}
-        open={openMenu}
-        handleClose={handleToggleMenu}
-      />
       <Stack
         direction="row"
         alignItems="center"
@@ -56,23 +27,66 @@ const FriendItem = (props) => {
         justifyContent="space-between"
       >
         <Stack direction="row" alignItems="center" spacing={2}>
-          <Avatar
-            sx={{
-              borderRadius: (theme) => theme.sizes.minBase,
-              width: { xs: 50, sm: 60, md: 80 },
-              height: { xs: 50, sm: 60, md: 80 },
-            }}
-          />
-          <Stack>
-            <Typography variant="subtitle2">{name}</Typography>
-            <Typography variant="caption" sx={{ color: "text.secondary" }}>
-              {mutualFriends} bạn chung
+          <Typography
+            component={Link}
+            to={`/${PATH_PAGE.profile.link}/posts?email=${
+              nameFriend && item[nameFriend]?.email
+            }`}
+          >
+            <Avatar
+              src={(nameFriend && item[nameFriend]?.avatar?.url) || false}
+              sx={{
+                borderRadius: (theme) => theme.sizes.minBase,
+                width: { xs: 60, md: 80 },
+                height: { xs: 60, md: 80 },
+              }}
+            />
+          </Typography>
+
+          <Stack spacing={1}>
+            <Typography
+              variant="subtitle2"
+              component={Link}
+              to={`/${PATH_PAGE.profile.link}/posts?email=${
+                nameFriend && item[nameFriend]?.email
+              }`}
+              sx={{ color: "text.primary" }}
+            >
+              {nameFriend &&
+                `${item[nameFriend]?.firstName} ${item[nameFriend]?.lastName}`}
             </Typography>
+
+            {/* // type */}
+            <Stack direction="row" sx={{ flexWrap: "wrap", gap: 1 }}>
+              {item?.status === "Active" ? (
+                <MButton variant="contained" color="primary" sx={{ py: 0.5 }}>
+                  Bạn bè
+                </MButton>
+              ) : nameFriend === "targetID" ? (
+                <MButton variant="contained" color="primary" sx={{ py: 0.5 }}>
+                  Chờ chấp nhận
+                </MButton>
+              ) : (
+                <MButton
+                  variant="contained"
+                  color="primary"
+                  sx={{ py: 0.5 }}
+                  onClick={() => handleUpdateStatusFriend(item?._id)}
+                >
+                  Chấp nhận
+                </MButton>
+              )}
+
+              <MButton
+                variant="cancel"
+                sx={{ py: 0.5 }}
+                onClick={() => handleDeleteFriend(item?._id, false)}
+              >
+                Hủy kết bạn
+              </MButton>
+            </Stack>
           </Stack>
         </Stack>
-        <IconButton ref={menuRef} onClick={handleToggleMenu}>
-          {icons.MoreHorizIcon}
-        </IconButton>
       </Stack>
     </Box>
   );

@@ -5,7 +5,8 @@ import { SET_PROFILE } from "stores/UserSlice";
 
 const useUser = () => {
   const dispatch = useDispatch();
-  const userSocial = useSelector((state) => state.user.profile);
+
+  const userProfile = useSelector((state) => state.user.profile);
 
   const handleGetUserByEmail = async (email) => {
     try {
@@ -13,7 +14,7 @@ const useUser = () => {
         `${routes.users().users}?email=${email}`
       );
       console.log("handleGetUserByEmail", response);
-      // dispatch(SET_PROFILE(response.data.data));
+      dispatch(SET_PROFILE(response.data.data));
       return response.data.data;
     } catch (error) {
       console.log("err", error);
@@ -47,9 +48,9 @@ const useUser = () => {
     }
   };
 
-  const handleGetFriends = async (page = 1, type) => {
+  const handleGetFriends = async (page = 1, type, userID) => {
     try {
-      const response = await axios.get(routes.friends()[type]);
+      const response = await axios.get(routes.friends(userID)[type]);
       console.log("handleGetFriends", response);
       return response.data;
     } catch (error) {
@@ -57,12 +58,25 @@ const useUser = () => {
       return false;
     }
   };
+
+  const handleUpdateStatusFriend = async (friendID) => {
+    try {
+      const response = await axios.get(routes.friends(friendID));
+      console.log("handleUpdateStatusFriend", response);
+      return response.data.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
+
   return {
-    userSocial,
+    userProfile,
     handleGetUserByEmail,
     handleGetAlbums,
     handleSubmitEditProfile,
     handleGetFriends,
+    handleUpdateStatusFriend,
   };
 };
 

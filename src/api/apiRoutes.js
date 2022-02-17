@@ -25,11 +25,13 @@ const users = (id) => {
   };
 };
 
-const friends = () => {
+const friends = (id) => {
   return {
-    active: `/friends/active`,
-    accept: `/friends/accept`,
-    waiting: `/friends/waiting`,
+    active: `/friends/${id}/active`,
+    accept: `/friends/${id}/accept`,
+    waiting: `/friends/${id}/waiting`,
+    add: `/friends/add`,
+    update: `/friends/${id}/update`,
   };
 };
 const posts = (id) => {
