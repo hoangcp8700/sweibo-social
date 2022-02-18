@@ -131,9 +131,9 @@ const useAuth = () => {
         `${routes.authentication().updateAvatar}`,
         newForm
       );
-      const newUser = { ...user, avatar: response.data.data.avatar };
-      dispatch(SUCCESS_AUTH(newUser));
-      return response.data.data.avatar;
+      const newAvatar = { ...user, avatar: response.data.data.avatar };
+      // dispatch(SUCCESS_AUTH(newAvatar));
+      return newAvatar;
     } catch (error) {
       console.log("err", error);
       return false;
@@ -145,8 +145,8 @@ const useAuth = () => {
       const response = await axios.put(
         `${routes.authentication().deleteAvatar}`
       );
-      const newUser = { ...user, avatar: {} };
-      dispatch(SUCCESS_AUTH(newUser));
+      const newAvatar = { ...user, avatar: {} };
+      dispatch(SUCCESS_AUTH(newAvatar));
       return response.data;
     } catch (error) {
       console.log("err", error);
@@ -163,16 +163,19 @@ const useAuth = () => {
         `${routes.authentication().updateThumbnail}`,
         newForm
       );
-      const newUser = { ...user, coverImage: response.data.data.coverImage };
-      dispatch(SUCCESS_AUTH(newUser));
-      return response.data.data.coverImage;
+      const newThumnail = {
+        ...user,
+        coverImage: response.data.data.coverImage,
+      };
+      return newThumnail;
     } catch (error) {
       console.log("err", error);
       return false;
     }
   };
 
-  const handleUpdateUser = (data) => {
+  const handleUpdateAuth = (data) => {
+    console.log("handleUpdateAuth", data);
     dispatch(SUCCESS_AUTH(data));
   };
 
@@ -194,7 +197,7 @@ const useAuth = () => {
     handleUploadAvatar,
     handleRemoveAvatar,
     handleUploadThumnail,
-    handleUpdateUser,
+    handleUpdateAuth,
   };
 };
 

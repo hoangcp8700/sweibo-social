@@ -6,7 +6,12 @@ import { SET_PROFILE } from "stores/UserSlice";
 const useUser = () => {
   const dispatch = useDispatch();
 
-  const userProfile = useSelector((state) => state.user.profile);
+  const userClient = useSelector((state) => state.user.profile);
+
+  const handleUpdateUserClient = (data = null) => {
+    console.log("handleUpdateUserClient", data);
+    dispatch(SET_PROFILE(data));
+  };
 
   const handleGetUserByEmail = async (email) => {
     try {
@@ -47,6 +52,7 @@ const useUser = () => {
       return false;
     }
   };
+  // ----- friend ------------------------------
 
   const handleGetFriends = async (page = 1, type, userID) => {
     try {
@@ -59,24 +65,58 @@ const useUser = () => {
     }
   };
 
-  const handleUpdateStatusFriend = async (friendID) => {
+  const handleGetFriendRelationship = async (targetID) => {
     try {
-      const response = await axios.get(routes.friends(friendID));
-      console.log("handleUpdateStatusFriend", response);
-      return response.data.data;
+      const response = await axios.get(routes.friends(targetID).detail);
+      console.log("handleGetFriendRelationship", response);
+      return response.data;
     } catch (error) {
       console.log("err", error);
       return false;
     }
   };
 
+  const handleAddFriend = async (targetID) => {
+    try {
+      const response = await axios.post(routes.friends(targetID).add, {
+        targetID,
+      });
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
+
+  const handleUpdateStatusFriend = async (friendID) => {
+    try {
+      const response = await axios.get(routes.friends(friendID).update);
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
+  const handleDeleteFriend = async (friendID) => {
+    try {
+      const response = await axios.delete(routes.friends(friendID).delete);
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
   return {
-    userProfile,
+    userClient,
+    handleUpdateUserClient,
     handleGetUserByEmail,
     handleGetAlbums,
     handleSubmitEditProfile,
     handleGetFriends,
     handleUpdateStatusFriend,
+    handleDeleteFriend,
+    handleAddFriend,
+    handleGetFriendRelationship,
   };
 };
 

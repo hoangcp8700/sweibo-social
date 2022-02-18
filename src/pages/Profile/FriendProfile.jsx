@@ -1,5 +1,6 @@
 import React from "react";
 import queryString from "query-string";
+import { useSnackbar } from "notistack";
 
 import { FriendItem, PopupAgainDelete } from "components";
 import {
@@ -16,6 +17,7 @@ import { useLocation } from "react-router-dom";
 import { useUser, useAuth } from "hooks";
 import { MButton } from "components/MUI";
 import { data } from "constants";
+import { InfiniteScroll } from "providers";
 
 const initialize = {
   page: 1,
@@ -26,23 +28,34 @@ const initialize = {
 
 const FriendProfile = () => {
   const location = useLocation();
-  const [paginate, setPaginate] = React.useState(initialize); // friends
+  const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuth();
-  const { handleGetFriends, userProfile, handleUpdateStatusFriend } = useUser();
+  const {
+    handleGetFriends,
+    userClient,
+    handleUpdateStatusFriend,
+    handleDeleteFriend,
+    handleGetFriendRelationship,
+  } = useUser();
 
-  const parsed = queryString.parse(location?.search);
-  const newUser =
-    parsed?.email && parsed?.email !== user?.email ? userProfile : user;
+  const [paginate, setPaginate] = React.useState(initialize); // friends
+
+  const userProfile = userClient || user;
 
   const [tag, setTag] = React.useState("active");
   const [openAgainDelete, setOpenAgainDelete] = React.useState({
     open: false,
     id: null,
+    message: "",
   });
 
   const handleGetFriendsCustom = async () => {
     if (!paginate.isNextPage) return;
-    const response = await handleGetFriends(paginate.page, tag, newUser?._id);
+    const response = await handleGetFriends(
+      paginate.page,
+      tag,
+      userProfile?._id
+    );
 
     setPaginate({
       page: response.next,
@@ -60,8 +73,8 @@ const FriendProfile = () => {
     setPaginate(initialize);
     setTag(value);
   };
-  const handleOpenAgainDelete = (id) =>
-    setOpenAgainDelete({ open: !openAgainDelete.open, id });
+  const handleOpenAgainDelete = (id = null, message = "") =>
+    setOpenAgainDelete({ open: !openAgainDelete.open, id, message });
 
   const handleUpdateStatusFriendCustom = async (friendID) => {
     const response = await handleUpdateStatusFriend(friendID);
@@ -74,9 +87,15 @@ const FriendProfile = () => {
     setPaginate({ ...paginate, data: newData });
   };
 
-  const handleDeleteFriendCustom = (friendID, isAccept) => {
-    if (!isAccept) return handleOpenAgainDelete(friendID);
-    console.log("accept detlete");
+  const handleDeleteFriendCustom = async (friendID, isAccept, message) => {
+    if (!isAccept) return handleOpenAgainDelete(friendID, message);
+    const response = await handleDeleteFriend(friendID);
+    if (response) {
+      const newFriends = paginate.data.filter((item) => item?._id !== friendID);
+      setPaginate({ ...paginate, data: newFriends });
+      enqueueSnackbar(response.message, { variant: "success" });
+      handleOpenAgainDelete();
+    }
   };
 
   return (
@@ -92,7 +111,7 @@ const FriendProfile = () => {
         open={openAgainDelete?.open}
         onClose={() => handleOpenAgainDelete()}
         title="Hủy kết bạn"
-        label="Bạn đã chắc chắn muốn hủy kết bạn người này chưa?"
+        label={openAgainDelete?.message}
       />
 
       <Box sx={{ position: "relative", mb: 2 }}>
@@ -108,6 +127,7 @@ const FriendProfile = () => {
           <Typography variant="h6">Bạn bè</Typography>
           <TextField
             sx={{
+              width: { xs: "100%", sm: "auto" },
               "& input": { py: 1, fontSize: 14 },
               "& .MuiOutlinedInput-root": {
                 borderRadius: (theme) => theme.sizes.radius,
@@ -126,8 +146,9 @@ const FriendProfile = () => {
           />
         </Stack>
       </Box>
+
       <Box sx={{ px: 2, mb: 3 }}>
-        <Stack direction="row" spacing={1}>
+        <Stack sx={{ flexDirection: { xs: "column", mobile: "row" }, gap: 1 }}>
           {data?.menuFriends?.map((item, index) => {
             const match = item.value === tag;
             return (
@@ -166,28 +187,40 @@ const FriendProfile = () => {
           })}
         </Stack>
       </Box>
+
       <Box
         sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "repeat(auto-fill, minmax(250px, 1fr) )",
-            md: "repeat(auto-fill, minmax(400px, 1fr) )",
+          "& .infinite-scroll-component": {
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "repeat(auto-fill, minmax(300px, 1fr) )",
+              md: "repeat(auto-fill, minmax(400px, 1fr) )",
+            },
+            gap: 2,
+            px: 2,
           },
-          gap: 2,
-          px: 2,
         }}
       >
-        {paginate?.data?.length
-          ? paginate?.data.map((item) => (
+        {paginate?.totalLength > 0 ? (
+          <InfiniteScroll
+            isNextPage={paginate?.isNextPage}
+            data={paginate?.data}
+            fetch={handleGetFriendsCustom}
+            // endMessage={`Tổng cộng ${paginate?.totalLength} bài viết`}
+          >
+            {paginate?.data?.map((item) => (
               <FriendItem
                 key={item.id}
                 item={item}
-                user={newUser}
+                user={userProfile}
                 handleUpdateStatusFriend={handleUpdateStatusFriendCustom}
                 handleDeleteFriend={handleDeleteFriendCustom}
               />
-            ))
-          : ""}
+            ))}
+          </InfiniteScroll>
+        ) : (
+          ""
+        )}
       </Box>
     </Paper>
   );

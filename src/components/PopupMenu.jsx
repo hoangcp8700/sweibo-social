@@ -10,14 +10,13 @@ import {
 } from "@mui/material";
 
 const PopupMenu = React.forwardRef((props, ref) => {
-  const { open, onClose, onClick, lists } = props;
-
+  const { open, onClose, onClick, lists, placement = "bottom-start" } = props;
   return (
     <Popper
       open={open}
       anchorEl={ref.current}
       role={undefined}
-      placement="bottom-start"
+      placement={placement}
       transition
       disablePortal
       style={{ zIndex: 2 }}

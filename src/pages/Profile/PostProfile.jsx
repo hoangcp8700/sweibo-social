@@ -38,8 +38,8 @@ const PostProfile = () => {
     handleDeletePost,
     handleToggleLike,
   } = usePost();
-  const { user, handleUpdateUser } = useAuth();
-  const { handleGetUserByEmail, handleSubmitEditProfile } = useUser();
+  const { user, handleUpdateAuth } = useAuth();
+  const { handleSubmitEditProfile, userClient } = useUser();
 
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
@@ -51,7 +51,7 @@ const PostProfile = () => {
     open: false,
     images: [],
   });
-  const [userProfile, setUserProfile] = React.useState(null);
+  const userProfile = userClient || user;
 
   const [actionPost, setActionPost] = React.useState({
     detail: false,
@@ -77,26 +77,7 @@ const PostProfile = () => {
   };
 
   React.useEffect(() => {
-    const getProfile = async () => {
-      if (!isAuth) {
-        const response = await handleGetUserByEmail(parsed?.email);
-        setUserProfile(response);
-      } else {
-        setUserProfile(user);
-      }
-    };
-
-    getProfile();
-    return () => {
-      setUserProfile(null);
-    };
-  }, [location]);
-
-  React.useEffect(() => {
-    const getPost = async () => {
-      handleGetPost();
-    };
-    getPost();
+    handleGetPost();
   }, []);
 
   const handleSubmitPost = async (form) => {
@@ -249,8 +230,7 @@ const PostProfile = () => {
   const handleSubmitEditProfileCustom = async (form) => {
     const response = await handleSubmitEditProfile(userProfile?._id, form);
     if (response) {
-      setUserProfile({ ...userProfile, contact: response });
-      handleUpdateUser({ ...userProfile, contact: response });
+      handleUpdateAuth({ ...userProfile, contact: response });
       enqueueSnackbar("Cập nhập thông tin cá nhân thành công", {
         variant: "success",
       });
@@ -335,8 +315,8 @@ const PostProfile = () => {
             user={userProfile}
             handleSubmitEditProfile={handleSubmitEditProfileCustom}
           />
-          <AlbumImage />
           <AlbumFriends />
+          <AlbumImage />
         </Stack>
 
         <Stack

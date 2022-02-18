@@ -31,7 +31,9 @@ const friends = (id) => {
     accept: `/friends/${id}/accept`,
     waiting: `/friends/${id}/waiting`,
     add: `/friends/add`,
+    detail: `/friends/${id}/detail`,
     update: `/friends/${id}/update`,
+    delete: `/friends/${id}/delete`,
   };
 };
 const posts = (id) => {

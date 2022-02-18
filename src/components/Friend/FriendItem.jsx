@@ -14,6 +14,24 @@ import { data } from "constants";
 import checkCreatedByFriend from "utils/checkCreatedByFriend";
 import { PATH_PAGE } from "constants/paths";
 
+const ActionFriend = (props) => {
+  const { children, titleLeft, titleRight, onAccept, onCancel } = props;
+  return (
+    <Stack direction="row" sx={{ flexWrap: "wrap", gap: 1 }}>
+      <MButton
+        variant="contained"
+        color="primary"
+        sx={{ py: 0.5 }}
+        onClick={onAccept}
+      >
+        {titleLeft}
+      </MButton>
+      <MButton variant="cancel" sx={{ py: 0.5 }} onClick={onCancel}>
+        {titleRight}
+      </MButton>
+    </Stack>
+  );
+};
 const FriendItem = (props) => {
   const { item, user, handleUpdateStatusFriend, handleDeleteFriend } = props;
   const nameFriend = checkCreatedByFriend(user, item?.createdBy);
@@ -57,34 +75,47 @@ const FriendItem = (props) => {
             </Typography>
 
             {/* // type */}
-            <Stack direction="row" sx={{ flexWrap: "wrap", gap: 1 }}>
-              {item?.status === "Active" ? (
-                <MButton variant="contained" color="primary" sx={{ py: 0.5 }}>
-                  Bạn bè
-                </MButton>
-              ) : nameFriend === "targetID" ? (
-                <MButton variant="contained" color="primary" sx={{ py: 0.5 }}>
-                  Chờ chấp nhận
-                </MButton>
-              ) : (
-                <MButton
-                  variant="contained"
-                  color="primary"
-                  sx={{ py: 0.5 }}
-                  onClick={() => handleUpdateStatusFriend(item?._id)}
-                >
-                  Chấp nhận
-                </MButton>
-              )}
 
-              <MButton
-                variant="cancel"
-                sx={{ py: 0.5 }}
-                onClick={() => handleDeleteFriend(item?._id, false)}
-              >
-                Hủy kết bạn
-              </MButton>
-            </Stack>
+            {item?.status === "Active" ? (
+              <ActionFriend
+                titleLeft="Bạn bè"
+                titleRight="Hủy kết bạn"
+                onAccept={() => {}}
+                onCancel={() =>
+                  handleDeleteFriend(
+                    item?._id,
+                    false,
+                    "Bạn đã chắc chắn muốn hủy kết bạn người này chưa?"
+                  )
+                }
+              />
+            ) : nameFriend === "targetID" ? (
+              <ActionFriend
+                titleLeft="Chờ chấp nhận"
+                titleRight="Gỡ"
+                onAccept={() => {}}
+                onCancel={() =>
+                  handleDeleteFriend(
+                    item?._id,
+                    false,
+                    "Bạn đã chắc chắn muốn hủy yêu cầu kết bạn người này?"
+                  )
+                }
+              />
+            ) : (
+              <ActionFriend
+                titleLeft="Chấp nhận"
+                titleRight="Gỡ"
+                onAccept={() => {}}
+                onCancel={() =>
+                  handleDeleteFriend(
+                    item?._id,
+                    false,
+                    "Bạn đã chắc chắn muốn gỡ yêu cầu kết bạn từ người này?"
+                  )
+                }
+              />
+            )}
           </Stack>
         </Stack>
       </Stack>

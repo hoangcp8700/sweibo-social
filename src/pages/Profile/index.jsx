@@ -1,7 +1,7 @@
 import React from "react";
 import queryString from "query-string";
 import { useSnackbar } from "notistack";
-import { Outlet, useParams, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
   Paper,
@@ -23,6 +23,8 @@ import {
   LoadingEllipsis,
   LoadingEllipsisElement,
   AvatarDetail,
+  PopupAgainDelete,
+  PopupMenu,
 } from "components";
 
 const AvatarGroupStyle = styled(AvatarGroup)(() => ({
@@ -34,49 +36,121 @@ const AvatarGroupStyle = styled(AvatarGroup)(() => ({
   },
 }));
 
+const ButtonFriend = React.forwardRef((props, ref) => {
+  const { icon = icons.PersonIcon, sx, label, ...restProps } = props;
+  return (
+    <MButton
+      ref={ref}
+      startIcon={icon}
+      variant="contained"
+      sx={{
+        bgcolor: "background.opacity1",
+        color: "text.primary",
+        "&:hover": {
+          bgcolor: "background.opacity2",
+        },
+        ...sx,
+      }}
+      {...restProps}
+    >
+      {label}
+    </MButton>
+  );
+});
+
+const ActionFriend = (props) => {
+  const { titleLeft, titleRight, onAccept, onCancel } = props;
+  return (
+    <Stack direction="row-reverse" sx={{ flexWrap: "wrap", gap: 1 }}>
+      <MButton
+        variant="contained"
+        color="primary"
+        sx={{ py: 0.5 }}
+        onClick={onAccept}
+      >
+        {titleLeft}
+      </MButton>
+      <MButton variant="cancel" sx={{ py: 0.5 }} onClick={onCancel}>
+        {titleRight}
+      </MButton>
+    </Stack>
+  );
+};
+
 const Profile = () => {
   const navigate = useNavigate();
-  const params = useParams();
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
-  const { handleGetUserByEmail } = useUser();
-  const { user, handleUploadAvatar, handleRemoveAvatar, handleUploadThumnail } =
-    useAuth();
+  const {
+    userClient,
+    handleGetUserByEmail,
+    handleUpdateUserClient,
+    handleGetFriendRelationship,
+    handleAddFriend,
+    handleDeleteFriend,
+    handleUpdateStatusFriend,
+  } = useUser();
+  const {
+    user,
+    handleUploadAvatar,
+    handleRemoveAvatar,
+    handleUploadThumnail,
+    handleUpdateAuth,
+  } = useAuth();
 
   const menuProfileRef = React.useRef();
   const uploadAvatarRef = React.useRef();
   const uploadThumnailRef = React.useRef();
+  const friendMenuRef = React.useRef();
 
   const [pageLoading, setPageLoading] = React.useState(true);
   const [avatarLoading, setAvatarLoading] = React.useState(false);
   const [thumbnaiLoading, setThumbnaiLoading] = React.useState(false);
-  const [userProfile, setUserProfile] = React.useState(null);
   const [isOpenAvatar, setIsOpenAvatar] = React.useState(false);
+  const [isOpenFriendMenu, setIsOpenFriendMenu] = React.useState(false);
+
+  const [relationshipFriend, setRelationshipFriend] = React.useState(null);
+  const [openAgainDelete, setOpenAgainDelete] = React.useState({
+    open: false,
+    id: null,
+    message: "",
+  });
+
+  // const [userProfile, setUserProfile] = React.useState(null);
+  const userProfile = userClient || user;
 
   const parsed = queryString.parse(location?.search);
   const isAuth = parsed?.email && parsed?.email !== user?.email ? false : true;
 
   React.useEffect(() => {
     const getProfile = async () => {
-      if (!isAuth) {
-        const response = await handleGetUserByEmail(parsed?.email);
-        console.log("response profile", response);
-        if (!response) {
-          return navigate("/404");
-        }
-        setUserProfile(response);
-      } else {
-        setUserProfile(user);
-      }
+      if (isAuth) return setPageLoading(false);
+      if (userClient) return setPageLoading(false);
+
+      const response = await handleGetUserByEmail(parsed?.email);
+      if (!response) return navigate("/404");
+
+      const getRelationship = await handleGetFriendRelationship(response?._id);
+      if (!getRelationship.success) return setPageLoading(false);
+      setRelationshipFriend(getRelationship.data);
+      console.log("getRelationship", getRelationship);
       setPageLoading(false);
     };
 
     getProfile();
     return () => {
       setPageLoading(true);
-      setUserProfile(null);
+      if (userClient && parsed?.email !== userClient?.email) {
+        console.log("reset");
+        handleUpdateUserClient(null);
+        setRelationshipFriend(null);
+      }
     };
-  }, [location, params]);
+  }, [location]);
+
+  if (pageLoading) {
+    return <LoadingEllipsis />;
+  }
 
   const handleRedirect = (key) => {
     const check = location.pathname.includes(
@@ -108,15 +182,15 @@ const Profile = () => {
         setAvatarLoading(false);
         return enqueueSnackbar(response.message, { variant: "error" });
       }
-      console.log("form", response);
       const newAvatar = await handleUploadAvatar(response[0].file);
-      setUserProfile({ ...userProfile, avatar: newAvatar });
+      handleUpdateAuth(newAvatar);
       setAvatarLoading(false);
     } catch (error) {
       console.log("err", error);
       setAvatarLoading(false);
     }
   };
+
   const handleUploadFileThumbail = async (e) => {
     setThumbnaiLoading(true);
     try {
@@ -125,7 +199,8 @@ const Profile = () => {
         setThumbnaiLoading(false);
         return enqueueSnackbar(response.message, { variant: "error" });
       }
-      await handleUploadThumnail(response[0].file);
+      const newThumnail = await handleUploadThumnail(response[0].file);
+      handleUpdateAuth(newThumnail);
       setThumbnaiLoading(false);
     } catch (error) {
       console.log("err", error);
@@ -133,17 +208,44 @@ const Profile = () => {
     }
   };
 
-  if (pageLoading) {
-    return <LoadingEllipsis />;
-  }
-
   const handleToggleShowAvatar = () => setIsOpenAvatar(!isOpenAvatar);
+  const handleToggleOpenFriendMenu = () =>
+    setIsOpenFriendMenu(!isOpenFriendMenu);
 
   const handleRemoveAvatarCustom = async () => {
     await handleRemoveAvatar();
     handleToggleShowAvatar();
   };
 
+  /// -------------------- friend --------------------------
+  const handleOpenAgainDelete = (id = null, message = "") =>
+    setOpenAgainDelete({ open: !openAgainDelete.open, id, message });
+
+  const handleAddFriendCustom = async (targetID) => {
+    const response = await handleAddFriend(targetID);
+    if (response) {
+      setRelationshipFriend(response.data);
+      enqueueSnackbar(response.message, { variant: "success" });
+    }
+  };
+
+  const handleDeleteFriendCustom = async (friendID, isAccept, message) => {
+    if (!isAccept) return handleOpenAgainDelete(friendID, message);
+    const response = await handleDeleteFriend(friendID);
+    if (response) {
+      setRelationshipFriend(null);
+      enqueueSnackbar(response.message, { variant: "success" });
+      handleOpenAgainDelete();
+    }
+  };
+
+  const handleUpdateStatusFriendCustom = async (friendID) => {
+    const response = await handleUpdateStatusFriend(friendID);
+    if (response) {
+      setRelationshipFriend(response.data);
+      enqueueSnackbar(response.message, { variant: "success" });
+    }
+  };
   return (
     <Box>
       <AvatarDetail
@@ -155,6 +257,14 @@ const Profile = () => {
         isLoading={avatarLoading}
         handleUploadAvatar={() => uploadAvatarRef.current.click()}
         handleRemoveAvatar={handleRemoveAvatarCustom}
+      />
+
+      <PopupAgainDelete
+        handleAccept={() => handleDeleteFriendCustom(openAgainDelete?.id, true)}
+        open={openAgainDelete?.open}
+        onClose={() => handleOpenAgainDelete()}
+        title="Hủy kết bạn"
+        label={openAgainDelete?.message}
       />
 
       <Box
@@ -434,28 +544,126 @@ const Profile = () => {
                         src="/static/images/avatar/5.jpg"
                       />
                     </AvatarGroupStyle>
-
+                    {console.log("isOpenFriendMenu,", isOpenFriendMenu)}
+                    {/* // friends */}
                     {!isAuth ? (
                       <Stack direction="row" alignItems="center" spacing={1}>
-                        <MButton
-                          startIcon={icons.PersonIcon}
-                          variant="contained"
+                        {!relationshipFriend ? (
+                          <ButtonFriend
+                            onClick={() =>
+                              handleAddFriendCustom(userClient?._id)
+                            }
+                            label="Kết bạn"
+                            icon={icons.PersonAddIcon}
+                          />
+                        ) : (
+                          <Stack>
+                            {relationshipFriend?.status === "Active" ? (
+                              <>
+                                <PopupMenu
+                                  ref={friendMenuRef}
+                                  open={isOpenFriendMenu}
+                                  onClose={handleToggleOpenFriendMenu}
+                                  placement="top-start"
+                                  onClick={() =>
+                                    handleDeleteFriendCustom(
+                                      relationshipFriend?._id,
+                                      false,
+                                      "Bạn đã chắc chắn muốn hủy kết bạn người này chưa?"
+                                    )
+                                  }
+                                  lists={[
+                                    {
+                                      label: "Hủy kết bạn",
+                                      value: "delete-friend",
+                                      icon: icons.PersonRemoveIcon,
+                                    },
+                                  ]}
+                                />
+
+                                <ButtonFriend
+                                  ref={friendMenuRef}
+                                  onClick={handleToggleOpenFriendMenu}
+                                  label="Bạn bè"
+                                  icon={icons.PersonIcon}
+                                  sx={{
+                                    bgcolor: "primary.main",
+                                    color: "common.white",
+                                    "&:hover": { bgcolor: "primary.dark" },
+                                  }}
+                                />
+                              </>
+                            ) : relationshipFriend?.status === "Waiting" &&
+                              relationshipFriend?.createdBy === user?._id ? (
+                              <>
+                                <PopupMenu
+                                  ref={friendMenuRef}
+                                  open={isOpenFriendMenu}
+                                  onClose={handleToggleOpenFriendMenu}
+                                  placement="top-start"
+                                  onClick={() =>
+                                    handleDeleteFriendCustom(
+                                      relationshipFriend?._id,
+                                      false,
+                                      "Bạn đã chắc chắn muốn hủy yêu cầu kết bạn người này?"
+                                    )
+                                  }
+                                  lists={[
+                                    {
+                                      label: "Hủy yêu cầu",
+                                      value: "delete-friend",
+                                      icon: icons.PersonRemoveIcon,
+                                    },
+                                  ]}
+                                />
+
+                                <ButtonFriend
+                                  ref={friendMenuRef}
+                                  onClick={handleToggleOpenFriendMenu}
+                                  label="Đang chờ chấp nhận"
+                                  icon={icons.PersonIcon}
+                                  sx={{
+                                    bgcolor: "primary.main",
+                                    color: "common.white",
+                                    "&:hover": { bgcolor: "primary.dark" },
+                                  }}
+                                />
+                              </>
+                            ) : (
+                              <ActionFriend
+                                titleLeft="Chấp nhận lời mời"
+                                titleRight="Xóa lời mời"
+                                onAccept={() =>
+                                  handleUpdateStatusFriendCustom(
+                                    relationshipFriend?._id
+                                  )
+                                }
+                                onCancel={() =>
+                                  handleDeleteFriendCustom(
+                                    relationshipFriend?._id,
+                                    false,
+                                    "Bạn đã chắc chắn muốn gỡ yêu cầu kết bạn từ người này?"
+                                  )
+                                }
+                              />
+                            )}
+                          </Stack>
+                        )}
+
+                        <IconButton
                           sx={{
-                            bgcolor: "background.opacity1",
-                            color: "text.primary",
+                            bgcolor: "primary.main",
                             "&:hover": {
-                              bgcolor: "background.opacity2",
+                              bgcolor: "primary.dark",
+                            },
+                            "& .MuiIcon-root": { fontSize: 20 },
+                            "& img": {
+                              filter: `invert(100%)`,
                             },
                           }}
                         >
-                          Bạn bè
-                        </MButton>
-                        <MButton
-                          startIcon={icons.MessageIcon}
-                          variant="contained"
-                        >
-                          Nhắn tin
-                        </MButton>
+                          {icons.MessageIcon}
+                        </IconButton>
                       </Stack>
                     ) : (
                       ""

@@ -28,7 +28,7 @@ const InfiniteScrollComponent = (props) => {
       next={fetch}
       hasMore={isNextPage}
       loader={<Loading />}
-      endMessage={<EndMessage message={endMessage} />}
+      endMessage={endMessage ? <EndMessage message={endMessage} /> : ""}
     >
       {children}
     </InfiniteScroll>
