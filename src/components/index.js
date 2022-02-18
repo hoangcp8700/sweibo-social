@@ -32,6 +32,7 @@ export { default as ToggleSidebar } from "./Sidebar/ToggleSidebar";
 
 //profile
 export { default as InfomationUser } from "./Profile/InfomationUser";
+export { default as PopupFollowers } from "./Profile/PopupFollowers";
 
 export { default as BirthdayToday } from "./Friend/BirthdayToday";
 export { default as AlbumFriends } from "./Friend/AlbumFriends";

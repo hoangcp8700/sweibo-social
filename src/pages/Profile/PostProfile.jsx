@@ -16,6 +16,7 @@ import {
   PopupShareOfPost,
   PopupDetailPost,
   PopupCreatePost as PopupEditPost,
+  PopupFollowers,
 } from "components";
 import { Box, Stack, Typography } from "@mui/material";
 import { useAuth, usePost, useUser } from "hooks";
@@ -45,6 +46,7 @@ const PostProfile = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [isCreate, setIsCreate] = React.useState(false);
+  const [openFollowers, setOpenFollowers] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [paginate, setPaginate] = React.useState(initialize); // POST
   const [openLightBox, setOpenLightBox] = React.useState({
@@ -130,6 +132,7 @@ const PostProfile = () => {
 
   const handleToggleIsCreate = () => setIsCreate(!isCreate);
   const handleToggleIsLoading = (value) => setIsLoading(value);
+  const handleToggleShowFollowers = () => setOpenFollowers(!openFollowers);
 
   const handleActionPost = async (name, postID, post) => {
     if (name === "detail") {
@@ -227,6 +230,12 @@ const PostProfile = () => {
     });
   };
 
+  const handleUpdateFollowersLength = () => {
+    const newUser = { ...user, followers: user?.followers - 1 };
+    console.log("handleUpdateFollowersLength", newUser);
+    handleUpdateAuth(newUser);
+  };
+
   const handleSubmitEditProfileCustom = async (form) => {
     const response = await handleSubmitEditProfile(userProfile?._id, form);
     if (response) {
@@ -254,6 +263,14 @@ const PostProfile = () => {
       ) : (
         ""
       )}
+
+      <PopupFollowers
+        open={openFollowers}
+        onClose={handleToggleShowFollowers}
+        user={userProfile}
+        handleUpdateFollowersLength={handleUpdateFollowersLength}
+      />
+
       {/* ---------------------  action post */}
       <PopupLikeOfPost
         open={(actionPost?.postID && actionPost.name === "like") || false}
@@ -314,6 +331,7 @@ const PostProfile = () => {
             isAuth={isAuth}
             user={userProfile}
             handleSubmitEditProfile={handleSubmitEditProfileCustom}
+            handleToggleShowFollowers={handleToggleShowFollowers}
           />
           <AlbumFriends />
           <AlbumImage />

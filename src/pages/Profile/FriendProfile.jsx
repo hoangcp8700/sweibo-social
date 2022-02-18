@@ -90,6 +90,7 @@ const FriendProfile = () => {
   const handleDeleteFriendCustom = async (friendID, isAccept, message) => {
     if (!isAccept) return handleOpenAgainDelete(friendID, message);
     const response = await handleDeleteFriend(friendID);
+    console.log(response);
     if (response) {
       const newFriends = paginate.data.filter((item) => item?._id !== friendID);
       setPaginate({ ...paginate, data: newFriends });

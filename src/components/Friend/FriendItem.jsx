@@ -106,7 +106,7 @@ const FriendItem = (props) => {
               <ActionFriend
                 titleLeft="Chấp nhận"
                 titleRight="Gỡ"
-                onAccept={() => {}}
+                onAccept={() => handleUpdateStatusFriend(item?._id)}
                 onCancel={() =>
                   handleDeleteFriend(
                     item?._id,

@@ -91,7 +91,7 @@ const useUser = () => {
   const handleUpdateStatusFriend = async (friendID) => {
     try {
       const response = await axios.get(routes.friends(friendID).update);
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.log("err", error);
       return false;

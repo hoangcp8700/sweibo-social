@@ -28,7 +28,8 @@ const MTextIconCustom = (props) => {
   );
 };
 const InfomationUser = (props) => {
-  const { isAuth, user, handleSubmitEditProfile } = props;
+  const { isAuth, user, handleSubmitEditProfile, handleToggleShowFollowers } =
+    props;
   const [isEditProfile, setIsEditProfile] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -124,10 +125,23 @@ const InfomationUser = (props) => {
                 ))
             : ""}
 
-          <MTextIconCustom
-            startIcon={icons.WifiIcon}
-            label={"Có 2.354 người theo dõi"}
-          />
+          {user?.followers > 0 ? (
+            <MTextIconCustom
+              containerStyle={{
+                "& p": {
+                  cursor: "pointer",
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                },
+              }}
+              onClick={handleToggleShowFollowers}
+              startIcon={icons.WifiIcon}
+              label={`Có ${user?.followers} người theo dõi`}
+            />
+          ) : (
+            ""
+          )}
 
           <Stack direction="row" sx={{ flexWrap: "wrap", gap: 1, mt: 1 }}>
             {data.favorites

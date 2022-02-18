@@ -133,7 +133,6 @@ const Profile = () => {
       const getRelationship = await handleGetFriendRelationship(response?._id);
       if (!getRelationship.success) return setPageLoading(false);
       setRelationshipFriend(getRelationship.data);
-      console.log("getRelationship", getRelationship);
       setPageLoading(false);
     };
 
@@ -141,7 +140,6 @@ const Profile = () => {
     return () => {
       setPageLoading(true);
       if (userClient && parsed?.email !== userClient?.email) {
-        console.log("reset");
         handleUpdateUserClient(null);
         setRelationshipFriend(null);
       }
@@ -544,7 +542,11 @@ const Profile = () => {
                         src="/static/images/avatar/5.jpg"
                       />
                     </AvatarGroupStyle>
-                    {console.log("isOpenFriendMenu,", isOpenFriendMenu)}
+                    {console.log(
+                      "isOpenFriendMenu,",
+                      relationshipFriend,
+                      userProfile
+                    )}
                     {/* // friends */}
                     {!isAuth ? (
                       <Stack direction="row" alignItems="center" spacing={1}>
@@ -594,7 +596,8 @@ const Profile = () => {
                                 />
                               </>
                             ) : relationshipFriend?.status === "Waiting" &&
-                              relationshipFriend?.createdBy === user?._id ? (
+                              relationshipFriend?.createdBy !==
+                                userProfile?._id ? (
                               <>
                                 <PopupMenu
                                   ref={friendMenuRef}
