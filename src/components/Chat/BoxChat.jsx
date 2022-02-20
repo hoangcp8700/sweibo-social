@@ -35,12 +35,15 @@ const BoxChat = (props) => {
           </IconButton>
         </Box>
       </Stack>
+
       <Box>
         <Divider />
       </Box>
+
       <Box
         sx={{
           maxHeight: (theme) => `calc(100vh - ${theme.sizes.header}px - 110px)`,
+          minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px - 110px)`,
           overflowY: "auto",
           "&::-webkit-scrollbar-track": {
             // boxShadow: "inset 0 0 6px rgba(0,0,0,0.3)",
@@ -59,7 +62,7 @@ const BoxChat = (props) => {
           },
         }}
       >
-        <Stack spacing={1} sx={{ p: 1 }}>
+        {/* <Stack spacing={1} sx={{ p: 1 }}>
           <MessageItem>helllo 123</MessageItem>
           <MessageItem active={true}>
             img elements must have an alt prop, either with meaningful text, or
@@ -102,7 +105,7 @@ const BoxChat = (props) => {
             Assign object to a variable before exporting as module default{" "}
           </MessageItem>
           <MessageItem active={true}>helllo 123</MessageItem>
-        </Stack>
+        </Stack> */}
       </Box>
 
       <Box sx={{ p: 1 }}>

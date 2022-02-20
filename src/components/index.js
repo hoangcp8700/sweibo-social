@@ -41,6 +41,8 @@ export { default as FriendSuggestion } from "./Friend/FriendSuggestion";
 export { default as EmojiPicker } from "./EmojiPicker";
 
 export { default as ChatItem } from "./Chat/ChatItem";
+export { default as AvatarGroupChat } from "./Chat/AvatarGroup";
+export { default as RoomItem } from "./Chat/RoomItem";
 export { default as InfomationChat } from "./Chat/InfomationChat";
 export { default as BoxChat } from "./Chat/BoxChat";
 export { default as MessageItem } from "./Chat/MessageItem";

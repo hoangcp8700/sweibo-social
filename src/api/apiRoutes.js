@@ -36,6 +36,7 @@ const friends = (id) => {
     delete: `/friends/${id}/delete`,
   };
 };
+
 const posts = (id) => {
   return {
     create: `/posts/add`,
@@ -43,6 +44,20 @@ const posts = (id) => {
     getPostsOfFriend: `/posts/friends`,
     getPostUser: `/posts/user`,
     byID: `/posts/${id}`,
+  };
+};
+
+const rooms = (roomID) => {
+  return {
+    get: `/rooms`,
+    getByID: `/rooms/${roomID}`,
+  };
+};
+
+const chats = (roomID, messageID) => {
+  return {
+    get: `/rooms/${roomID}/messages`,
+    getByID: `/rooms/${roomID}/messages/${messageID}`,
   };
 };
 
@@ -65,4 +80,6 @@ export default {
   comments,
   likes,
   friends,
+  rooms,
+  chats,
 };

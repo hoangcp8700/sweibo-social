@@ -14,23 +14,44 @@ import {
   StickySidebar,
   SidebarHeader,
   ChatItem,
+  RoomItem,
   BoxChat,
   InfomationChat,
   ToggleSidebar,
 } from "components";
 import { icons } from "constants";
+import { useChat } from "hooks";
+
+const initialize = {
+  page: 1,
+  isNextPage: true,
+  data: [],
+  length: 0,
+};
 
 const Chat = () => {
-  const [users, setUsers] = React.useState([]);
+  const { handleGetRooms, handleGetRoomById } = useChat();
   const [isSidebarContent, setIsSidebarContent] = React.useState(false);
   const [isSidebarLeft, setIsSidebarLeft] = React.useState(true);
 
+  const [paginateRoom, setPaginateRoom] = React.useState(initialize); // rooms
+  const [paginateMessage, setPaginateMessage] = React.useState(initialize); // messages
+  const [room, setRoom] = React.useState(null);
+
+  const handleGetRoomsCustom = async () => {
+    if (!paginateRoom.isNextPage) return;
+    const response = await handleGetRooms(paginateRoom.page);
+
+    setPaginateRoom({
+      page: response.next,
+      isNextPage: response.hasNextPage ? true : false,
+      data: [...paginateRoom.data, ...response.data],
+      totalLength: response.totalLength,
+    });
+  };
+
   React.useEffect(() => {
-    const getUsers = async () => {
-      const reponse = await fakeData.GET_USERS();
-      setUsers(reponse);
-    };
-    getUsers();
+    handleGetRoomsCustom();
   }, []);
 
   const handleToggleSidebarContent = React.useCallback(
@@ -40,6 +61,12 @@ const Chat = () => {
 
   const handleToggleSidebarLeft = () => setIsSidebarLeft(!isSidebarLeft);
 
+  const handleGetRoomByIdCustom = async (roomID) => {
+    const response = await handleGetRoomById(roomID);
+    setRoom(response);
+  };
+
+  console.log("room", room);
   return (
     <Box>
       <ToggleSidebar
@@ -116,8 +143,12 @@ const Chat = () => {
 
             <Divider />
 
-            {users?.map((item) => (
-              <ChatItem key={item.id} item={item} />
+            {paginateRoom?.data?.map((item) => (
+              <RoomItem
+                key={item._id}
+                item={item}
+                handleGetRoomById={handleGetRoomByIdCustom}
+              />
             ))}
           </Paper>
         </StickySidebar>
@@ -148,8 +179,12 @@ const Chat = () => {
               transition: "min-width 0.5s ease 0s",
             }}
           >
-            <BoxChat handleToggleSidebar={handleToggleSidebarContent} />
+            <BoxChat
+              room={room}
+              handleToggleSidebar={handleToggleSidebarContent}
+            />
           </Stack>
+
           <Stack
             sx={{
               width: (theme) => theme.sizes.sidebar,
