@@ -2,9 +2,10 @@ import React from "react";
 import { Box, Stack, Typography, IconButton } from "@mui/material";
 import { icons } from "constants";
 import MenuDotMessageItem from "./MenuDotMessageItem";
+import { fToNow } from "utils/formatTime";
 
 const MessageItem = (props) => {
-  const { children, active } = props;
+  const { children, item, active } = props;
   const dotRef = React.useRef();
   const [openDot, setOpenDot] = React.useState(false);
 
@@ -14,7 +15,7 @@ const MessageItem = (props) => {
   );
 
   return (
-    <Box>
+    <Box sx={{ position: "relative" }}>
       <MenuDotMessageItem
         anchor={dotRef}
         open={openDot}
@@ -31,46 +32,59 @@ const MessageItem = (props) => {
           float: active ? "right" : "inherit",
         }}
       >
-        <Box
-          sx={{
-            borderRadius: 3,
-            bgcolor: active ? "info.main" : "background.neutral",
-            width: "fit-content",
-            p: 1,
-            px: 1.5,
-            position: "relative",
-            "&:hover": {
-              "& .dot-container": {
-                display: "block",
-              },
-            },
-          }}
-        >
-          <Typography
-            variant="body2"
-            sx={{ color: active ? "common.white" : "text.primary" }}
-          >
-            {children}{" "}
-          </Typography>
+        <Stack>
           <Box
             sx={{
-              position: "absolute",
-              right: !active && -30,
-              left: active && -30,
-              top: 0,
-              display: "none",
+              borderRadius: 3,
+              bgcolor: active ? "info.main" : "background.neutral",
+              width: "fit-content",
+              p: 1,
+              px: 1.5,
+              position: "relative",
+              "&:hover": {
+                "& .dot-container": {
+                  display: "block",
+                },
+                "& .created": { display: "block" },
+              },
             }}
-            className="dot-container"
           >
-            <IconButton
-              sx={{ "& svg": { fontSize: 18 } }}
-              ref={dotRef}
-              onClick={() => handleToggleAction()}
+            <Typography
+              variant="body2"
+              sx={{ color: active ? "common.white" : "text.primary" }}
             >
-              {icons.MoreVertIcon}
-            </IconButton>
+              {item?.text}
+            </Typography>
+            <Typography
+              variant="caption"
+              className="created"
+              sx={{
+                color: "common.white",
+                display: "none",
+              }}
+            >
+              {item?.updatedAt && fToNow(item?.updatedAt)}
+            </Typography>
+            <Box
+              sx={{
+                position: "absolute",
+                right: !active && -30,
+                left: active && -30,
+                top: 0,
+                display: "none",
+              }}
+              className="dot-container"
+            >
+              <IconButton
+                sx={{ "& svg": { fontSize: 18 } }}
+                ref={dotRef}
+                onClick={() => handleToggleAction()}
+              >
+                {icons.MoreVertIcon}
+              </IconButton>
+            </Box>
           </Box>
-        </Box>
+        </Stack>
       </Stack>
     </Box>
   );

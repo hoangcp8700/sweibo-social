@@ -13,11 +13,9 @@ const useChat = () => {
       return false;
     }
   };
-  const handleGetRoomByID = async (roomID) => {
+  const handleGetRoomDetail = async (roomID) => {
     try {
       const response = await axios.get(`${routes.rooms(roomID).getByID}`);
-      console.log("handleGetRoomByID", response);
-      // dispatch(SET_PROFILE(response.data.data));
       return response.data.data;
     } catch (error) {
       console.log("err", error);
@@ -57,12 +55,27 @@ const useChat = () => {
       return false;
     }
   };
+
+  // ------------------ messages-----------------
+  const handleGetMessagesOfRoom = async (page = 1, roomID) => {
+    try {
+      const link = `?page=${page}`;
+      const response = await axios.get(`${routes.messages(roomID).get}${link}`);
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
   return {
     handleGetRooms,
-    handleGetRoomByID,
+    handleGetRoomDetail,
     handleAddRoom,
     handleUpdateRoom,
     handleDeleteRoom,
+
+    // messages
+    handleGetMessagesOfRoom,
   };
 };
 

@@ -1,28 +1,37 @@
 import React from "react";
 import { Box, Stack, IconButton, Divider, Typography } from "@mui/material";
 import { icons } from "constants";
-import { ActivityStatus, MessageItem, InputCreateMessage } from "components";
+import {
+  ActivityStatus,
+  MessageItem,
+  InputCreateMessage,
+  AvatarGroupChat,
+} from "components";
+import { lineClampStyle } from "utils/lineClampStyle";
 
 const BoxChat = (props) => {
-  const { handleToggleSidebar } = props;
+  const { room, user, paginateMessage, handleToggleSidebar } = props;
   return (
     <Box>
       <Stack
         direction="row"
         alignItems="center"
         justifyContent="space-between"
-        sx={{ p: 1, height: 55 }}
+        sx={{ p: 1, height: 70 }}
       >
         <Stack direction="row" alignItems="center" spacing={1}>
-          <ActivityStatus
-            label={"Hoàng Công Phan"}
-            avatarStyle={{ width: 40, height: 40 }}
-          />
+          <AvatarGroupChat images={room?.participants} />
           <Stack>
-            <Typography variant="subtitle2">Le du</Typography>
-            <Typography variant="caption" sx={{ color: "text.secondary" }}>
-              Đang hoạt động
+            <Typography variant="subtitle2" sx={lineClampStyle(1)}>
+              {room?.title}
             </Typography>
+            {room?.participants?.length > 1 ? (
+              <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                {room?.participants?.length} người tham gia
+              </Typography>
+            ) : (
+              ""
+            )}
           </Stack>
         </Stack>
 
@@ -42,8 +51,8 @@ const BoxChat = (props) => {
 
       <Box
         sx={{
-          maxHeight: (theme) => `calc(100vh - ${theme.sizes.header}px - 110px)`,
-          minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px - 110px)`,
+          maxHeight: (theme) => `calc(100vh - ${theme.sizes.header}px - 125px)`,
+          minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px - 125px)`,
           overflowY: "auto",
           "&::-webkit-scrollbar-track": {
             // boxShadow: "inset 0 0 6px rgba(0,0,0,0.3)",
@@ -62,6 +71,17 @@ const BoxChat = (props) => {
           },
         }}
       >
+        <Stack spacing={1} sx={{ p: 1 }}>
+          {paginateMessage?.totalLength > 0
+            ? paginateMessage?.data?.map((item) => (
+                <MessageItem
+                  key={item?._id}
+                  active={item?.sender?._id === user?._id || false}
+                  item={item}
+                />
+              ))
+            : ""}
+        </Stack>
         {/* <Stack spacing={1} sx={{ p: 1 }}>
           <MessageItem>helllo 123</MessageItem>
           <MessageItem active={true}>

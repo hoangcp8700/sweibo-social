@@ -54,7 +54,7 @@ const rooms = (roomID) => {
   };
 };
 
-const chats = (roomID, messageID) => {
+const messages = (roomID, messageID) => {
   return {
     get: `/rooms/${roomID}/messages`,
     getByID: `/rooms/${roomID}/messages/${messageID}`,
@@ -81,5 +81,5 @@ export default {
   likes,
   friends,
   rooms,
-  chats,
+  messages,
 };

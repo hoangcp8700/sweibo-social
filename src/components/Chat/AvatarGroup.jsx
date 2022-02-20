@@ -6,7 +6,7 @@ const AvatarGroupComponent = ({ images }) => {
     <AvatarGroup
       max={4}
       sx={[
-        images.length > 1
+        images?.length > 1
           ? {
               "& .MuiAvatar-root": {
                 width: 25,
@@ -29,11 +29,14 @@ const AvatarGroupComponent = ({ images }) => {
         },
       ]}
     >
-      {images.map((item) => (
-        <Avatar key={item._id} src={item?.userID?.avatar?.url}>
-          {item?.userID?.firstName.charAt(0)} {item?.userID?.lastName.charAt(0)}
-        </Avatar>
-      ))}
+      {images?.length
+        ? images.map((item) => (
+            <Avatar key={item._id} src={item?.userID?.avatar?.url}>
+              {item?.userID?.firstName.charAt(0)}{" "}
+              {item?.userID?.lastName.charAt(0)}
+            </Avatar>
+          ))
+        : ""}
     </AvatarGroup>
   );
 };

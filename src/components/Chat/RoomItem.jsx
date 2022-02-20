@@ -7,6 +7,7 @@ import {
   Typography,
   IconButton,
   styled,
+  Button,
 } from "@mui/material";
 import { icons } from "constants";
 import { fToNow } from "utils/formatTime";
@@ -42,7 +43,8 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const RoomItem = ({ item, handleGetRoomById }) => {
+const RoomItem = (props) => {
+  const { item, active, handleGetRoomById } = props;
   return (
     <Box onClick={() => handleGetRoomById(item?._id)}>
       <Stack
@@ -54,6 +56,7 @@ const RoomItem = ({ item, handleGetRoomById }) => {
           p: 1,
           borderRadius: (theme) => theme.sizes.minBase / 2,
           cursor: "pointer",
+          bgcolor: active ? "background.opacity" : "transparent",
           "&:hover": {
             bgcolor: "background.opacity",
           },

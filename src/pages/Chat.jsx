@@ -20,7 +20,7 @@ import {
   ToggleSidebar,
 } from "components";
 import { icons } from "constants";
-import { useChat } from "hooks";
+import { useChat, useAuth } from "hooks";
 
 const initialize = {
   page: 1,
@@ -30,7 +30,9 @@ const initialize = {
 };
 
 const Chat = () => {
-  const { handleGetRooms, handleGetRoomById } = useChat();
+  const { handleGetRooms, handleGetRoomDetail, handleGetMessagesOfRoom } =
+    useChat();
+  const { user } = useAuth();
   const [isSidebarContent, setIsSidebarContent] = React.useState(false);
   const [isSidebarLeft, setIsSidebarLeft] = React.useState(true);
 
@@ -50,9 +52,35 @@ const Chat = () => {
     });
   };
 
+  const handleGetMessageCustom = async (roomID) => {
+    console.log("get message", paginateMessage, roomID);
+    if (!paginateMessage.isNextPage) return;
+    const response = await handleGetMessagesOfRoom(
+      paginateMessage.page,
+      roomID
+    );
+    console.log("handleGetMessageCustom", response);
+    setPaginateMessage({
+      page: response.next,
+      isNextPage: response.hasNextPage ? true : false,
+      data: [...paginateMessage.data, ...response.data],
+      totalLength: response.totalLength,
+    });
+  };
+
   React.useEffect(() => {
     handleGetRoomsCustom();
   }, []);
+
+  React.useEffect(() => {
+    if (!room) return;
+    console.log("call api messsage");
+    handleGetMessageCustom(room?._id);
+    return () => {
+      console.log("reset");
+      setPaginateMessage(initialize);
+    };
+  }, [room]);
 
   const handleToggleSidebarContent = React.useCallback(
     () => setIsSidebarContent(!isSidebarContent),
@@ -62,11 +90,14 @@ const Chat = () => {
   const handleToggleSidebarLeft = () => setIsSidebarLeft(!isSidebarLeft);
 
   const handleGetRoomByIdCustom = async (roomID) => {
-    const response = await handleGetRoomById(roomID);
-    setRoom(response);
+    const response = await handleGetRoomDetail(roomID);
+    if (response) {
+      setRoom(response);
+    }
   };
 
-  console.log("room", room);
+  console.log("pagiate 2", paginateMessage);
+
   return (
     <Box>
       <ToggleSidebar
@@ -148,6 +179,7 @@ const Chat = () => {
                 key={item._id}
                 item={item}
                 handleGetRoomById={handleGetRoomByIdCustom}
+                active={(room && room?._id === item?._id) || false}
               />
             ))}
           </Paper>
@@ -180,7 +212,9 @@ const Chat = () => {
             }}
           >
             <BoxChat
+              user={user}
               room={room}
+              paginateMessage={paginateMessage}
               handleToggleSidebar={handleToggleSidebarContent}
             />
           </Stack>
