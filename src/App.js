@@ -1,3 +1,5 @@
+import React from "react";
+
 import "./App.css";
 import { BrowserRouter as Router, Navigate } from "react-router-dom";
 import Routes from "routes";
@@ -9,6 +11,7 @@ import NotistackProvider from "components/Notistack";
 
 function App() {
   const { user } = useAuth();
+
   return (
     <ThemeConfig darkMode={user?.settings?.isDarkMode}>
       <NotistackProvider>

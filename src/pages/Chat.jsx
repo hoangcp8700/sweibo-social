@@ -1,4 +1,5 @@
 import React from "react";
+import { io } from "socket.io-client";
 
 import {
   Box,
@@ -51,6 +52,7 @@ const Chat = () => {
   const [room, setRoom] = React.useState(null);
 
   const boxChatRef = React.useRef();
+  const socket = React.useRef();
 
   const handleGetRoomsCustom = async () => {
     if (!paginateRoom.hasNextPage) return;
@@ -88,12 +90,13 @@ const Chat = () => {
     },
     [paginateMessage, room, isLoading.message]
   );
-  // console.log("paginate message", paginateMessage);
 
   React.useEffect(() => {
     handleGetRoomsCustom();
+    socket.current = io(process.env.REACT_APP_API_URL_SOCKET);
   }, []);
 
+  // get messages of room
   React.useEffect(() => {
     if (!room) return;
     const getMessages = async () => {
@@ -102,9 +105,52 @@ const Chat = () => {
         behavior: "smooth",
         top: boxChatRef.current.scrollHeight,
       });
+      socket.current.emit("joinRoom", { user, roomID: room?._id });
     };
     getMessages();
   }, [room]);
+
+  // event socket
+  React.useEffect(() => {
+    if (!socket || !user) return;
+    socket.current.emit("addUser", user?._id);
+    socket.current.on("getUsers", (data) => console.log("getUsers", data));
+    socket.current.on("getLastMessageRoom", ({ room }) => {
+      console.log("getLastMessageRoom", room);
+
+      setPaginateRoom((prev) => {
+        const newRoom = prev.data.map((item) => {
+          if (item?._id !== room?._id) return item;
+          return {
+            ...item,
+            lastMessage: room.lastMessage,
+            updatedAt: room.updatedAt,
+          };
+        });
+        return {
+          ...prev,
+          data: newRoom,
+        };
+      });
+    });
+
+    socket.current.on("getMessage", (data) => {
+      console.log("getMessage", data);
+
+      setPaginateMessage((prev) => ({
+        ...prev,
+        data: [data, ...prev.data],
+        totalLength: prev.totalLength + 1,
+      }));
+
+      boxChatRef.current.scrollTo({
+        behavior: "smooth",
+        top: boxChatRef.current.scrollHeight,
+      });
+    });
+  }, [user]);
+
+  console.log("setPaginateRoom", paginateRoom);
 
   const handleToggleSidebarContent = React.useCallback(
     () => setIsSidebarContent(!isSidebarContent),
@@ -125,14 +171,12 @@ const Chat = () => {
   const handleAddMessageCustom = async (form) => {
     const response = await handleAddMessage(form, room?._id);
     if (response?.success) {
-      setPaginateMessage({
-        ...paginateMessage,
-        data: [response.data, ...paginateMessage.data],
-        totalLength: paginateMessage.totalLength + 1,
+      socket.current.emit("sendMessage", {
+        roomID: room?._id,
+        message: response.data,
       });
-      boxChatRef.current.scrollTo({
-        behavior: "smooth",
-        top: boxChatRef.current.scrollHeight,
+      socket.current.emit("updateLastMessageRoom", {
+        room: response.room,
       });
     }
   };
@@ -153,7 +197,6 @@ const Chat = () => {
       await handleGetMessageCustom(room?._id);
 
       boxChatRef.current.scrollTo({
-        behavior: "smooth",
         top: boxChatRef.current.scrollHeight / paginateMessage?.page,
       });
     }

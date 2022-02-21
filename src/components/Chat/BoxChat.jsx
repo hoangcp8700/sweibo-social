@@ -31,7 +31,7 @@ const BoxChat = React.forwardRef((props, ref) => {
       }}
     >
       {children}
-      <Stack spacing={1} sx={{ p: 1, flexDirection: "column-reverse" }}>
+      <Stack sx={{ p: 1, gap: 1, flexDirection: "column-reverse" }}>
         {paginateMessage?.totalLength > 0
           ? paginateMessage?.data?.map((item) => (
               <MessageItem

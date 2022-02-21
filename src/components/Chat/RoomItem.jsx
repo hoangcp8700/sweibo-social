@@ -64,12 +64,7 @@ const RoomItem = (props) => {
       >
         <AvatarGroupChat images={item?.participants} />
 
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{ flex: 1, gap: 2 }}
-        >
+        <Stack direction="row" alignItems="center" sx={{ flex: 1 }}>
           <Stack>
             <Typography variant="subtitle2" sx={lineClampStyle(2)}>
               {item?.title}
@@ -84,10 +79,6 @@ const RoomItem = (props) => {
               </Typography>
             </Stack>
           </Stack>
-          {/* CheckCircleOutlineIcon CheckCircleIcon */}
-          <IconButton sx={{ "& svg": { fontSize: 18 } }}>
-            {icons.CheckCircleOutlineIcon}
-          </IconButton>
         </Stack>
       </Stack>
     </Box>
