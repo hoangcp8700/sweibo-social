@@ -21,7 +21,7 @@ import { InfiniteScroll } from "providers";
 
 const initialize = {
   page: 1,
-  isNextPage: true,
+  hasNextPage: true,
   data: [],
   length: 0,
 };
@@ -50,7 +50,7 @@ const FriendProfile = () => {
   });
 
   const handleGetFriendsCustom = async () => {
-    if (!paginate.isNextPage) return;
+    if (!paginate.hasNextPage) return;
     const response = await handleGetFriends(
       paginate.page,
       tag,
@@ -59,7 +59,7 @@ const FriendProfile = () => {
 
     setPaginate({
       page: response.next,
-      isNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage ? true : false,
       data: [...paginate.data, ...response.data],
       totalLength: response.totalLength,
     });
@@ -204,7 +204,7 @@ const FriendProfile = () => {
       >
         {paginate?.totalLength > 0 ? (
           <InfiniteScroll
-            isNextPage={paginate?.isNextPage}
+            hasNextPage={paginate?.hasNextPage}
             data={paginate?.data}
             fetch={handleGetFriendsCustom}
             // endMessage={`Tổng cộng ${paginate?.totalLength} bài viết`}

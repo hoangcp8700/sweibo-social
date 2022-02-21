@@ -24,7 +24,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const initialize = {
   page: 1,
-  isNextPage: true,
+  hasNextPage: true,
   data: [],
   totalLength: 0,
   isLoading: false,
@@ -46,13 +46,13 @@ export default function PopupCommentOfPost(props) {
   } = usePost();
 
   const handleGetCommentsCustom = React.useCallback(async () => {
-    if (!paginate.isNextPage) return;
+    if (!paginate.hasNextPage) return;
     setPaginate({ ...paginate, isLoading: true });
     const response = await handleGetComments(paginate.page, postID);
     console.log("handleGetCommentsCustom", response);
     setPaginate({
       page: response.next,
-      isNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage ? true : false,
       data: [...response.data, ...paginate.data],
       totalLength: response.totalLength,
       isLoading: false,
@@ -171,7 +171,7 @@ export default function PopupCommentOfPost(props) {
             },
           }}
         >
-          {paginate?.isNextPage ? (
+          {paginate?.hasNextPage ? (
             <Box sx={{ mt: 2 }}>
               <Typography
                 onClick={handleGetCommentsCustom}

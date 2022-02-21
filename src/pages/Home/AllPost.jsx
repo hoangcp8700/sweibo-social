@@ -45,7 +45,7 @@ const tags = [
 
 const initialize = {
   page: 1,
-  isNextPage: true,
+  hasNextPage: true,
   data: [],
   length: 0,
 };
@@ -78,7 +78,7 @@ const AllPost = () => {
   });
 
   const handleGetPost = React.useCallback(async () => {
-    if (!paginate.isNextPage) return;
+    if (!paginate.hasNextPage) return;
     let response;
     if (tag === "all") {
       response = await handleGetPostAll(paginate.page);
@@ -89,7 +89,7 @@ const AllPost = () => {
     console.log("get post", tag, response);
     setPaginate({
       page: response.next,
-      isNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage ? true : false,
       data: [...paginate.data, ...response.data],
       totalLength: response.totalLength,
     });
@@ -353,7 +353,7 @@ const AllPost = () => {
 
         {paginate?.totalLength > 0 ? (
           <InfiniteScroll
-            isNextPage={paginate?.isNextPage}
+            hasNextPage={paginate?.hasNextPage}
             data={paginate?.data}
             fetch={handleGetPost}
             handleRefresh={() => console.log("refreshh")}

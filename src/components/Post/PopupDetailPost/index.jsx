@@ -56,7 +56,7 @@ const menus = [
 
 const initialize = {
   page: 1,
-  isNextPage: true,
+  hasNextPage: true,
   data: [],
   length: 0,
   isLoading: false,
@@ -93,12 +93,12 @@ export default function PopupDetailPost(props) {
   const menuRef = React.useRef();
 
   const handleGetCommentsCustom = React.useCallback(async () => {
-    if (!paginate.isNextPage) return;
+    if (!paginate.hasNextPage) return;
     setPaginate({ ...paginate, isLoading: true });
     const response = await handleGetComments(paginate.page, postID);
     setPaginate({
       page: response.next,
-      isNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage ? true : false,
       data: [...response.data, ...paginate.data],
       totalLength: response.totalLength,
       isLoading: false,
@@ -297,7 +297,7 @@ export default function PopupDetailPost(props) {
               <Box sx={{ px: 2 }}>
                 <Divider />
 
-                {paginate?.isNextPage ? (
+                {paginate?.hasNextPage ? (
                   <Box sx={{ mt: 2 }}>
                     <Typography
                       onClick={handleGetCommentsCustom}

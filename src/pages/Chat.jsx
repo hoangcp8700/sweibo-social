@@ -8,6 +8,7 @@ import {
   IconButton,
   InputAdornment,
   Paper,
+  Typography,
 } from "@mui/material";
 import { fakeData } from "constants";
 import {
@@ -18,13 +19,14 @@ import {
   BoxChat,
   InfomationChat,
   ToggleSidebar,
+  HeaderChat,
 } from "components";
 import { icons } from "constants";
 import { useChat, useAuth } from "hooks";
 
 const initialize = {
   page: 1,
-  isNextPage: true,
+  hasNextPage: true,
   data: [],
   length: 0,
 };
@@ -41,20 +43,19 @@ const Chat = () => {
   const [room, setRoom] = React.useState(null);
 
   const handleGetRoomsCustom = async () => {
-    if (!paginateRoom.isNextPage) return;
+    if (!paginateRoom.hasNextPage) return;
     const response = await handleGetRooms(paginateRoom.page);
 
     setPaginateRoom({
       page: response.next,
-      isNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage ? true : false,
       data: [...paginateRoom.data, ...response.data],
       totalLength: response.totalLength,
     });
   };
 
   const handleGetMessageCustom = async (roomID) => {
-    console.log("get message", paginateMessage, roomID);
-    if (!paginateMessage.isNextPage) return;
+    if (!paginateMessage.hasNextPage) return;
     const response = await handleGetMessagesOfRoom(
       paginateMessage.page,
       roomID
@@ -62,7 +63,7 @@ const Chat = () => {
     console.log("handleGetMessageCustom", response);
     setPaginateMessage({
       page: response.next,
-      isNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage ? true : false,
       data: [...paginateMessage.data, ...response.data],
       totalLength: response.totalLength,
     });
@@ -185,53 +186,66 @@ const Chat = () => {
           </Paper>
         </StickySidebar>
 
-        <Box
-          sx={[
-            (theme) => ({
-              flex: 1,
-              display: "flex",
-              height: "100%",
-              maxHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
-              overflow: "hidden",
-              transition: "all 0.5s ease 0s",
-              transform: !isSidebarLeft
-                ? `translateX(-250px)`
-                : `translateX(0)`,
-              minWidth: !isSidebarLeft ? `100%` : `inherit`,
-              [theme.breakpoints.down("md")]: {
-                transform: `translateX(0)`,
-              },
-            }),
-          ]}
-        >
-          <Stack
-            sx={{
-              flex: 1,
-              minWidth: isSidebarContent ? "0%" : "100%",
-              transition: "min-width 0.5s ease 0s",
-            }}
+        {room ? (
+          <Box
+            sx={[
+              (theme) => ({
+                flex: 1,
+                display: "flex",
+                height: "100%",
+                maxHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
+                overflow: "hidden",
+                transition: "all 0.5s ease 0s",
+                transform: !isSidebarLeft
+                  ? `translateX(-250px)`
+                  : `translateX(0)`,
+                minWidth: !isSidebarLeft ? `100%` : `inherit`,
+                [theme.breakpoints.down("md")]: {
+                  transform: `translateX(0)`,
+                },
+              }),
+            ]}
           >
-            <BoxChat
-              user={user}
-              room={room}
-              paginateMessage={paginateMessage}
-              handleToggleSidebar={handleToggleSidebarContent}
-            />
-          </Stack>
+            <Stack
+              sx={{
+                flex: 1,
+                minWidth: isSidebarContent ? "0%" : "100%",
+                transition: "min-width 0.5s ease 0s",
+              }}
+            >
+              <HeaderChat
+                room={room}
+                handleToggleSidebar={handleToggleSidebarContent}
+              />
 
+              <BoxChat user={user} paginateMessage={paginateMessage} />
+            </Stack>
+
+            <Stack
+              sx={{
+                width: (theme) => theme.sizes.sidebar,
+                transform: isSidebarContent
+                  ? `translate3d(0px, 0px, 0px)`
+                  : `translate3d(100%, 0px, 0px)`,
+                visibility: "visible",
+                transition: "all 0.6s ease 0s",
+              }}
+            >
+              <InfomationChat />
+            </Stack>
+          </Box>
+        ) : (
           <Stack
             sx={{
-              width: (theme) => theme.sizes.sidebar,
-              transform: isSidebarContent
-                ? `translate3d(0px, 0px, 0px)`
-                : `translate3d(100%, 0px, 0px)`,
-              visibility: "visible",
-              transition: "all 0.6s ease 0s",
+              justifyContent: "center",
+              alignItems: "center",
+              flexGrow: 1,
+              height: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
             }}
           >
-            <InfomationChat />
+            <Typography>Chọn một ai đó để trò chuyện</Typography>
           </Stack>
-        </Box>
+        )}
       </Stack>
     </Box>
   );

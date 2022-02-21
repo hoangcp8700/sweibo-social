@@ -27,7 +27,7 @@ import { useSnackbar } from "notistack";
 
 const initialize = {
   page: 1,
-  isNextPage: true,
+  hasNextPage: true,
   data: [],
   length: 0,
 };
@@ -65,14 +65,14 @@ const PostProfile = () => {
   const isAuth = !parsed.email ? true : false;
 
   const handleGetPost = async () => {
-    if (!paginate.isNextPage) return;
+    if (!paginate.hasNextPage) return;
     const response = await handleGetPostUser(
       paginate.page,
       !isAuth ? parsed?.email : null
     );
     setPaginate({
       page: response.next,
-      isNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage ? true : false,
       data: [...paginate.data, ...response.data],
       totalLength: response.totalLength,
     });
@@ -356,7 +356,7 @@ const PostProfile = () => {
 
           {paginate?.totalLength > 0 ? (
             <InfiniteScroll
-              isNextPage={paginate?.isNextPage}
+              hasNextPage={paginate?.hasNextPage}
               data={paginate?.data}
               fetch={handleGetPost}
               handleRefresh={() => console.log("refreshh")}

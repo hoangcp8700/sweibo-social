@@ -40,6 +40,7 @@ export { default as FriendItem } from "./Friend/FriendItem";
 export { default as FriendSuggestion } from "./Friend/FriendSuggestion";
 export { default as EmojiPicker } from "./EmojiPicker";
 
+// chat
 export { default as ChatItem } from "./Chat/ChatItem";
 export { default as AvatarGroupChat } from "./Chat/AvatarGroup";
 export { default as RoomItem } from "./Chat/RoomItem";
@@ -47,6 +48,7 @@ export { default as InfomationChat } from "./Chat/InfomationChat";
 export { default as BoxChat } from "./Chat/BoxChat";
 export { default as MessageItem } from "./Chat/MessageItem";
 export { default as InputCreateMessage } from "./Chat/InputCreateMessage";
+export { default as HeaderChat } from "./Chat/HeaderChat";
 
 export { default as SaveItem } from "./Save/SaveItem";
 export { default as MenuActionSave } from "./Save/MenuActionSave";

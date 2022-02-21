@@ -62,7 +62,7 @@ const UserItem = (props) => {
 
 const initialize = {
   page: 1,
-  isNextPage: true,
+  hasNextPage: true,
   data: [],
   totalLength: 0,
   isLoading: false,
@@ -75,12 +75,12 @@ export default function PopupLikeOfPost(props) {
   const [paginate, setPaginate] = React.useState(initialize); // likes
 
   const handleGetLikesCustom = React.useCallback(async () => {
-    if (!paginate.isNextPage) return;
+    if (!paginate.hasNextPage) return;
     setPaginate({ ...paginate, isLoading: true });
     const response = await handleGetLikes(paginate.page, postID);
     setPaginate({
       page: response.next,
-      isNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage ? true : false,
       data: [...response.data, ...paginate.data],
       totalLength: response.totalLength,
       isLoading: false,
@@ -139,7 +139,7 @@ export default function PopupLikeOfPost(props) {
           <Stack spacing={2}>
             {paginate?.totalLength > 0 ? (
               <InfiniteScroll
-                isNextPage={paginate?.isNextPage}
+                hasNextPage={paginate?.hasNextPage}
                 data={paginate?.data}
                 fetch={handleGetLikes}
                 handleRefresh={() => console.log("refreshh")}

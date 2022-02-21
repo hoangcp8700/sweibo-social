@@ -20,13 +20,13 @@ const EndMessage = ({ message }) => {
   );
 };
 const InfiniteScrollComponent = (props) => {
-  const { children, data, isNextPage, fetch, endMessage = "" } = props;
+  const { children, data, hasNextPage, fetch, endMessage = "" } = props;
 
   return (
     <InfiniteScroll
       dataLength={data.length} //This is important field to render the next data
       next={fetch}
-      hasMore={isNextPage}
+      hasMore={hasNextPage}
       loader={<Loading />}
       endMessage={endMessage ? <EndMessage message={endMessage} /> : ""}
     >

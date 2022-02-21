@@ -14,7 +14,7 @@ import { FriendItem } from "components";
 
 const initialize = {
   page: 1,
-  isNextPage: true,
+  hasNextPage: true,
   data: [],
   length: 0,
   userID: null,
@@ -28,12 +28,12 @@ export default function PopupEditProfile(props) {
   const [paginate, setPaginate] = React.useState(initialize); // friends
 
   const handleGetFriendsCustom = async () => {
-    if (!paginate.isNextPage) return;
+    if (!paginate.hasNextPage) return;
     const response = await handleGetFriends(paginate.page, "accept", user?._id);
 
     setPaginate({
       page: response.next,
-      isNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage ? true : false,
       data: [...paginate.data, ...response.data],
       totalLength: response.totalLength,
       userID: user?._id,
@@ -96,7 +96,7 @@ export default function PopupEditProfile(props) {
         >
           {paginate?.totalLength > 0 ? (
             <InfiniteScroll
-              isNextPage={paginate?.isNextPage}
+              hasNextPage={paginate?.hasNextPage}
               data={paginate?.data}
               fetch={handleGetFriendsCustom}
               // endMessage={`Tổng cộng ${paginate?.totalLength} bài viết`}
