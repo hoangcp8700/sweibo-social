@@ -67,6 +67,17 @@ const useChat = () => {
       return false;
     }
   };
+  const handleAddMessage = async (form, roomID) => {
+    try {
+      const response = await axios.post(routes.messages(roomID).get, form);
+      console.log("handleAddMessage", response);
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
+
   return {
     handleGetRooms,
     handleGetRoomDetail,
@@ -76,6 +87,7 @@ const useChat = () => {
 
     // messages
     handleGetMessagesOfRoom,
+    handleAddMessage,
   };
 };
 

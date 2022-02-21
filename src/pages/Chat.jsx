@@ -10,16 +10,16 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { fakeData } from "constants";
 import {
   StickySidebar,
   SidebarHeader,
-  ChatItem,
   RoomItem,
   BoxChat,
   InfomationChat,
   ToggleSidebar,
   HeaderChat,
+  InputCreateMessage,
+  LoadingEllipsisElement,
 } from "components";
 import { icons } from "constants";
 import { useChat, useAuth } from "hooks";
@@ -32,15 +32,25 @@ const initialize = {
 };
 
 const Chat = () => {
-  const { handleGetRooms, handleGetRoomDetail, handleGetMessagesOfRoom } =
-    useChat();
+  const {
+    handleGetRooms,
+    handleGetRoomDetail,
+    handleGetMessagesOfRoom,
+    handleAddMessage,
+  } = useChat();
   const { user } = useAuth();
   const [isSidebarContent, setIsSidebarContent] = React.useState(false);
   const [isSidebarLeft, setIsSidebarLeft] = React.useState(true);
 
   const [paginateRoom, setPaginateRoom] = React.useState(initialize); // rooms
   const [paginateMessage, setPaginateMessage] = React.useState(initialize); // messages
+  const [isLoading, setIsLoading] = React.useState({
+    message: false,
+    room: false,
+  });
   const [room, setRoom] = React.useState(null);
+
+  const boxChatRef = React.useRef();
 
   const handleGetRoomsCustom = async () => {
     if (!paginateRoom.hasNextPage) return;
@@ -48,26 +58,37 @@ const Chat = () => {
 
     setPaginateRoom({
       page: response.next,
-      hasNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage,
       data: [...paginateRoom.data, ...response.data],
       totalLength: response.totalLength,
     });
   };
 
-  const handleGetMessageCustom = async (roomID) => {
-    if (!paginateMessage.hasNextPage) return;
-    const response = await handleGetMessagesOfRoom(
-      paginateMessage.page,
-      roomID
-    );
-    console.log("handleGetMessageCustom", response);
-    setPaginateMessage({
-      page: response.next,
-      hasNextPage: response.hasNextPage ? true : false,
-      data: [...paginateMessage.data, ...response.data],
-      totalLength: response.totalLength,
-    });
-  };
+  const handleGetMessageCustom = React.useCallback(
+    async (roomID) => {
+      if (!paginateMessage.hasNextPage) return;
+      setIsLoading({ ...isLoading, message: true });
+
+      const response = await handleGetMessagesOfRoom(
+        paginateMessage.page,
+        roomID
+      );
+
+      console.log("get message", response);
+      setPaginateMessage({
+        page: response.next,
+        hasNextPage: response.hasNextPage,
+        data: [...paginateMessage.data, ...response.data],
+        totalLength: response.totalLength,
+      });
+
+      setTimeout(() => {
+        setIsLoading({ ...isLoading, message: false });
+      }, 1000);
+    },
+    [paginateMessage, room, isLoading.message]
+  );
+  // console.log("paginate message", paginateMessage);
 
   React.useEffect(() => {
     handleGetRoomsCustom();
@@ -75,12 +96,14 @@ const Chat = () => {
 
   React.useEffect(() => {
     if (!room) return;
-    console.log("call api messsage");
-    handleGetMessageCustom(room?._id);
-    return () => {
-      console.log("reset");
-      setPaginateMessage(initialize);
+    const getMessages = async () => {
+      await handleGetMessageCustom(room?._id);
+      boxChatRef.current.scrollTo({
+        behavior: "smooth",
+        top: boxChatRef.current.scrollHeight,
+      });
     };
+    getMessages();
   }, [room]);
 
   const handleToggleSidebarContent = React.useCallback(
@@ -93,11 +116,48 @@ const Chat = () => {
   const handleGetRoomByIdCustom = async (roomID) => {
     const response = await handleGetRoomDetail(roomID);
     if (response) {
+      setPaginateMessage(initialize); // reset
       setRoom(response);
     }
   };
 
-  console.log("pagiate 2", paginateMessage);
+  /// add message
+  const handleAddMessageCustom = async (form) => {
+    const response = await handleAddMessage(form, room?._id);
+    if (response?.success) {
+      setPaginateMessage({
+        ...paginateMessage,
+        data: [response.data, ...paginateMessage.data],
+        totalLength: paginateMessage.totalLength + 1,
+      });
+      boxChatRef.current.scrollTo({
+        behavior: "smooth",
+        top: boxChatRef.current.scrollHeight,
+      });
+    }
+  };
+
+  let disabled = false;
+  const onGetMoreMessages = async () => {
+    if (
+      !disabled &&
+      !isLoading.message &&
+      boxChatRef.current.scrollTop <= 0 &&
+      paginateMessage.hasNextPage
+    ) {
+      disabled = true;
+      setPaginateMessage({
+        ...paginateMessage,
+        page: paginateMessage.page + 1,
+      });
+      await handleGetMessageCustom(room?._id);
+
+      boxChatRef.current.scrollTo({
+        behavior: "smooth",
+        top: boxChatRef.current.scrollHeight / paginateMessage?.page,
+      });
+    }
+  };
 
   return (
     <Box>
@@ -218,7 +278,22 @@ const Chat = () => {
                 handleToggleSidebar={handleToggleSidebarContent}
               />
 
-              <BoxChat user={user} paginateMessage={paginateMessage} />
+              <BoxChat
+                onScroll={onGetMoreMessages}
+                user={user}
+                paginateMessage={paginateMessage}
+                ref={boxChatRef}
+              >
+                {isLoading?.message ? (
+                  <Box>
+                    <LoadingEllipsisElement />
+                  </Box>
+                ) : (
+                  ""
+                )}
+              </BoxChat>
+
+              <InputCreateMessage onSubmit={handleAddMessageCustom} />
             </Stack>
 
             <Stack

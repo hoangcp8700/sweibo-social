@@ -98,7 +98,7 @@ export default function PopupDetailPost(props) {
     const response = await handleGetComments(paginate.page, postID);
     setPaginate({
       page: response.next,
-      hasNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage,
       data: [...response.data, ...paginate.data],
       totalLength: response.totalLength,
       isLoading: false,

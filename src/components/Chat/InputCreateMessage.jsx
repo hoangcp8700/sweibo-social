@@ -9,12 +9,26 @@ import {
 import { icons } from "constants";
 import { EmojiPicker } from "components";
 
-const InputCreateMessage = () => {
+const initialize = {
+  text: "",
+};
+const InputCreateMessage = (props) => {
+  const { onSubmit } = props;
   const anchorRef = React.useRef();
   const [open, setOpen] = React.useState(false);
-  const [content, setContent] = React.useState("");
+  const [form, setForm] = React.useState(initialize);
 
   const handleTargetEmoji = React.useCallback((e) => setOpen(!open), [open]);
+  const handleChangeForm = React.useCallback(
+    (e) => setForm({ ...form, [e.target.name]: e.target.value }),
+    [form]
+  );
+
+  const handleSubmit = async () => {
+    if (!form.text) return;
+    await onSubmit(form);
+    setForm(initialize);
+  };
 
   return (
     <Box>
@@ -30,8 +44,9 @@ const InputCreateMessage = () => {
           {icons.PhotoIcon}
         </IconButton>
         <TextField
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+          value={form?.text}
+          name="text"
+          onChange={handleChangeForm}
           sx={{
             width: "100%",
             "& input": { py: 1, fontSize: 14 },
@@ -39,6 +54,7 @@ const InputCreateMessage = () => {
               borderRadius: (theme) => theme.sizes.radius,
             },
           }}
+          onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
           placeholder="..."
           InputProps={{
             endAdornment: (
@@ -60,6 +76,7 @@ const InputCreateMessage = () => {
           }}
         />
         <IconButton
+          onClick={handleSubmit}
           sx={{
             "& svg": {
               fontSize: 20,
@@ -70,12 +87,15 @@ const InputCreateMessage = () => {
           {icons.SendIcon}
         </IconButton>
       </Stack>
+
       {open ? (
         <EmojiPicker
           anchor={anchorRef}
           open={open}
           handleClose={handleTargetEmoji}
-          handleSubmit={(value) => setContent(`${content} ${value.emoji}`)}
+          handleSubmit={(value) =>
+            setForm({ ...form, text: `${form.text} ${value.emoji}` })
+          }
         />
       ) : (
         ""

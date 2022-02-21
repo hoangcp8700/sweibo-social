@@ -80,7 +80,7 @@ export default function PopupLikeOfPost(props) {
     const response = await handleGetLikes(paginate.page, postID);
     setPaginate({
       page: response.next,
-      hasNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage,
       data: [...response.data, ...paginate.data],
       totalLength: response.totalLength,
       isLoading: false,

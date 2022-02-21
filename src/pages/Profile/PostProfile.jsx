@@ -72,7 +72,7 @@ const PostProfile = () => {
     );
     setPaginate({
       page: response.next,
-      hasNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage,
       data: [...paginate.data, ...response.data],
       totalLength: response.totalLength,
     });

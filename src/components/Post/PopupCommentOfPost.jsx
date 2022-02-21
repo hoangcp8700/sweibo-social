@@ -52,7 +52,7 @@ export default function PopupCommentOfPost(props) {
     console.log("handleGetCommentsCustom", response);
     setPaginate({
       page: response.next,
-      hasNextPage: response.hasNextPage ? true : false,
+      hasNextPage: response.hasNextPage,
       data: [...response.data, ...paginate.data],
       totalLength: response.totalLength,
       isLoading: false,
