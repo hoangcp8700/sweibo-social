@@ -44,6 +44,7 @@ const BoxChat = React.forwardRef((props, ref) => {
                   key={item?._id}
                   active={item?.sender?._id === user?._id || false}
                   item={item}
+                  isNotification={item?.isNotification}
                 />
               );
             })

@@ -102,7 +102,7 @@ const Chat = () => {
 
   // get messages of room
   React.useEffect(() => {
-    if (!room) return;
+    if (!room?._id) return;
     const getMessages = async () => {
       await handleGetMessageCustom(room?._id);
       boxChatRef.current.scrollTo({
@@ -112,7 +112,7 @@ const Chat = () => {
       socket.current.emit("joinRoom", { user, roomID: room?._id });
     };
     getMessages();
-  }, [room]);
+  }, [room?._id]);
 
   // event socket
   React.useEffect(() => {
@@ -164,8 +164,6 @@ const Chat = () => {
     });
   }, [user]);
 
-  console.log("setPaginateRoom", paginateRoom);
-
   const handleToggleSidebarContent = React.useCallback(
     () => setIsSidebarContent(!isSidebarContent),
     [isSidebarContent]
@@ -188,6 +186,10 @@ const Chat = () => {
       socket.current.emit("updateRoom", {
         room: response.data,
       });
+      socket.current.emit("sendMessage", {
+        roomID: room?._id,
+        message: response.dataMessage,
+      });
 
       enqueueSnackbar(response.message, { variant: "success" });
     }
@@ -196,13 +198,13 @@ const Chat = () => {
   /// -----------------add message--------------
   const handleAddMessageCustom = async (form) => {
     const response = await handleAddMessage(form, room?._id);
-    if (response?.success) {
+    if (response) {
+      socket.current.emit("updateRoom", {
+        room: response.room,
+      });
       socket.current.emit("sendMessage", {
         roomID: room?._id,
         message: response.data,
-      });
-      socket.current.emit("updateRoom", {
-        room: response.room,
       });
     }
   };
@@ -377,7 +379,15 @@ const Chat = () => {
             >
               <InfomationChat
                 room={room}
-                handleEditRoom={handleEditRoomCustom}
+                handleEditRoom={(form, roomID) =>
+                  handleEditRoomCustom(
+                    {
+                      ...form,
+                      lastMessage: `${user.firstName} ${user.lastName} vừa đổi tên phòng là ${form.title}`,
+                    },
+                    roomID
+                  )
+                }
               />
             </Stack>
           </Box>

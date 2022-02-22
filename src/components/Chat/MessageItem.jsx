@@ -40,7 +40,7 @@ const InfoMessage = ({ item }) => {
 };
 
 const MessageItem = (props) => {
-  const { children, item, active, isGroup } = props;
+  const { children, item, active, isGroup, isNotification } = props;
   const dotRef = React.useRef();
   const [openDot, setOpenDot] = React.useState(false);
 
@@ -49,7 +49,7 @@ const MessageItem = (props) => {
     [dotRef, openDot]
   );
 
-  return (
+  return !isNotification ? (
     <Box
       className={active ? "slide-right" : "slide-left"}
       sx={{ position: "relative" }}
@@ -124,6 +124,16 @@ const MessageItem = (props) => {
           </Tooltip>
         </Stack>
       </Stack>
+    </Box>
+  ) : (
+    <Box>
+      <Typography
+        component="p"
+        align="center"
+        sx={{ color: "text.primary", fontWeight: 700, fontSize: 12 }}
+      >
+        {item?.text}
+      </Typography>
     </Box>
   );
 };

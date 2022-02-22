@@ -19,7 +19,6 @@ import { PATH_AUTH, PATH_PAGE } from "constants/paths";
 
 import MenuHeader from "components/Header/MenuMain";
 import MenuHeaderNotification from "components/Header/MenuNotification";
-import MenuHeaderMessage from "components/Header/MenuMessage";
 import { useAuth } from "hooks";
 
 const IconButtonStyle = styled(IconButton)(({ theme }) => ({
@@ -37,11 +36,9 @@ const Header = () => {
 
   const isSettingRef = useRef(null);
   const isNotificationRef = useRef(null);
-  const isMessageRef = useRef(null);
   const [openMenu, setOpenMenu] = useState({
     isSetting: false,
     isNotification: false,
-    isMessage: false,
   });
   const isMobileRes = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -100,12 +97,7 @@ const Header = () => {
             name="isNotification"
             handleClose={handleToggleAction}
           />
-          <MenuHeaderMessage
-            anchor={isMessageRef}
-            open={openMenu.isMessage}
-            name="isMessage"
-            handleClose={handleToggleAction}
-          />
+
           {/* content */}
           <Stack
             direction="row"
@@ -193,14 +185,7 @@ const Header = () => {
                   {user?.lastName}
                 </Typography>
               </Box>
-              <Badge badgeContent={4} color="primary">
-                <IconButtonStyle
-                  ref={isMessageRef}
-                  onClick={() => handleToggleAction("isMessage")}
-                >
-                  {icons.ChatIcon}
-                </IconButtonStyle>
-              </Badge>
+
               <Badge badgeContent={4} color="primary">
                 <IconButtonStyle
                   ref={isNotificationRef}
