@@ -1,5 +1,6 @@
 import React from "react";
 import { io } from "socket.io-client";
+import { useSnackbar } from "notistack";
 
 import {
   Box,
@@ -35,10 +36,13 @@ const initialize = {
 const Chat = () => {
   const {
     handleGetRooms,
+    handleUpdateRoom,
     handleGetRoomDetail,
     handleGetMessagesOfRoom,
     handleAddMessage,
   } = useChat();
+  const { enqueueSnackbar } = useSnackbar();
+
   const { user } = useAuth();
   const [isSidebarContent, setIsSidebarContent] = React.useState(false);
   const [isSidebarLeft, setIsSidebarLeft] = React.useState(true);
@@ -115,14 +119,15 @@ const Chat = () => {
     if (!socket || !user) return;
     socket.current.emit("addUser", user?._id);
     socket.current.on("getUsers", (data) => console.log("getUsers", data));
-    socket.current.on("getLastMessageRoom", ({ room }) => {
-      console.log("getLastMessageRoom", room);
+    socket.current.on("getUpdateRoom", ({ room }) => {
+      console.log("getUpdateRoom", room);
 
       setPaginateRoom((prev) => {
         const newRoom = prev.data.map((item) => {
           if (item?._id !== room?._id) return item;
           return {
             ...item,
+            title: room.title,
             lastMessage: room.lastMessage,
             updatedAt: room.updatedAt,
           };
@@ -130,6 +135,16 @@ const Chat = () => {
         return {
           ...prev,
           data: newRoom,
+        };
+      });
+
+      setRoom((prev) => {
+        if (!prev?._id || prev?._id !== room?._id) return prev;
+        return {
+          ...prev,
+          title: room.title,
+          lastMessage: room.lastMessage,
+          updatedAt: room.updatedAt,
         };
       });
     });
@@ -144,7 +159,6 @@ const Chat = () => {
       }));
 
       boxChatRef.current.scrollTo({
-        behavior: "smooth",
         top: boxChatRef.current.scrollHeight,
       });
     });
@@ -159,6 +173,7 @@ const Chat = () => {
 
   const handleToggleSidebarLeft = () => setIsSidebarLeft(!isSidebarLeft);
 
+  // -------------------room---------------
   const handleGetRoomByIdCustom = async (roomID) => {
     const response = await handleGetRoomDetail(roomID);
     if (response) {
@@ -167,7 +182,18 @@ const Chat = () => {
     }
   };
 
-  /// add message
+  const handleEditRoomCustom = async (form, roomID) => {
+    const response = await handleUpdateRoom(form, roomID);
+    if (response) {
+      socket.current.emit("updateRoom", {
+        room: response.data,
+      });
+
+      enqueueSnackbar(response.message, { variant: "success" });
+    }
+  };
+
+  /// -----------------add message--------------
   const handleAddMessageCustom = async (form) => {
     const response = await handleAddMessage(form, room?._id);
     if (response?.success) {
@@ -175,7 +201,7 @@ const Chat = () => {
         roomID: room?._id,
         message: response.data,
       });
-      socket.current.emit("updateLastMessageRoom", {
+      socket.current.emit("updateRoom", {
         room: response.room,
       });
     }
@@ -349,7 +375,10 @@ const Chat = () => {
                 transition: "all 0.6s ease 0s",
               }}
             >
-              <InfomationChat />
+              <InfomationChat
+                room={room}
+                handleEditRoom={handleEditRoomCustom}
+              />
             </Stack>
           </Box>
         ) : (

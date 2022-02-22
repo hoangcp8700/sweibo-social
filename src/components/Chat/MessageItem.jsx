@@ -1,11 +1,46 @@
 import React from "react";
-import { Box, Stack, Typography, IconButton } from "@mui/material";
+import {
+  Box,
+  Avatar,
+  Tooltip,
+  Stack,
+  Typography,
+  IconButton,
+} from "@mui/material";
 import { icons } from "constants";
 import MenuDotMessageItem from "./MenuDotMessageItem";
 import { fToNow } from "utils/formatTime";
+import "components/Animation/scale-up-br.css";
+import "components/Animation/slide.css";
+
+const InfoMessage = ({ item }) => {
+  return (
+    <Stack>
+      <Stack direction="row" alignItems="center" spacing={0.5}>
+        <Avatar
+          src={item?.sender?.avatar?.url}
+          sx={{ width: 32, height: 32 }}
+        />
+        <Stack>
+          <Typography variant="caption">
+            {item?.sender?.firstName} {item?.sender?.lastName}
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.white",
+            }}
+          >
+            {item?.updatedAt && fToNow(item?.updatedAt)}
+          </Typography>
+        </Stack>
+      </Stack>
+    </Stack>
+  );
+};
 
 const MessageItem = (props) => {
-  const { children, item, active } = props;
+  const { children, item, active, isGroup } = props;
   const dotRef = React.useRef();
   const [openDot, setOpenDot] = React.useState(false);
 
@@ -15,7 +50,10 @@ const MessageItem = (props) => {
   );
 
   return (
-    <Box sx={{ position: "relative" }}>
+    <Box
+      className={active ? "slide-right" : "slide-left"}
+      sx={{ position: "relative" }}
+    >
       <MenuDotMessageItem
         anchor={dotRef}
         open={openDot}
@@ -24,6 +62,7 @@ const MessageItem = (props) => {
           minWidth: 200,
         }}
       />
+
       <Stack
         sx={{
           maxWidth: "80%",
@@ -32,58 +71,57 @@ const MessageItem = (props) => {
           float: active ? "right" : "inherit",
         }}
       >
-        <Stack>
-          <Box
-            sx={{
-              borderRadius: 3,
-              bgcolor: active ? "info.main" : "background.neutral",
-              width: "fit-content",
-              p: 1,
-              px: 1.5,
-              position: "relative",
-              "&:hover": {
-                "& .dot-container": {
-                  display: "block",
-                },
-                "& .created": { display: "block" },
-              },
-            }}
+        <Stack
+          alignItems="center"
+          sx={{ flexDirection: active ? "row-reverse" : "row", gap: 1 }}
+        >
+          <Tooltip
+            arrow={true}
+            placement="top-start"
+            title={<InfoMessage item={item} />}
           >
-            <Typography
-              variant="body2"
-              sx={{ color: active ? "common.white" : "text.primary" }}
-            >
-              {item?.text}
-            </Typography>
-            <Typography
-              variant="caption"
-              className="created"
-              sx={{
-                color: "common.white",
-                display: "none",
-              }}
-            >
-              {item?.updatedAt && fToNow(item?.updatedAt)}
-            </Typography>
             <Box
               sx={{
-                position: "absolute",
-                right: !active && -30,
-                left: active && -30,
-                top: 0,
-                display: "none",
+                borderRadius: 3,
+                bgcolor: active ? "info.main" : "background.neutral",
+                width: "fit-content",
+                p: 1,
+                px: 1.5,
+                position: "relative",
+                "&:hover": {
+                  "& .dot-container": {
+                    display: "block",
+                  },
+                },
               }}
-              className="dot-container"
             >
-              <IconButton
-                sx={{ "& svg": { fontSize: 18 } }}
-                ref={dotRef}
-                onClick={() => handleToggleAction()}
+              <Typography
+                variant="body2"
+                sx={{ color: active ? "common.white" : "text.primary" }}
               >
-                {icons.MoreVertIcon}
-              </IconButton>
+                {item?.text}
+              </Typography>
+
+              <Box
+                sx={{
+                  position: "absolute",
+                  right: !active && -30,
+                  left: active && -30,
+                  top: 0,
+                  display: "none",
+                }}
+                className="dot-container"
+              >
+                <IconButton
+                  sx={{ "& svg": { fontSize: 18 } }}
+                  ref={dotRef}
+                  onClick={() => handleToggleAction()}
+                >
+                  {icons.MoreVertIcon}
+                </IconButton>
+              </Box>
             </Box>
-          </Box>
+          </Tooltip>
         </Stack>
       </Stack>
     </Box>

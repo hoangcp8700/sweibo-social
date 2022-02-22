@@ -1,7 +1,12 @@
 import React from "react";
 import { Avatar, AvatarGroup, Typography } from "@mui/material";
 
-const AvatarGroupComponent = ({ images }) => {
+const AvatarGroupComponent = ({
+  images,
+  sizeGroup = 25,
+  sizeContainer = 60,
+  styleContainer,
+}) => {
   return (
     <AvatarGroup
       max={4}
@@ -9,15 +14,16 @@ const AvatarGroupComponent = ({ images }) => {
         images?.length > 1
           ? {
               "& .MuiAvatar-root": {
-                width: 25,
-                height: 25,
+                width: sizeGroup,
+                height: sizeGroup,
                 fontSize: 12,
                 letterSpacing: -1.5,
               },
             }
           : "",
         {
-          width: 60,
+          width: sizeContainer,
+          height: sizeContainer,
           flexWrap: "wrap",
           justifyContent: "center",
           letterSpacing: -2.5,
@@ -27,6 +33,7 @@ const AvatarGroupComponent = ({ images }) => {
             },
           },
         },
+        styleContainer,
       ]}
     >
       {images?.length

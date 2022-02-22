@@ -2,6 +2,7 @@ import React from "react";
 import {
   Paper,
   Box,
+  Avatar,
   Stack,
   AccordionDetails,
   Accordion,
@@ -9,9 +10,15 @@ import {
   IconButton,
   Typography,
   styled,
+  TextareaAutosize,
 } from "@mui/material";
-import { ActivityStatus } from "components";
+import {
+  ActivityStatus,
+  AvatarGroupChat,
+  LoadingEllipsisElement,
+} from "components";
 import { icons } from "constants";
+import { MButton } from "components/MUI";
 
 const listMenu = [
   {
@@ -46,30 +53,131 @@ const AccordionSummaryStyle = styled((props) => (
   },
 }));
 
-const InfomationChat = () => {
+const InfomationChat = (props) => {
+  const { room, handleEditRoom } = props;
+
   const [expanded, setExpanded] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isEditTitle, setIsEditTitle] = React.useState(false);
+  const [form, setForm] = React.useState({ title: "" });
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
+  const handleChangeForm = React.useCallback(
+    (e) => setForm({ ...form, [e.target.name]: e.target.value }),
+    [form]
+  );
+
+  const handleToggleIsEditTitle = () => {
+    !isEditTitle
+      ? setForm({ ...form, title: room?.title })
+      : setForm({ title: "" });
+
+    setIsEditTitle(!isEditTitle);
+  };
+
+  const handleEditRoomCustom = async () => {
+    setIsLoading(true);
+    await handleEditRoom(form, room?._id);
+    setIsLoading(false);
+    handleToggleIsEditTitle();
+  };
+
   return (
-    <Paper sx={{ bgcolor: "background.navbar", height: "100%" }}>
+    <Paper
+      sx={{
+        bgcolor: "background.navbar",
+        height: "100%",
+        position: "relative",
+      }}
+    >
+      {isLoading ? (
+        <Box
+          sx={{
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            top: 0,
+            background: "rgba(0,0,0,0.5)",
+            zIndex: 2,
+          }}
+        >
+          <LoadingEllipsisElement />
+        </Box>
+      ) : (
+        ""
+      )}
       <Box sx={{ my: 2 }}>
-        <Stack alignItems="center">
-          <Box>
-            <ActivityStatus
-              label={"Hoàng Công Phan"}
-              avatarStyle={{ width: 80, height: 80 }}
-            />
-          </Box>
-          <Box sx={{ position: "relative" }}>
-            <Typography variant="h6">Hoàng Công Phan</Typography>
-            <Box sx={{ position: "absolute", right: -35, top: -2 }}>
-              <IconButton sx={{ "& svg": { fontSize: 14 } }}>
-                {icons.EditIcon}
-              </IconButton>
-            </Box>
+        <Stack alignItems="center" sx={{ gap: 1 }}>
+          <AvatarGroupChat
+            images={room?.participants}
+            sizeGroup={46}
+            sizeContainer={100}
+            styleContainer={
+              room?.participants.length <= 1
+                ? {
+                    "& .MuiAvatar-root": { width: "100%", height: "100%" },
+                  }
+                : ""
+            }
+          />
+          <Box
+            sx={{
+              px: 2,
+              width: "100%",
+            }}
+          >
+            {!isEditTitle ? (
+              <Typography variant="h6" align="center">
+                {room?.title}
+                <IconButton
+                  sx={{ ml: 1, "& svg": { fontSize: 14 } }}
+                  onClick={handleToggleIsEditTitle}
+                >
+                  {icons.EditIcon}
+                </IconButton>
+              </Typography>
+            ) : (
+              <Box
+                sx={{
+                  "& textarea": {
+                    color: "text.primary",
+                    bgcolor: "background.opacity",
+                    p: 2,
+                    borderRadius: (theme) => theme.sizes.minBase,
+                  },
+                }}
+              >
+                <TextareaAutosize
+                  style={{
+                    width: "100%",
+                    fontSize: 14,
+                    outline: "none",
+                    border: "none",
+                    resize: "none",
+                    fontFamily: "Public Sans,sans-serif",
+                  }}
+                  value={form?.title}
+                  name="title"
+                  onChange={handleChangeForm}
+                />
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  justifyContent="flex-end"
+                  sx={{ "& button": { fontSize: 12, py: 0.3 } }}
+                >
+                  <MButton variant="cancel" onClick={handleToggleIsEditTitle}>
+                    Hủy bỏ
+                  </MButton>
+                  <MButton variant="contained" onClick={handleEditRoomCustom}>
+                    Sửa
+                  </MButton>
+                </Stack>
+              </Box>
+            )}
           </Box>
         </Stack>
 
