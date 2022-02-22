@@ -93,6 +93,10 @@ import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import WifiIcon from "@mui/icons-material/Wifi";
 
+import DonutSmallIcon from "@mui/icons-material/DonutSmall";
+import FaceIcon from "@mui/icons-material/Face";
+import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
+
 const ConvertIcon = ({ src }) => {
   return (
     <Icon>
@@ -189,4 +193,8 @@ export default {
   EmojiPeopleIcon: <EmojiPeopleIcon />,
   LocationCityIcon: <LocationCityIcon />,
   WifiIcon: <WifiIcon />,
+
+  DonutSmallIcon: <DonutSmallIcon />,
+  FaceIcon: <FaceIcon />,
+  DeleteSweepIcon: <DeleteSweepIcon />,
 };

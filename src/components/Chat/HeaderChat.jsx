@@ -5,7 +5,7 @@ import { lineClampStyle } from "utils/lineClampStyle";
 import { icons } from "constants";
 
 const HeaderChat = (props) => {
-  const { handleToggleSidebar, room } = props;
+  const { handleToggleSidebar, room, handleGetParticipants } = props;
   return (
     <Box>
       <Stack
@@ -21,7 +21,15 @@ const HeaderChat = (props) => {
               {room?.title}
             </Typography>
             {room?.participants?.length > 1 ? (
-              <Typography variant="caption" sx={{ color: "text.secondary" }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "text.secondary",
+                  cursor: "pointer",
+                  "&:hover": { textDecoration: "underline" },
+                }}
+                onClick={handleGetParticipants}
+              >
                 {room?.participants?.length} người tham gia
               </Typography>
             ) : (

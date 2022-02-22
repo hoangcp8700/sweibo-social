@@ -25,8 +25,8 @@ const listMenu = [
     label: "Tùy chỉnh đoạn chat",
     value: "setting",
     actions: [
-      { label: "Đổi chủ đề", value: 0 },
-      { label: "Biểu tượng cảm xúc", value: 0 },
+      { label: "Đổi chủ đề", icon: icons.DonutSmallIcon, value: "theme" },
+      { label: "Biểu tượng cảm xúc", icon: icons.FaceIcon, value: "enter" },
     ],
   },
   { label: "Ảnh / Video", value: "photos" },
@@ -34,9 +34,11 @@ const listMenu = [
     label: "Cài đặt khác",
     value: "setting-other",
     actions: [
-      { label: "Tắt thông báo", value: 0 },
-      { label: "Chặn", value: 1 },
-      { label: "Xóa cuộc hội thoại", value: 2 },
+      {
+        label: "Xóa cuộc hội thoại",
+        icon: icons.DeleteSweepIcon,
+        value: "delete-room",
+      },
     ],
   },
 ];
@@ -44,17 +46,18 @@ const listMenu = [
 const AccordionSummaryStyle = styled((props) => (
   <AccordionSummary expandIcon={icons.ExpandLessIcon} {...props} />
 ))(({ theme }) => ({
+  minHeight: `40px!important`,
   flexDirection: "row-reverse",
   "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
     transform: "rotate(90deg)",
   },
   "& .MuiAccordionSummary-content": {
-    marginLeft: theme.spacing(1),
+    margin: theme.spacing(0, 0, 0, 1),
   },
 }));
 
 const InfomationChat = (props) => {
-  const { room, handleEditRoom } = props;
+  const { room, handleEditRoom, handleActions } = props;
 
   const [expanded, setExpanded] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -201,9 +204,25 @@ const InfomationChat = (props) => {
               <AccordionDetails>
                 {item?.actions?.length
                   ? item?.actions?.map((itemChild) => (
-                      <Typography key={itemChild.label}>
-                        {itemChild.label}
-                      </Typography>
+                      <Box
+                        sx={{ cursor: "pointer", width: "fit-content" }}
+                        key={itemChild.label}
+                        onClick={() => handleActions(itemChild.value)}
+                      >
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <IconButton
+                            sx={{
+                              "& svg": {
+                                fontSize: 14,
+                                fill: (theme) => theme.palette.text.primary,
+                              },
+                            }}
+                          >
+                            {itemChild.icon}
+                          </IconButton>
+                          <Typography>{itemChild.label}</Typography>
+                        </Stack>
+                      </Box>
                     ))
                   : ""}
               </AccordionDetails>

@@ -22,6 +22,7 @@ import {
   HeaderChat,
   InputCreateMessage,
   LoadingEllipsisElement,
+  PopupShowParticipants,
 } from "components";
 import { icons } from "constants";
 import { useChat, useAuth } from "hooks";
@@ -46,6 +47,7 @@ const Chat = () => {
   const { user } = useAuth();
   const [isSidebarContent, setIsSidebarContent] = React.useState(false);
   const [isSidebarLeft, setIsSidebarLeft] = React.useState(true);
+  const [isShowPariticipants, setIsShowPariticipants] = React.useState(false);
 
   const [paginateRoom, setPaginateRoom] = React.useState(initialize); // rooms
   const [paginateMessage, setPaginateMessage] = React.useState(initialize); // messages
@@ -172,6 +174,11 @@ const Chat = () => {
   const handleToggleSidebarLeft = () => setIsSidebarLeft(!isSidebarLeft);
 
   // -------------------room---------------
+  const handleToggleShowPariticipants = React.useCallback(
+    () => setIsShowPariticipants(!isShowPariticipants),
+    [isShowPariticipants]
+  );
+
   const handleGetRoomByIdCustom = async (roomID) => {
     const response = await handleGetRoomDetail(roomID);
     if (response) {
@@ -194,6 +201,9 @@ const Chat = () => {
       enqueueSnackbar(response.message, { variant: "success" });
     }
   };
+
+  // ----- info rooom
+  const handleActions = (name) => {};
 
   /// -----------------add message--------------
   const handleAddMessageCustom = async (form) => {
@@ -232,10 +242,17 @@ const Chat = () => {
 
   return (
     <Box>
+      <PopupShowParticipants
+        roomID={room?._id}
+        open={isShowPariticipants}
+        onClose={handleToggleShowPariticipants}
+      />
+
       <ToggleSidebar
         isShowSidebar={isSidebarLeft}
         handleToggleSidebar={handleToggleSidebarLeft}
       />
+
       <Stack
         direction="row"
         sx={{
@@ -347,6 +364,7 @@ const Chat = () => {
               <HeaderChat
                 room={room}
                 handleToggleSidebar={handleToggleSidebarContent}
+                handleGetParticipants={handleToggleShowPariticipants}
               />
 
               <BoxChat
@@ -379,6 +397,7 @@ const Chat = () => {
             >
               <InfomationChat
                 room={room}
+                handleActions={handleActions}
                 handleEditRoom={(form, roomID) =>
                   handleEditRoomCustom(
                     {

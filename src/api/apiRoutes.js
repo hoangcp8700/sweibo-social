@@ -54,6 +54,12 @@ const rooms = (roomID) => {
   };
 };
 
+const pariticipants = (roomID, messageID) => {
+  return {
+    get: `/rooms/${roomID}/pariticipants`,
+  };
+};
+
 const messages = (roomID, messageID) => {
   return {
     get: `/rooms/${roomID}/messages`,
@@ -82,4 +88,5 @@ export default {
   friends,
   rooms,
   messages,
+  pariticipants,
 };

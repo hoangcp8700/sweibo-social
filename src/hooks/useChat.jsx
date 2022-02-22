@@ -78,6 +78,21 @@ const useChat = () => {
     }
   };
 
+  // ------------------ participants -------------
+  const handleGetParticipants = async (page, roomID) => {
+    try {
+      const link = `?page=${page}`;
+      const response = await axios.get(
+        `${routes.pariticipants(roomID).get}${link}`
+      );
+      console.log("handleGetParticipants", response);
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
+
   return {
     handleGetRooms,
     handleGetRoomDetail,
@@ -88,6 +103,9 @@ const useChat = () => {
     // messages
     handleGetMessagesOfRoom,
     handleAddMessage,
+
+    // participants
+    handleGetParticipants,
   };
 };
 
