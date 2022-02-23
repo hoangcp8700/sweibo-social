@@ -207,7 +207,9 @@ const InfomationChat = (props) => {
                       <Box
                         sx={{ cursor: "pointer", width: "fit-content" }}
                         key={itemChild.label}
-                        onClick={() => handleActions(itemChild.value)}
+                        onClick={() =>
+                          handleActions(itemChild.value, room?._id)
+                        }
                       >
                         <Stack direction="row" spacing={1} alignItems="center">
                           <IconButton

@@ -56,7 +56,7 @@ const rooms = (roomID) => {
 
 const pariticipants = (roomID, messageID) => {
   return {
-    get: `/rooms/${roomID}/pariticipants`,
+    get: `/rooms/${roomID}/participants`,
   };
 };
 

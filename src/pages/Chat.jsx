@@ -23,6 +23,7 @@ import {
   InputCreateMessage,
   LoadingEllipsisElement,
   PopupShowParticipants,
+  PopupAgainDelete,
 } from "components";
 import { icons } from "constants";
 import { useChat, useAuth } from "hooks";
@@ -41,6 +42,7 @@ const Chat = () => {
     handleGetRoomDetail,
     handleGetMessagesOfRoom,
     handleAddMessage,
+    handleDeleteRoom,
   } = useChat();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -48,6 +50,10 @@ const Chat = () => {
   const [isSidebarContent, setIsSidebarContent] = React.useState(false);
   const [isSidebarLeft, setIsSidebarLeft] = React.useState(true);
   const [isShowPariticipants, setIsShowPariticipants] = React.useState(false);
+  const [actions, setActions] = React.useState({
+    name: null,
+    roomID: null,
+  });
 
   const [paginateRoom, setPaginateRoom] = React.useState(initialize); // rooms
   const [paginateMessage, setPaginateMessage] = React.useState(initialize); // messages
@@ -180,6 +186,7 @@ const Chat = () => {
   );
 
   const handleGetRoomByIdCustom = async (roomID) => {
+    if (room?._id === roomID) return;
     const response = await handleGetRoomDetail(roomID);
     if (response) {
       setPaginateMessage(initialize); // reset
@@ -203,8 +210,18 @@ const Chat = () => {
   };
 
   // ----- info rooom
-  const handleActions = (name) => {};
+  const handleActions = (name, roomID) => {
+    setActions({ name, roomID });
+  };
 
+  const handleDeleteRoomCustom = async (roomID) => {
+    const response = await handleDeleteRoom(roomID);
+    handleActions(null, null);
+    const newRooms = paginateRoom.data.filter((item) => item?._id !== roomID);
+    setPaginateRoom({ ...paginateRoom, data: newRooms });
+    console.log("handleDeleteRoomCustom", response);
+  };
+  console.log(actions);
   /// -----------------add message--------------
   const handleAddMessageCustom = async (form) => {
     const response = await handleAddMessage(form, room?._id);
@@ -251,6 +268,13 @@ const Chat = () => {
       <ToggleSidebar
         isShowSidebar={isSidebarLeft}
         handleToggleSidebar={handleToggleSidebarLeft}
+      />
+
+      <PopupAgainDelete
+        open={actions.name === "delete-room"}
+        onClose={() => handleActions(null, null)}
+        title="Bạn đã chắc muốn xóa cuộc trò chuyện này?"
+        handleAccept={() => handleDeleteRoomCustom(actions.roomID)}
       />
 
       <Stack

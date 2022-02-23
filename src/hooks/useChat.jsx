@@ -79,9 +79,9 @@ const useChat = () => {
   };
 
   // ------------------ participants -------------
-  const handleGetParticipants = async (page, roomID) => {
+  const handleGetParticipants = async (page, roomID, params) => {
     try {
-      const link = `?page=${page}`;
+      const link = `?page=${page}&${params ? `&search=${params}` : ""}`;
       const response = await axios.get(
         `${routes.pariticipants(roomID).get}${link}`
       );

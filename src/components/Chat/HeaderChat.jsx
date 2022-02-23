@@ -30,7 +30,7 @@ const HeaderChat = (props) => {
                 }}
                 onClick={handleGetParticipants}
               >
-                {room?.participants?.length} người tham gia
+                Xem tất cả người tham gia
               </Typography>
             ) : (
               ""
