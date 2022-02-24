@@ -23,7 +23,7 @@ const initialize = {
   page: 1,
   hasNextPage: true,
   data: [],
-  length: 0,
+  totalLength: 0,
 };
 
 const UserItem = ({ item }) => {
@@ -45,8 +45,19 @@ const UserItem = ({ item }) => {
           to={`${PATH_PAGE.profile.link}/posts?email=${item?.userID?.email}`}
           sx={{ color: "text.primary" }}
         >
-          {item?.userID?.firstName} {item?.userID?.lastName}{" "}
+          {item.nickName ||
+            `${item?.userID?.firstName} ${item?.userID?.lastName}`}
         </Typography>
+        {item?.nickName ? (
+          <Typography
+            variant="caption"
+            sx={{ fontSize: 10, color: "text.secondary" }}
+          >
+            ({item?.userID?.firstName} {item?.userID?.lastName})
+          </Typography>
+        ) : (
+          ""
+        )}
         <Typography variant="caption">
           {item?.createdAt && `Tham gia ngày ${fDateTime(item?.createdAt)}`}
         </Typography>
@@ -58,33 +69,46 @@ const UserItem = ({ item }) => {
 export default function PopupShowParticipants(props) {
   const { onClose, open, roomID } = props;
   const { handleGetParticipants } = useChat();
-  const [paginate, setPaginate] = React.useState(initialize); // friends
+  const [paginate, setPaginate] = React.useState(initialize); // participants
+  const [paginateSearch, setPaginateSearch] = React.useState(initialize); // search
   const [search, setSearch] = React.useState("");
 
-  const handleGetParticipantsCustom = React.useCallback(
-    async (params = "") => {
-      if (!paginate.hasNextPage) return;
+  const handleGetParticipantsCustom = React.useCallback(async () => {
+    if (!paginate.hasNextPage) return;
+    const response = await handleGetParticipants(paginate.page, roomID);
+
+    setPaginate({
+      page: response.next,
+      hasNextPage: response.hasNextPage,
+      data: [...paginate.data, ...response.data],
+      totalLength: response.totalLength,
+    });
+  }, [open, roomID, paginate, search]);
+
+  const handleSearchParticipantsCustom = React.useCallback(
+    async (params) => {
+      if (!paginateSearch.hasNextPage) return;
       const response = await handleGetParticipants(
-        paginate.page,
+        paginateSearch.page,
         roomID,
         params
       );
 
-      setPaginate({
+      setPaginateSearch({
         page: response.next,
         hasNextPage: response.hasNextPage,
-        data: [...paginate.data, ...response.data],
+        data: [...paginateSearch.data, ...response.data],
         totalLength: response.totalLength,
       });
     },
-    [open, roomID, paginate]
+    [open, roomID, paginateSearch]
   );
-
   React.useEffect(() => {
     if (!open || !roomID) return;
     handleGetParticipantsCustom();
     return () => {
       setPaginate(initialize);
+      setPaginateSearch(initialize);
       setSearch("");
     };
   }, [open, roomID]);
@@ -94,8 +118,10 @@ export default function PopupShowParticipants(props) {
   }
 
   const handleSubmitSearch = () => {
-    handleGetParticipantsCustom(search);
+    if (!search) return;
+    handleSearchParticipantsCustom(`&search=${search}`);
   };
+
   return (
     <Dialog onClose={onClose} open={open} fullWidth maxWidth={"mobile"}>
       <DialogTitle>
@@ -106,7 +132,7 @@ export default function PopupShowParticipants(props) {
           justifyContent="space-between"
         >
           <Typography>
-            Danh sách thành viên
+            Danh sách thành viên{" "}
             {paginate?.totalLength ? `(${paginate?.totalLength})` : ""}
           </Typography>
           <IconButton sx={{ "& svg": { fontSize: 20 } }}>
@@ -116,7 +142,11 @@ export default function PopupShowParticipants(props) {
         <TextField
           fullWidth
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            if (e.target.value === "" && paginateSearch.totalLength > 0)
+              setPaginateSearch(initialize);
+          }}
           sx={{
             "& input": { py: 1, fontSize: 14 },
             "& .MuiOutlinedInput-root": {
@@ -139,7 +169,6 @@ export default function PopupShowParticipants(props) {
           }}
         />
       </DialogTitle>
-      <Divider />
       <DialogContent>
         <Box
           sx={{
@@ -150,7 +179,17 @@ export default function PopupShowParticipants(props) {
             },
           }}
         >
-          {paginate?.totalLength > 0 ? (
+          {paginateSearch?.totalLength > 0 && search ? (
+            <InfiniteScroll
+              hasNextPage={paginateSearch?.hasNextPage}
+              data={paginateSearch?.data}
+              fetch={() => handleSearchParticipantsCustom(`&search=${search}`)}
+            >
+              {paginateSearch?.data?.map((item) => (
+                <UserItem key={item._id} item={item} />
+              ))}
+            </InfiniteScroll>
+          ) : (
             <InfiniteScroll
               hasNextPage={paginate?.hasNextPage}
               data={paginate?.data}
@@ -160,8 +199,6 @@ export default function PopupShowParticipants(props) {
                 <UserItem key={item._id} item={item} />
               ))}
             </InfiniteScroll>
-          ) : (
-            ""
           )}
         </Box>
       </DialogContent>

@@ -81,11 +81,25 @@ const useChat = () => {
   // ------------------ participants -------------
   const handleGetParticipants = async (page, roomID, params) => {
     try {
-      const link = `?page=${page}&${params ? `&search=${params}` : ""}`;
+      const link = `?page=${page}${params || ""}`;
       const response = await axios.get(
         `${routes.pariticipants(roomID).get}${link}`
       );
       console.log("handleGetParticipants", response);
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
+
+  const handleGetUsersToParticipant = async (page, roomID, params) => {
+    try {
+      const link = `?page=${page}${params || ""}`;
+      const response = await axios.get(
+        `${routes.pariticipants(roomID).getUsers}${link}`
+      );
+      console.log("handleGetUsersToParticipant", response);
       return response.data;
     } catch (error) {
       console.log("err", error);
@@ -106,6 +120,7 @@ const useChat = () => {
 
     // participants
     handleGetParticipants,
+    handleGetUsersToParticipant,
   };
 };
 

@@ -23,6 +23,7 @@ import {
   InputCreateMessage,
   LoadingEllipsisElement,
   PopupShowParticipants,
+  PopupAddMember,
   PopupAgainDelete,
 } from "components";
 import { icons } from "constants";
@@ -49,6 +50,7 @@ const Chat = () => {
   const { user } = useAuth();
   const [isSidebarContent, setIsSidebarContent] = React.useState(false);
   const [isSidebarLeft, setIsSidebarLeft] = React.useState(true);
+  const [isAddMember, setIsAddMember] = React.useState(false);
   const [isShowPariticipants, setIsShowPariticipants] = React.useState(false);
   const [actions, setActions] = React.useState({
     name: null,
@@ -178,6 +180,7 @@ const Chat = () => {
   );
 
   const handleToggleSidebarLeft = () => setIsSidebarLeft(!isSidebarLeft);
+  const handleToggleAddMember = () => setIsAddMember(!isAddMember);
 
   // -------------------room---------------
   const handleToggleShowPariticipants = React.useCallback(
@@ -187,6 +190,7 @@ const Chat = () => {
 
   const handleGetRoomByIdCustom = async (roomID) => {
     if (room?._id === roomID) return;
+
     const response = await handleGetRoomDetail(roomID);
     if (response) {
       setPaginateMessage(initialize); // reset
@@ -263,6 +267,12 @@ const Chat = () => {
         roomID={room?._id}
         open={isShowPariticipants}
         onClose={handleToggleShowPariticipants}
+      />
+
+      <PopupAddMember
+        roomID={room?._id}
+        open={isAddMember}
+        onClose={handleToggleAddMember}
       />
 
       <ToggleSidebar
@@ -389,6 +399,7 @@ const Chat = () => {
                 room={room}
                 handleToggleSidebar={handleToggleSidebarContent}
                 handleGetParticipants={handleToggleShowPariticipants}
+                handleToggleAddMember={handleToggleAddMember}
               />
 
               <BoxChat

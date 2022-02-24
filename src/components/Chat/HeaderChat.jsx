@@ -5,7 +5,12 @@ import { lineClampStyle } from "utils/lineClampStyle";
 import { icons } from "constants";
 
 const HeaderChat = (props) => {
-  const { handleToggleSidebar, room, handleGetParticipants } = props;
+  const {
+    handleToggleSidebar,
+    room,
+    handleGetParticipants,
+    handleToggleAddMember,
+  } = props;
   return (
     <Box>
       <Stack
@@ -38,14 +43,20 @@ const HeaderChat = (props) => {
           </Stack>
         </Stack>
 
-        <Box>
+        <Stack direction="row">
+          <IconButton
+            onClick={handleToggleAddMember}
+            sx={{ "& svg": { fill: (theme) => theme.palette.primary.main } }}
+          >
+            {icons.GroupAddIcon}
+          </IconButton>
           <IconButton
             onClick={handleToggleSidebar}
             sx={{ "& svg": { fill: (theme) => theme.palette.primary.main } }}
           >
             {icons.InfoIcon}
           </IconButton>
-        </Box>
+        </Stack>
       </Stack>
 
       <Box>

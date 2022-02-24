@@ -50,6 +50,7 @@ export { default as MessageItem } from "./Chat/MessageItem";
 export { default as InputCreateMessage } from "./Chat/InputCreateMessage";
 export { default as HeaderChat } from "./Chat/HeaderChat";
 export { default as PopupShowParticipants } from "./Chat/PopupShowParticipants";
+export { default as PopupAddMember } from "./Chat/PopupAddMember";
 
 export { default as SaveItem } from "./Save/SaveItem";
 export { default as MenuActionSave } from "./Save/MenuActionSave";
