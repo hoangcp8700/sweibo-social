@@ -99,7 +99,32 @@ const useChat = () => {
       const response = await axios.get(
         `${routes.pariticipants(roomID).getUsers}${link}`
       );
-      console.log("handleGetUsersToParticipant", response);
+      // console.log("handleGetUsersToParticipant", response);
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
+
+  const handleAddMembers = async (form, roomID) => {
+    try {
+      const response = await axios.post(routes.pariticipants(roomID).get, form);
+      console.log("handleAddMembers", response);
+      return response.data.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
+
+  const handleEditMember = async (form, roomID, participantID) => {
+    try {
+      const response = await axios.put(
+        routes.pariticipants(roomID, participantID).getID,
+        form
+      );
+      console.log("handleEditMember", response);
       return response.data;
     } catch (error) {
       console.log("err", error);
@@ -121,6 +146,8 @@ const useChat = () => {
     // participants
     handleGetParticipants,
     handleGetUsersToParticipant,
+    handleAddMembers,
+    handleEditMember,
   };
 };
 

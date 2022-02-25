@@ -151,7 +151,7 @@ const Header = () => {
                 onClick={() => handleRedirectProfile()}
                 sx={[
                   (theme) => ({
-                    [theme.breakpoints.down("md")]: {
+                    [theme.breakpoints.down("mobile")]: {
                       display: "none",
                     },
                   }),

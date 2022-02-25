@@ -41,9 +41,11 @@ const Chat = () => {
     handleGetRooms,
     handleUpdateRoom,
     handleGetRoomDetail,
+    handleDeleteRoom,
+
     handleGetMessagesOfRoom,
     handleAddMessage,
-    handleDeleteRoom,
+    handleAddMembers,
   } = useChat();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -137,7 +139,7 @@ const Chat = () => {
           if (item?._id !== room?._id) return item;
           return {
             ...item,
-            title: room.title,
+            title: room.title || item?.title,
             lastMessage: room.lastMessage,
             updatedAt: room.updatedAt,
           };
@@ -152,7 +154,7 @@ const Chat = () => {
         if (!prev?._id || prev?._id !== room?._id) return prev;
         return {
           ...prev,
-          title: room.title,
+          title: room.title || prev?.title,
           lastMessage: room.lastMessage,
           updatedAt: room.updatedAt,
         };
@@ -225,7 +227,22 @@ const Chat = () => {
     setPaginateRoom({ ...paginateRoom, data: newRooms });
     console.log("handleDeleteRoomCustom", response);
   };
-  console.log(actions);
+
+  // pariticipants
+  const handleSubmitAddMembersCustom = async (form, roomID) => {
+    const response = await handleAddMembers(form, roomID);
+    if (response) {
+      socket.current.emit("updateRoom", {
+        room: response.room,
+      });
+      socket.current.emit("sendMessage", {
+        roomID: room?._id,
+        message: response.dataMessage,
+      });
+    }
+    console.log("handleSubmitAddMembersCustom", response);
+  };
+
   /// -----------------add message--------------
   const handleAddMessageCustom = async (form) => {
     const response = await handleAddMessage(form, room?._id);
@@ -267,12 +284,15 @@ const Chat = () => {
         roomID={room?._id}
         open={isShowPariticipants}
         onClose={handleToggleShowPariticipants}
+        user={user}
       />
 
       <PopupAddMember
         roomID={room?._id}
         open={isAddMember}
+        user={user}
         onClose={handleToggleAddMember}
+        handleSubmitAddMembers={handleSubmitAddMembersCustom}
       />
 
       <ToggleSidebar

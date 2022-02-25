@@ -25,7 +25,7 @@ const HeaderChat = (props) => {
             <Typography variant="subtitle2" sx={lineClampStyle(1)}>
               {room?.title}
             </Typography>
-            {room?.participants?.length > 1 ? (
+            {room?.participants?.length ? (
               <Typography
                 variant="caption"
                 sx={{

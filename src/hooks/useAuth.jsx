@@ -30,12 +30,10 @@ const useAuth = () => {
 
         // console.log("authen", response);
         dispatch(SUCCESS_AUTH(response.data.data));
-        return true;
+        return response.data.data;
       }
       return false;
     } catch (error) {
-      console.log("err auith");
-
       setSession(null);
       dispatch(LOADING_AUTH(false));
       return false;
@@ -59,7 +57,8 @@ const useAuth = () => {
       const response = await axios.post(routes.authentication().login, form);
       dispatch(SUCCESS_AUTH(response.data.data));
       setSession(response.data.accessToken);
-      return { success: response.data };
+      const auth = await handleAuthenticated();
+      return { success: auth };
     } catch (error) {
       return { error: error.response.data };
     }

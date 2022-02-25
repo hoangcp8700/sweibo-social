@@ -54,9 +54,10 @@ const rooms = (roomID) => {
   };
 };
 
-const pariticipants = (roomID, messageID) => {
+const pariticipants = (roomID, participantID) => {
   return {
     get: `/rooms/${roomID}/participants`,
+    getID: `/rooms/${roomID}/participants/${participantID}`,
     getUsers: `/rooms/${roomID}/participants/all-users`,
   };
 };
