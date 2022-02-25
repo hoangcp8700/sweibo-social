@@ -27,11 +27,11 @@ const initialize = {
 };
 
 const MButtonStyle = styled(MButton)(({ theme }) => ({
-  padding: theme.spacing(0.5, 0),
+  padding: theme.spacing(0.3, 1),
   fontSize: 12,
 }));
 
-const UserItem = ({ item, user, active, onClick, onSubmit }) => {
+const UserItem = ({ item, active, onClick, onSubmit }) => {
   const [form, setForm] = React.useState({ nickName: "" });
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
@@ -39,7 +39,9 @@ const UserItem = ({ item, user, active, onClick, onSubmit }) => {
     if (!active || !item) return;
     setForm({
       ...form,
-      nickName: `${item?.userID?.firstName} ${item?.userID?.lastName}`,
+      nickName:
+        item?.nickName ||
+        `${item?.userID?.firstName} ${item?.userID?.lastName}`,
     });
   }, [active]);
 
@@ -47,10 +49,11 @@ const UserItem = ({ item, user, active, onClick, onSubmit }) => {
     setIsSubmitting(true);
     await onSubmit(form);
     setIsSubmitting(false);
-  }, [active, user, form]);
+  }, [form]);
 
   const handleChangeForm = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
+
   return (
     <Stack
       direction="row"
@@ -124,54 +127,45 @@ const UserItem = ({ item, user, active, onClick, onSubmit }) => {
           </Stack>
         </>
       ) : (
-        <Stack direction="row" alignItems="center" spacing={1}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={1}
+          sx={{ width: "100%" }}
+        >
           <Avatar
             src={item?.userID?.avatar?.url}
             sx={{ width: 40, height: 40 }}
           />
 
-          <Stack spacing={0.5}>
+          <Stack spacing={0.5} sx={{ flexGrow: 1 }}>
             <Stack direction="row" alignItems="center" spacing={1}>
               <TextField
                 name="nickName"
                 value={form?.nickName}
                 onChange={handleChangeForm}
                 placeholder="Nickname"
+                fullWidth
                 sx={{
-                  "& input": { py: 1, fontSize: 14 },
+                  "& input": { py: 0.5, fontSize: 12 },
                   "& .MuiOutlinedInput-root": {
                     borderRadius: 1,
                   },
                 }}
               />
-              {user?._id === item?.userID?._id ? (
-                <Typography
-                  variant="caption"
-                  color="error"
-                  sx={{
-                    cursor: "pointer",
-                    zIndex: 2,
-                    "&:hover": { textDecoration: "underline" },
-                  }}
-                >
-                  Rời khỏi nhóm
-                </Typography>
-              ) : (
-                ""
-              )}
             </Stack>
             <Stack direction="row" alignItems="center" spacing={0.5}>
               <MButtonStyle
                 variant="contained"
                 onClick={onSubmitCustom}
                 disabled={isSubmitting}
+                loading={isSubmitting}
               >
                 Sửa
               </MButtonStyle>
               <MButtonStyle
                 variant="cancel"
                 onClick={() => onClick(null)}
-                loading={isSubmitting}
                 disabled={isSubmitting}
               >
                 Hủy bỏ
@@ -185,8 +179,8 @@ const UserItem = ({ item, user, active, onClick, onSubmit }) => {
 };
 
 export default function PopupShowParticipants(props) {
-  const { onClose, open, roomID, user } = props;
-  const { handleGetParticipants, handEditMember } = useChat();
+  const { onClose, open, roomID, user, socket } = props;
+  const { handleGetParticipants, handleEditMember } = useChat();
   const [paginate, setPaginate] = React.useState(initialize); // participants
   const [paginateSearch, setPaginateSearch] = React.useState(initialize); // search
   const [search, setSearch] = React.useState("");
@@ -247,15 +241,37 @@ export default function PopupShowParticipants(props) {
   };
 
   const handSubmitMemberCustom = async (form) => {
+    console.log(" user?._id === memberEdit?._id ", user?._id, memberEdit);
     const newForm = {
       ...form,
       lastMessage:
-        user?._id === memberEdit?._id
+        user?._id === memberEdit?.userID?._id
           ? `${user?.firstName} ${user?.lastName} đã tự đặt biệt danh là ${form.nickName}`
           : `${user?.firstName} ${user?.lastName} đã đặt biệt danh cho ${memberEdit?.userID?.firstName} ${memberEdit?.userID?.lastName} là ${form.nickName}`,
     };
-    const response = await handEditMember(newForm, roomID, memberEdit);
+    const response = await handleEditMember(newForm, roomID, memberEdit?._id);
     console.log("handSubmitMemberCustom", response);
+    if (response) {
+      const newData = paginate.data.map((item) => {
+        if (item?._id !== memberEdit?._id) return item;
+        return { ...item, nickName: response.participant.nickName };
+      });
+
+      setPaginate({
+        ...paginate,
+        data: newData,
+      });
+
+      socket.current.emit("updateRoom", {
+        room: response.room,
+      });
+      socket.current.emit("sendMessage", {
+        roomID,
+        message: response.dataMessage,
+      });
+
+      setMemberEdit(null);
+    }
   };
 
   return (
@@ -306,7 +322,27 @@ export default function PopupShowParticipants(props) {
           }}
         />
       </DialogTitle>
-      <DialogContent sx={{ p: 0 }}>
+      <DialogContent
+        sx={{
+          p: 0,
+          pb: 2,
+          "&::-webkit-scrollbar-track": {
+            // boxShadow: "inset 0 0 6px rgba(0,0,0,0.3)",
+            borderRadius: "10px",
+            bgcolor: (theme) => theme.palette.background.opacity,
+          },
+
+          "&::-webkit-scrollbar": {
+            width: 15,
+            backgroundColor: "transparent",
+          },
+
+          "&::-webkit-scrollbar-thumb": {
+            bgcolor: (theme) => theme.palette.grey[500],
+            borderRadius: "10px",
+          },
+        }}
+      >
         <Stack spacing={1}>
           {paginateSearch?.totalLength > 0 && search
             ? paginateSearch?.data?.map((item) => (

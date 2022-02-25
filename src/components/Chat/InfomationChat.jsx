@@ -35,9 +35,9 @@ const listMenu = [
     value: "setting-other",
     actions: [
       {
-        label: "Xóa cuộc hội thoại",
+        label: "Rời khỏi cuộc trò chuyện",
         icon: icons.DeleteSweepIcon,
-        value: "delete-room",
+        value: "delete-participant",
       },
     ],
   },

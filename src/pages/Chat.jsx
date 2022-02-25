@@ -46,6 +46,8 @@ const Chat = () => {
     handleGetMessagesOfRoom,
     handleAddMessage,
     handleAddMembers,
+
+    handleDeleteParticipant,
   } = useChat();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -170,8 +172,8 @@ const Chat = () => {
         totalLength: prev.totalLength + 1,
       }));
 
-      boxChatRef.current.scrollTo({
-        top: boxChatRef.current.scrollHeight,
+      boxChatRef?.current?.scrollTo({
+        top: boxChatRef?.current?.scrollHeight,
       });
     });
   }, [user]);
@@ -220,12 +222,22 @@ const Chat = () => {
     setActions({ name, roomID });
   };
 
-  const handleDeleteRoomCustom = async (roomID) => {
-    const response = await handleDeleteRoom(roomID);
-    handleActions(null, null);
-    const newRooms = paginateRoom.data.filter((item) => item?._id !== roomID);
-    setPaginateRoom({ ...paginateRoom, data: newRooms });
-    console.log("handleDeleteRoomCustom", response);
+  const handleDeleteParticipantCustom = async (roomID) => {
+    const response = await handleDeleteParticipant(roomID);
+    console.log("handleDeleteParticipantCustom", response);
+    if (response) {
+      socket.current.emit("updateRoom", {
+        room: response.data,
+      });
+      socket.current.emit("sendMessage", {
+        roomID: room?._id,
+        message: response.dataMessage,
+      });
+      setRoom(null);
+      const newRooms = paginateRoom.data.filter((item) => item?._id !== roomID);
+      setPaginateRoom({ ...paginateRoom, data: newRooms });
+      handleActions(null, null);
+    }
   };
 
   // pariticipants
@@ -285,6 +297,7 @@ const Chat = () => {
         open={isShowPariticipants}
         onClose={handleToggleShowPariticipants}
         user={user}
+        socket={socket}
       />
 
       <PopupAddMember
@@ -301,10 +314,11 @@ const Chat = () => {
       />
 
       <PopupAgainDelete
-        open={actions.name === "delete-room"}
+        open={actions.name === "delete-participant"}
         onClose={() => handleActions(null, null)}
-        title="Bạn đã chắc muốn xóa cuộc trò chuyện này?"
-        handleAccept={() => handleDeleteRoomCustom(actions.roomID)}
+        title="Rời khỏi nhóm"
+        label="Bạn đã chắc muốn rời khỏi nhóm?"
+        handleAccept={() => handleDeleteParticipantCustom(actions.roomID)}
       />
 
       <Stack

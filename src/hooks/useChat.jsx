@@ -125,7 +125,18 @@ const useChat = () => {
         form
       );
       console.log("handleEditMember", response);
-      return response.data;
+      return response.data.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
+
+  const handleDeleteParticipant = async (roomID) => {
+    try {
+      const response = await axios.delete(routes.pariticipants(roomID).get);
+      console.log("handleDeleteParticipant", response);
+      return response.data.data;
     } catch (error) {
       console.log("err", error);
       return false;
@@ -148,6 +159,7 @@ const useChat = () => {
     handleGetUsersToParticipant,
     handleAddMembers,
     handleEditMember,
+    handleDeleteParticipant,
   };
 };
 
