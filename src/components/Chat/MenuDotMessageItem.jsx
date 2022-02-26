@@ -2,10 +2,11 @@ import React from "react";
 import { MMenu } from "components/MUI";
 import { MenuItem, Typography, IconButton } from "@mui/material";
 import { icons } from "constants";
+import { useAuth } from "hooks";
 
-const MenuItemCustom = ({ icon, iconStyle, label }) => {
+const MenuItemCustom = ({ icon, iconStyle, label, onClick }) => {
   return (
-    <MenuItem sx={{ gap: 1, height: 35 }}>
+    <MenuItem sx={{ gap: 1, height: 35 }} onClick={onClick}>
       <IconButton
         sx={{
           "& svg": {
@@ -22,14 +23,26 @@ const MenuItemCustom = ({ icon, iconStyle, label }) => {
   );
 };
 const MenuDotMessageItem = (props) => {
-  const { name, ...restProps } = props;
+  const { name, senderID, handleActions, ...restProps } = props;
+  const { user } = useAuth();
+
   return (
     <MMenu {...props}>
-      <MenuItemCustom icon={icons.DeleteIcon} label="Xóa tin nhắn" />
+      {user?._id === senderID ? (
+        <MenuItemCustom
+          icon={icons.DeleteIcon}
+          label="Xóa tin nhắn"
+          onClick={() => handleActions("delete-message")}
+        />
+      ) : (
+        ""
+      )}
+
       <MenuItemCustom
         icon={icons.PinIcon}
         label="Ghim"
         iconStyle={{ transform: `rotate(45deg)` }}
+        onClick={() => handleActions("pin-message")}
       />
     </MMenu>
   );

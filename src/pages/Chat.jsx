@@ -25,6 +25,7 @@ import {
   PopupShowParticipants,
   PopupAddMember,
   PopupAgainDelete,
+  PopupCreateRoom,
 } from "components";
 import { icons } from "constants";
 import { useChat, useAuth } from "hooks";
@@ -45,8 +46,9 @@ const Chat = () => {
 
     handleGetMessagesOfRoom,
     handleAddMessage,
-    handleAddMembers,
+    handleDeleteMessage,
 
+    handleAddMembers,
     handleDeleteParticipant,
   } = useChat();
   const { enqueueSnackbar } = useSnackbar();
@@ -218,8 +220,8 @@ const Chat = () => {
   };
 
   // ----- info rooom
-  const handleActions = (name, roomID) => {
-    setActions({ name, roomID });
+  const handleActions = (name, roomID = null, messageID = null) => {
+    setActions({ name, roomID, messageID });
   };
 
   const handleDeleteParticipantCustom = async (roomID) => {
@@ -252,7 +254,6 @@ const Chat = () => {
         message: response.dataMessage,
       });
     }
-    console.log("handleSubmitAddMembersCustom", response);
   };
 
   /// -----------------add message--------------
@@ -266,6 +267,22 @@ const Chat = () => {
         roomID: room?._id,
         message: response.data,
       });
+    }
+  };
+
+  const handleDeleteMessageCustom = async () => {
+    const response = await handleDeleteMessage(room?._id, actions.messageID);
+    if (response) {
+      const newDate = paginateMessage.data.filter(
+        (item) => item?._id !== actions.messageID
+      );
+      setPaginateMessage({
+        ...paginateMessage,
+        data: newDate,
+        totalLength: paginateMessage.totalLength - 1,
+      });
+      enqueueSnackbar(response.message, { variant: "success" });
+      handleActions(null, null, null);
     }
   };
 
@@ -308,6 +325,11 @@ const Chat = () => {
         handleSubmitAddMembers={handleSubmitAddMembersCustom}
       />
 
+      <PopupCreateRoom
+        open={actions.name === "create-room"}
+        onClose={() => handleActions(null, null)}
+      />
+
       <ToggleSidebar
         isShowSidebar={isSidebarLeft}
         handleToggleSidebar={handleToggleSidebarLeft}
@@ -319,6 +341,14 @@ const Chat = () => {
         title="Rời khỏi nhóm"
         label="Bạn đã chắc muốn rời khỏi nhóm?"
         handleAccept={() => handleDeleteParticipantCustom(actions.roomID)}
+      />
+
+      <PopupAgainDelete
+        open={actions.name === "delete-message"}
+        onClose={() => handleActions(null, null, null)}
+        title="Xóa tin nhắn"
+        label="Tin nhắn sẽ xóa vĩnh viễn ở phía bạn và những người trong nhóm. Bạn chắc chắn chưa?"
+        handleAccept={() => handleDeleteMessageCustom()}
       />
 
       <Stack
@@ -361,6 +391,7 @@ const Chat = () => {
                     bgcolor: "background.opacity",
                     "& svg": { fontSize: 18 },
                   }}
+                  onClick={() => handleActions("create-room")}
                 >
                   {icons.AddIcon}
                 </IconButton>
@@ -439,6 +470,7 @@ const Chat = () => {
               <BoxChat
                 onScroll={onGetMoreMessages}
                 user={user}
+                handleActions={handleActions}
                 paginateMessage={paginateMessage}
                 ref={boxChatRef}
               >

@@ -3,11 +3,10 @@ import { Box, Stack } from "@mui/material";
 import { MessageItem } from "components";
 import { fGetTime } from "utils/formatTime";
 
-let dataBefore;
-let isGroup = false;
+let userBefore;
 
 const BoxChat = React.forwardRef((props, ref) => {
-  const { children, onScroll, user, paginateMessage } = props;
+  const { children, handleActions, onScroll, user, paginateMessage } = props;
 
   return (
     <Box
@@ -38,13 +37,27 @@ const BoxChat = React.forwardRef((props, ref) => {
       {children}
       <Stack sx={{ p: 1, gap: 1, flexDirection: "column-reverse" }}>
         {paginateMessage?.totalLength > 0
-          ? paginateMessage?.data?.map((item) => {
+          ? paginateMessage?.data?.map((item, index) => {
+              userBefore = paginateMessage.data[index - 1];
+              let isGroup;
+              if (
+                item.sender._id === userBefore?.sender?._id &&
+                !item.isNotification &&
+                !userBefore?.isNotification
+              ) {
+                isGroup = true;
+              } else {
+                isGroup = false;
+              }
+
               return (
                 <MessageItem
                   key={item?._id}
                   active={item?.sender?._id === user?._id || false}
                   item={item}
+                  isGroup={isGroup}
                   isNotification={item?.isNotification}
+                  handleActions={handleActions}
                 />
               );
             })

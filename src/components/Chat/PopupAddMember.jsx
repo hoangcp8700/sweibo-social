@@ -332,24 +332,26 @@ export default function PopupAddMember(props) {
         </Box>
       </DialogContent>
       <DialogActions sx={{ px: 3 }}>
-        <MButton
-          onClick={onClose}
-          variant="cancel"
-          // loading={isSubmitting}
-          sx={{ whiteSpace: "nowrap" }}
-        >
-          Hủy bỏ
-        </MButton>
         {addMember.data.length ? (
-          <MButton
-            fullWidth
-            onClick={handleSubmitAddMemberCustom}
-            variant="contained"
-            loading={isSubmitting}
-            disabled={isSubmitting}
-          >
-            Thêm
-          </MButton>
+          <>
+            <MButton
+              onClick={onClose}
+              variant="cancel"
+              // loading={isSubmitting}
+              sx={{ whiteSpace: "nowrap" }}
+            >
+              Hủy bỏ
+            </MButton>
+            <MButton
+              fullWidth
+              onClick={handleSubmitAddMemberCustom}
+              variant="contained"
+              loading={isSubmitting}
+              disabled={isSubmitting}
+            >
+              Thêm
+            </MButton>
+          </>
         ) : (
           ""
         )}

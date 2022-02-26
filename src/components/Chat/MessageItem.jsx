@@ -40,7 +40,8 @@ const InfoMessage = ({ item }) => {
 };
 
 const MessageItem = (props) => {
-  const { children, item, active, isGroup, isNotification } = props;
+  const { children, handleActions, item, active, isGroup, isNotification } =
+    props;
   const dotRef = React.useRef();
   const [openDot, setOpenDot] = React.useState(false);
 
@@ -49,21 +50,27 @@ const MessageItem = (props) => {
     [dotRef, openDot]
   );
 
+  const handleActionsCustom = async (name) => {
+    await handleActions(name, item?.roomID, item?._id);
+    handleToggleAction();
+  };
+
+  // console.log(item?.text, isGroup);
   return !isNotification ? (
-    <Box
-      className={active ? "slide-right" : "slide-left"}
-      sx={{ position: "relative" }}
-    >
+    <Box sx={{ position: "relative", mb: !isGroup ? 2 : 0 }}>
       <MenuDotMessageItem
+        senderID={item?.sender?._id}
         anchor={dotRef}
         open={openDot}
         handleClose={handleToggleAction}
+        handleActions={handleActionsCustom}
         paperStyle={{
           minWidth: 200,
         }}
       />
 
       <Stack
+        className={active ? "slide-right" : "slide-left"}
         sx={{
           maxWidth: "80%",
           width: "100%",
@@ -75,6 +82,14 @@ const MessageItem = (props) => {
           alignItems="center"
           sx={{ flexDirection: active ? "row-reverse" : "row", gap: 1 }}
         >
+          {!isGroup ? (
+            <Avatar
+              src={item?.sender?.avatar?.url}
+              sx={{ width: 28, height: 28 }}
+            />
+          ) : (
+            <Box sx={{ width: 28 }} />
+          )}
           <Tooltip
             arrow={true}
             placement="top-start"

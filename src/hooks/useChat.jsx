@@ -78,6 +78,17 @@ const useChat = () => {
     }
   };
 
+  const handleDeleteMessage = async (roomID, messageID) => {
+    try {
+      const response = await axios.delete(
+        routes.messages(roomID, messageID).getByID
+      );
+      return response.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
   // ------------------ participants -------------
   const handleGetParticipants = async (page, roomID, params) => {
     try {
@@ -153,6 +164,7 @@ const useChat = () => {
     // messages
     handleGetMessagesOfRoom,
     handleAddMessage,
+    handleDeleteMessage,
 
     // participants
     handleGetParticipants,

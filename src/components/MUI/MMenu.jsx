@@ -37,7 +37,7 @@ const MMenu = (props) => {
         placement="bottom-end"
         transition
         disablePortal
-        style={{ zIndex: 4 }}
+        style={{ zIndex: 10 }}
       >
         {({ TransitionProps, placement }) => (
           <Grow {...TransitionProps}>
