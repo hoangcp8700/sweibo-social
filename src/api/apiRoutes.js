@@ -20,6 +20,7 @@ const users = (id) => {
   return {
     edit: `/users/${id}`,
     users: `/users`,
+    usersExceptToMe: `/users/except-to-me`,
     albums: `/users/albums`,
     updateContact: `/users/${id}/contact`,
   };

@@ -4,41 +4,65 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  Box,
   Typography,
-  Divider,
   Stack,
   IconButton,
-  TextField,
-  InputAdornment,
   DialogActions,
+  Box,
 } from "@mui/material";
-
 import { MButton } from "components/MUI";
 import { LoadingEllipsisElement, LoadingEllipsis } from "components";
-import { useChat } from "hooks";
+import { useChat, useUser } from "hooks";
 
 import { icons } from "constants";
 
-const initialize = {
-  page: 1,
-  hasNextPage: true,
-  data: [
-    { name: "Option 1️⃣", id: 1 },
-    { name: "Option 2️⃣", id: 2 },
-  ],
-  totalLength: 0,
-};
-
 export default function PopupCreateRoom(props) {
   const { onClose, open } = props;
+  const { handleGetUserExeptToMe } = useUser();
 
-  const [paginate, setPaginate] = React.useState(initialize); // search
+  const [paginate, setPaginate] = React.useState([]); // search
   const [search, setSearch] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [selected, setSelected] = React.useState([]);
 
+  const handleGetUsersCustom = React.useCallback(
+    async (params) => {
+      setLoading(true);
+      const response = await handleGetUserExeptToMe(1, params);
+      console.log("handleGetUserExeptToMe", response);
+      setLoading(false);
+
+      const newData = response.map((item) => ({
+        id: item?._id,
+        fullName: `${item?.firstName} ${item?.lastName} (${item?.email})`,
+      }));
+
+      return setPaginate(newData);
+    },
+    [open, paginate, search]
+  );
+
+  React.useEffect(() => {
+    if (!open) return;
+    handleGetUsersCustom();
+    return () => {
+      setPaginate([]);
+      setSearch("");
+    };
+  }, [open]);
+
+  let timer;
+  const handleSearch = (value) => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = setTimeout(() => {
+      console.log("runnnn");
+      handleGetUsersCustom(`&search=${search}`);
+    }, 500);
+  };
   return (
     <Dialog onClose={onClose} open={open} fullWidth maxWidth={"mobile"}>
       {isSubmitting ? (
@@ -64,6 +88,7 @@ export default function PopupCreateRoom(props) {
         sx={{
           p: 0,
           pb: 2,
+          minHeight: "47vh",
           "&::-webkit-scrollbar-track": {
             // boxShadow: "inset 0 0 6px rgba(0,0,0,0.3)",
             borderRadius: "10px",
@@ -81,13 +106,37 @@ export default function PopupCreateRoom(props) {
           },
         }}
       >
-        <Stack>
+        <Stack
+          sx={{
+            "& .optionListContainer": {
+              background: "transparent",
+              "& .highlightOption ": { bgcolor: "primary.main" },
+              "& li:hover": { bgcolor: "primary.main" },
+            },
+            "& .chip": { bgcolor: "primary.main" },
+          }}
+        >
           <Multiselect
-            options={paginate.data} // Options to display in the dropdown
-            selectedValues={selected} // Preselected value to persist in dropdown
-            onSelect={(e) => console.log("select ", e)} // Function will trigger on select event
-            onRemove={(e) => console.log("onRemove ", e)} // Function will trigger on select event
-            displayValue="name" // Property name to display in the dropdown options
+            options={paginate}
+            selectedValues={selected}
+            onSelect={(value) => setSelected(value)}
+            onRemove={(value) => setSelected(value)}
+            onSearch={handleSearch}
+            displayValue="fullName" // Property name to display in the dropdown options
+            emptyRecordMsg="Không có dữ liệu!"
+            loading={false}
+            loadingMessage={
+              <Box
+                sx={{
+                  "& .lds-ellipsis": {
+                    height: 40,
+                    "& div": { top: 18, width: 8, height: 8 },
+                  },
+                }}
+              >
+                <LoadingEllipsisElement />
+              </Box>
+            }
           />
         </Stack>
       </DialogContent>

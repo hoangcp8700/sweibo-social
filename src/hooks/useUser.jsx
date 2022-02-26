@@ -52,6 +52,19 @@ const useUser = () => {
       return false;
     }
   };
+
+  const handleGetUserExeptToMe = async (page = 1, params) => {
+    try {
+      const link = `?page=${page}${params || ""}`;
+      const response = await axios.get(
+        `${routes.users().usersExceptToMe}${link}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log("err", error);
+      return false;
+    }
+  };
   // ----- friend ------------------------------
 
   const handleGetFriends = async (page = 1, type, userID) => {
@@ -108,6 +121,7 @@ const useUser = () => {
   };
   return {
     userClient,
+    handleGetUserExeptToMe,
     handleUpdateUserClient,
     handleGetUserByEmail,
     handleGetAlbums,

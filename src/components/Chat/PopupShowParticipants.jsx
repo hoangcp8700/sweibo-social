@@ -216,6 +216,7 @@ export default function PopupShowParticipants(props) {
     },
     [open, roomID, paginateSearch]
   );
+
   React.useEffect(() => {
     if (!open || !roomID) return;
     handleGetParticipantsCustom();
