@@ -40,7 +40,7 @@ const Container = styled(Box)(({ theme }) => ({
 }));
 
 const StickySidebarCustom = (props) => {
-  const { isShowSidebar, containerStyle, contentStyle, children, sx } = props;
+  const { containerStyle, contentStyle, children, sx } = props;
 
   const theme = useTheme();
   return (

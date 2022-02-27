@@ -11,6 +11,9 @@ import {
   InputAdornment,
   Paper,
   Typography,
+  Drawer,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import {
   StickySidebar,
@@ -52,6 +55,9 @@ const Chat = () => {
     handleDeleteParticipant,
   } = useChat();
   const { enqueueSnackbar } = useSnackbar();
+  const theme = useTheme();
+  const matchesMD = useMediaQuery(theme.breakpoints.down("md"));
+  const matchesSM = useMediaQuery(theme.breakpoints.down("sm"));
 
   const { user } = useAuth();
   const [isSidebarContent, setIsSidebarContent] = React.useState(false);
@@ -180,10 +186,9 @@ const Chat = () => {
     });
   }, [user]);
 
-  const handleToggleSidebarContent = React.useCallback(
-    () => setIsSidebarContent(!isSidebarContent),
-    [isSidebarContent]
-  );
+  const handleToggleSidebarContent = React.useCallback(() => {
+    setIsSidebarContent(!isSidebarContent);
+  }, [isSidebarContent]);
 
   const handleToggleSidebarLeft = () => setIsSidebarLeft(!isSidebarLeft);
   const handleToggleAddMember = () => setIsAddMember(!isAddMember);
@@ -194,13 +199,16 @@ const Chat = () => {
     [isShowPariticipants]
   );
 
-  const handleGetRoomByIdCustom = async (roomID) => {
+  const handleGetRoomByIdCustom = async (roomID, isDrawer) => {
     if (room?._id === roomID) return;
 
     const response = await handleGetRoomDetail(roomID);
     if (response) {
       setPaginateMessage(initialize); // reset
       setRoom(response);
+    }
+    if (isDrawer) {
+      handleToggleSidebarLeft();
     }
   };
 
@@ -308,7 +316,7 @@ const Chat = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ overflowX: "hidden" }}>
       <PopupShowParticipants
         roomID={room?._id}
         open={isShowPariticipants}
@@ -358,80 +366,142 @@ const Chat = () => {
         }}
         alignItems="flex-start"
       >
-        <StickySidebar
-          sx={{
-            transition: "all 0.6s ease",
-            transform: isSidebarLeft
-              ? `translate3d(0px, 0px, 0px)`
-              : `translate3d(-100%, 0px, 0px)`,
-          }}
-          isShowSidebar={isSidebarLeft}
-          containerStyle={[
-            (theme) => ({
-              [theme.breakpoints.down("md")]: {
-                display: "none",
-              },
-            }),
-          ]}
-        >
-          <Paper
+        {matchesSM ? (
+          <Drawer
+            anchor="left"
+            open={isSidebarLeft}
+            onClose={handleToggleSidebarLeft}
+          >
+            <Paper
+              sx={{
+                maxWidth: theme.sizes.sidebar - 100,
+                height: "100%",
+                bgcolor: "background.navbar",
+                pb: 3,
+                minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
+              }}
+            >
+              <Stack sx={{ p: (theme) => theme.spacing(1, 1, 2), gap: 1 }}>
+                <SidebarHeader
+                  title="Tin nhắn"
+                  handleToggleSidebar={handleToggleSidebarLeft}
+                >
+                  <IconButton
+                    sx={{
+                      bgcolor: "background.opacity",
+                      "& svg": { fontSize: 18 },
+                    }}
+                    onClick={() => handleActions("create-room")}
+                  >
+                    {icons.AddIcon}
+                  </IconButton>
+                </SidebarHeader>
+
+                <Box>
+                  <TextField
+                    sx={{
+                      width: "100%",
+                      "& input": { py: 1, fontSize: 14 },
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: (theme) => theme.sizes.radius,
+                      },
+                    }}
+                    placeholder="Tìm kiếm tin nhắn"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <IconButton sx={{ "& svg": { fontSize: 20 } }}>
+                            {icons.SearchIcon}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Box>
+              </Stack>
+
+              <Divider />
+
+              {paginateRoom?.data?.map((item) => (
+                <RoomItem
+                  key={item._id}
+                  item={item}
+                  handleGetRoomById={(roomID) =>
+                    handleGetRoomByIdCustom(roomID, true)
+                  }
+                  active={(room && room?._id === item?._id) || false}
+                />
+              ))}
+            </Paper>
+          </Drawer>
+        ) : (
+          <StickySidebar
             sx={{
-              bgcolor: "background.navbar",
-              pb: 3,
-              minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
+              transition: "all 0.6s ease",
+              transform: isSidebarLeft
+                ? `translate3d(0px, 0px, 0px)`
+                : `translate3d(-100%, 0px, 0px)`,
             }}
           >
-            <Stack sx={{ p: (theme) => theme.spacing(1, 1, 2), gap: 1 }}>
-              <SidebarHeader
-                title="Tin nhắn"
-                handleToggleSidebar={handleToggleSidebarLeft}
-              >
-                <IconButton
-                  sx={{
-                    bgcolor: "background.opacity",
-                    "& svg": { fontSize: 18 },
-                  }}
-                  onClick={() => handleActions("create-room")}
+            <Paper
+              sx={{
+                bgcolor: "background.navbar",
+                pb: 3,
+                minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
+              }}
+            >
+              <Stack sx={{ p: (theme) => theme.spacing(1, 1, 2), gap: 1 }}>
+                <SidebarHeader
+                  title="Tin nhắn"
+                  handleToggleSidebar={handleToggleSidebarLeft}
                 >
-                  {icons.AddIcon}
-                </IconButton>
-              </SidebarHeader>
+                  <IconButton
+                    sx={{
+                      bgcolor: "background.opacity",
+                      "& svg": { fontSize: 18 },
+                    }}
+                    onClick={() => handleActions("create-room")}
+                  >
+                    {icons.AddIcon}
+                  </IconButton>
+                </SidebarHeader>
 
-              <Box>
-                <TextField
-                  sx={{
-                    width: "100%",
-                    "& input": { py: 1, fontSize: 14 },
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: (theme) => theme.sizes.radius,
-                    },
-                  }}
-                  placeholder="Tìm kiếm tin nhắn"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <IconButton sx={{ "& svg": { fontSize: 20 } }}>
-                          {icons.SearchIcon}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
+                <Box>
+                  <TextField
+                    sx={{
+                      width: "100%",
+                      "& input": { py: 1, fontSize: 14 },
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: (theme) => theme.sizes.radius,
+                      },
+                    }}
+                    placeholder="Tìm kiếm tin nhắn"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <IconButton sx={{ "& svg": { fontSize: 20 } }}>
+                            {icons.SearchIcon}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Box>
+              </Stack>
+
+              <Divider />
+
+              {paginateRoom?.data?.map((item) => (
+                <RoomItem
+                  key={item._id}
+                  item={item}
+                  handleGetRoomById={handleGetRoomByIdCustom}
+                  active={(room && room?._id === item?._id) || false}
                 />
-              </Box>
-            </Stack>
-
-            <Divider />
-
-            {paginateRoom?.data?.map((item) => (
-              <RoomItem
-                key={item._id}
-                item={item}
-                handleGetRoomById={handleGetRoomByIdCustom}
-                active={(room && room?._id === item?._id) || false}
-              />
-            ))}
-          </Paper>
-        </StickySidebar>
+              ))}
+            </Paper>
+          </StickySidebar>
+        )}
 
         {room ? (
           <Box
@@ -443,13 +513,11 @@ const Chat = () => {
                 maxHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
                 overflow: "hidden",
                 transition: "all 0.5s ease 0s",
-                transform: !isSidebarLeft
-                  ? `translateX(-250px)`
-                  : `translateX(0)`,
-                minWidth: !isSidebarLeft ? `100%` : `inherit`,
-                [theme.breakpoints.down("md")]: {
-                  transform: `translateX(0)`,
+                transform: {
+                  xs: `translateX(0px)`,
+                  sm: isSidebarLeft ? `translateX(0px)` : `translateX(-250px)`,
                 },
+                minWidth: !isSidebarLeft ? `100%` : `inherit`,
               }),
             ]}
           >
@@ -462,6 +530,8 @@ const Chat = () => {
             >
               <HeaderChat
                 room={room}
+                isSidebarLeft={isSidebarLeft}
+                handleToggleSidebarLeft={handleToggleSidebarLeft}
                 handleToggleSidebar={handleToggleSidebarContent}
                 handleGetParticipants={handleToggleShowPariticipants}
                 handleToggleAddMember={handleToggleAddMember}
@@ -486,41 +556,78 @@ const Chat = () => {
               <InputCreateMessage onSubmit={handleAddMessageCustom} />
             </Stack>
 
-            <Stack
-              sx={{
-                width: (theme) => theme.sizes.sidebar,
-                transform: isSidebarContent
-                  ? `translate3d(0px, 0px, 0px)`
-                  : `translate3d(100%, 0px, 0px)`,
-                visibility: "visible",
-                transition: "all 0.6s ease 0s",
-              }}
-            >
-              <InfomationChat
-                room={room}
-                handleActions={handleActions}
-                handleEditRoom={(form, roomID) =>
-                  handleEditRoomCustom(
-                    {
-                      ...form,
-                      lastMessage: `${user.firstName} ${user.lastName} vừa đổi tên phòng là ${form.title}`,
-                    },
-                    roomID
-                  )
-                }
-              />
-            </Stack>
+            {matchesMD ? (
+              <Drawer
+                anchor="right"
+                open={isSidebarContent}
+                onClose={handleToggleSidebarContent}
+              >
+                <Stack
+                  sx={{
+                    width: (theme) => theme.sizes.sidebar - 100,
+                    height: "100%",
+                  }}
+                >
+                  <InfomationChat
+                    room={room}
+                    handleActions={handleActions}
+                    handleEditRoom={(form, roomID) =>
+                      handleEditRoomCustom(
+                        {
+                          ...form,
+                          lastMessage: `${user.firstName} ${user.lastName} vừa đổi tên phòng là ${form.title}`,
+                        },
+                        roomID
+                      )
+                    }
+                  />
+                </Stack>
+              </Drawer>
+            ) : (
+              <Stack
+                sx={{
+                  width: (theme) => theme.sizes.sidebar,
+                  transform: isSidebarContent
+                    ? `translate3d(0px, 0px, 0px)`
+                    : `translate3d(100%, 0px, 0px)`,
+                  visibility: "visible",
+                  transition: "all 0.6s ease 0s",
+                }}
+              >
+                <InfomationChat
+                  room={room}
+                  handleActions={handleActions}
+                  handleEditRoom={(form, roomID) =>
+                    handleEditRoomCustom(
+                      {
+                        ...form,
+                        lastMessage: `${user.firstName} ${user.lastName} vừa đổi tên phòng là ${form.title}`,
+                      },
+                      roomID
+                    )
+                  }
+                />
+              </Stack>
+            )}
           </Box>
         ) : (
           <Stack
             sx={{
+              transition: "all 0.5s ease 0s",
+              transform: {
+                xs: `translateX(0px)`,
+                sm: isSidebarLeft ? `translateX(0px)` : `translateX(-250px)`,
+              },
+              minWidth: !isSidebarLeft ? `100%` : `inherit`,
               justifyContent: "center",
               alignItems: "center",
               flexGrow: 1,
               height: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
             }}
           >
-            <Typography>Chọn một ai đó để trò chuyện</Typography>
+            <Typography onClick={handleToggleSidebarLeft}>
+              Chọn một ai đó để trò chuyện
+            </Typography>
           </Stack>
         )}
       </Stack>

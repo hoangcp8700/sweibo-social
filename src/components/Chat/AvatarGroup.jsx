@@ -3,6 +3,7 @@ import { Avatar, AvatarGroup, Typography } from "@mui/material";
 
 const AvatarGroupComponent = ({
   images,
+  imageOnce = 40,
   sizeGroup = 25,
   sizeContainer = 60,
   styleContainer,
@@ -11,28 +12,51 @@ const AvatarGroupComponent = ({
     <AvatarGroup
       max={4}
       sx={[
-        images?.length > 1
+        {
+          width: sizeContainer,
+          minWidth: sizeContainer,
+          height: sizeContainer,
+          flexWrap: "wrap",
+          justifyContent: "center",
+          alignItems: "center",
+          letterSpacing: -2.5,
+        },
+
+        images?.length <= 1
           ? {
               "& .MuiAvatar-root": {
-                width: sizeGroup,
-                height: sizeGroup,
+                width: imageOnce,
+                height: imageOnce,
                 fontSize: 12,
                 letterSpacing: -1.5,
               },
             }
-          : "",
-        {
-          width: sizeContainer,
-          height: sizeContainer,
-          flexWrap: "wrap",
-          justifyContent: "center",
-          letterSpacing: -2.5,
-          "& .MuiAvatar-root": {
-            "&:last-child": {
-              marginLeft: -1,
+          : {
+              pl: 1,
+              "& .MuiAvatar-root": {
+                fontSize: 12,
+                fontWeight: "bold",
+                bgcolor: "text.secondary",
+                width: {
+                  xs: sizeGroup <= 25 ? sizeGroup : sizeGroup - 5,
+                  sm: sizeGroup,
+                },
+                height: {
+                  xs: sizeGroup <= 25 ? sizeGroup : sizeGroup - 5,
+                  sm: sizeGroup,
+                },
+                "&:nth-child(3) ": {
+                  ml: -1,
+                  mt: { xs: sizeGroup <= 25 ? -2 : -6, sm: -2 },
+                },
+                "&:nth-child(4) ": {
+                  ml: -1,
+                  mt: { xs: sizeGroup <= 25 ? -2 : -6, sm: -2 },
+                },
+                "& img": { borderRadius: "50%" },
+              },
             },
-          },
-        },
+
         styleContainer,
       ]}
     >

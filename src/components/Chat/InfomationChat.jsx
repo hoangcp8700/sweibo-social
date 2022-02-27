@@ -118,13 +118,7 @@ const InfomationChat = (props) => {
             images={room?.participants}
             sizeGroup={46}
             sizeContainer={100}
-            styleContainer={
-              room?.participants.length <= 1
-                ? {
-                    "& .MuiAvatar-root": { width: "100%", height: "100%" },
-                  }
-                : ""
-            }
+            imageOnce={80}
           />
           <Box
             sx={{

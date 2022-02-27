@@ -13,7 +13,7 @@ const ToggleSidebar = (props) => {
           left: !isShowSidebar ? 0 : `-100%`,
           transition: "left .4s ease",
           zIndex: 2,
-          [theme.breakpoints.down("md")]: {
+          [theme.breakpoints.down("sm")]: {
             display: "none",
           },
         }),
