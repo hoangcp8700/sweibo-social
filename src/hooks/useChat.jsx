@@ -27,7 +27,7 @@ const useChat = () => {
     try {
       const response = await axios.post(routes.rooms().get, form);
       console.log("handleAddRoom", response);
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.log("err", error);
       return false;

@@ -45,11 +45,11 @@ const AvatarGroupComponent = ({
                   xs: sizeGroup <= 25 ? sizeGroup : sizeGroup - 5,
                   sm: sizeGroup,
                 },
-                "&:nth-child(3) ": {
+                "&::nth-of-type(3) ": {
                   ml: -1,
                   mt: { xs: sizeGroup <= 25 ? -2 : -6, sm: -2 },
                 },
-                "&:nth-child(4) ": {
+                "&::nth-of-type(4) ": {
                   ml: -1,
                   mt: { xs: sizeGroup <= 25 ? -2 : -6, sm: -2 },
                 },

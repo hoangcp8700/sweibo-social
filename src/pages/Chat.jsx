@@ -45,6 +45,7 @@ const Chat = () => {
     handleGetRooms,
     handleUpdateRoom,
     handleGetRoomDetail,
+    handleAddRoom,
     handleDeleteRoom,
 
     handleGetMessagesOfRoom,
@@ -226,6 +227,16 @@ const Chat = () => {
       enqueueSnackbar(response.message, { variant: "success" });
     }
   };
+  const handleSubmitCreateRoomCustom = async (form) => {
+    const response = await handleAddRoom(form);
+    if (response) {
+      setPaginateRoom({
+        ...paginateRoom,
+        data: [response, ...paginateRoom.data],
+        totalLength: paginateRoom.totalLength + 1,
+      });
+    }
+  };
 
   // ----- info rooom
   const handleActions = (name, roomID = null, messageID = null) => {
@@ -336,6 +347,7 @@ const Chat = () => {
       <PopupCreateRoom
         open={actions.name === "create-room"}
         onClose={() => handleActions(null, null)}
+        handleSubmitCreateRoom={handleSubmitCreateRoomCustom}
       />
 
       <ToggleSidebar
