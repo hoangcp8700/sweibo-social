@@ -11,12 +11,16 @@ import {
 
 const MMenu = (props) => {
   const { open, anchor, paperStyle, name, handleClose, children } = props;
-  const onClose = (e) => handleClose(name);
+
+  const onClose = () => {
+    handleClose(name);
+  };
 
   return (
     <Box sx={{ position: "relative" }}>
       {open ? (
         <Box
+          onClick={onClose}
           sx={{
             width: "100vw",
             height: "100vh",
@@ -51,7 +55,7 @@ const MMenu = (props) => {
                 ...paperStyle,
               }}
             >
-              <ClickAwayListener onClickAway={onClose}>
+              <ClickAwayListener>
                 <MenuList autoFocusItem={open}>
                   {children}
                   {/* <MenuItem>Logout</MenuItem> */}

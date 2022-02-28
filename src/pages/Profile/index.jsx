@@ -139,10 +139,8 @@ const Profile = () => {
     getProfile();
     return () => {
       setPageLoading(true);
-      if (userClient && parsed?.email !== userClient?.email) {
-        handleUpdateUserClient(null);
-        setRelationshipFriend(null);
-      }
+      handleUpdateUserClient(null);
+      setRelationshipFriend(null);
     };
   }, [location]);
 
@@ -384,7 +382,7 @@ const Profile = () => {
                   gap: 2,
                   // flexWrap: "wrap",
                   justifyContent: { xs: "center", sm: "flex-start" },
-                  alignItems: { xs: "center", sm: "flex-end" },
+                  alignItems: "center",
                   flexDirection: { xs: "column", sm: "row" },
                 }}
               >
@@ -472,11 +470,10 @@ const Profile = () => {
                 <Stack
                   sx={{
                     flexGrow: 1,
-                    mb: { xs: 0, sm: 2 },
                     alignItems: { xs: "center", sm: "flex-start" },
                   }}
                 >
-                  <Stack direction="row" alignItems="center" spacing={1}>
+                  <Stack>
                     <Typography variant="h3">
                       {userProfile?.firstName} {userProfile?.lastName}
                     </Typography>
@@ -484,190 +481,6 @@ const Profile = () => {
                       <Typography variant="h4" sx={{ fontWeight: 400 }}>
                         ({userProfile?.nickName})
                       </Typography>
-                    ) : (
-                      ""
-                    )}
-                  </Stack>
-                  <Stack direction="row" alignItems="center" spacing={1}>
-                    <Typography>3.8k bạn bè</Typography>
-                    <Typography sx={{ fontWeight: 700 }}>•</Typography>
-                    <Typography>131 bạn chung</Typography>
-                  </Stack>
-
-                  <Stack
-                    alignItems="center"
-                    sx={{
-                      flexWrap: "wrap",
-                      gap: { xs: 2, sm: 1 },
-                      width: "100%",
-                      justifyContent: { xs: "center", sm: "space-between" },
-                      flexDirection: { xs: "column", sm: "row" },
-                    }}
-                  >
-                    <AvatarGroupStyle max={6}>
-                      <Avatar
-                        alt="Remy Sharp"
-                        src="/static/images/avatar/1.jpg"
-                      />
-                      <Avatar
-                        alt="Remy Sharp"
-                        src="/static/images/avatar/1.jpg"
-                      />
-                      <Avatar
-                        alt="Remy Sharp"
-                        src="/static/images/avatar/1.jpg"
-                      />
-                      <Avatar
-                        alt="Remy Sharp"
-                        src="/static/images/avatar/1.jpg"
-                      />
-                      <Avatar
-                        alt="Remy Sharp"
-                        src="/static/images/avatar/1.jpg"
-                      />
-                      <Avatar
-                        alt="Travis Howard"
-                        src="/static/images/avatar/2.jpg"
-                      />
-                      <Avatar
-                        alt="Cindy Baker"
-                        src="/static/images/avatar/3.jpg"
-                      />
-                      <Avatar
-                        alt="Agnes Walker"
-                        src="/static/images/avatar/4.jpg"
-                      />
-                      <Avatar
-                        alt="Trevor Henderson"
-                        src="/static/images/avatar/5.jpg"
-                      />
-                    </AvatarGroupStyle>
-                    {console.log(
-                      "isOpenFriendMenu,",
-                      relationshipFriend,
-                      userProfile
-                    )}
-                    {/* // friends */}
-                    {!isAuth ? (
-                      <Stack direction="row" alignItems="center" spacing={1}>
-                        {!relationshipFriend ? (
-                          <ButtonFriend
-                            onClick={() =>
-                              handleAddFriendCustom(userClient?._id)
-                            }
-                            label="Kết bạn"
-                            icon={icons.PersonAddIcon}
-                          />
-                        ) : (
-                          <Stack>
-                            {relationshipFriend?.status === "Active" ? (
-                              <>
-                                <PopupMenu
-                                  ref={friendMenuRef}
-                                  open={isOpenFriendMenu}
-                                  onClose={handleToggleOpenFriendMenu}
-                                  placement="top-start"
-                                  onClick={() =>
-                                    handleDeleteFriendCustom(
-                                      relationshipFriend?._id,
-                                      false,
-                                      "Bạn đã chắc chắn muốn hủy kết bạn người này chưa?"
-                                    )
-                                  }
-                                  lists={[
-                                    {
-                                      label: "Hủy kết bạn",
-                                      value: "delete-friend",
-                                      icon: icons.PersonRemoveIcon,
-                                    },
-                                  ]}
-                                />
-
-                                <ButtonFriend
-                                  ref={friendMenuRef}
-                                  onClick={handleToggleOpenFriendMenu}
-                                  label="Bạn bè"
-                                  icon={icons.PersonIcon}
-                                  sx={{
-                                    bgcolor: "primary.main",
-                                    color: "common.white",
-                                    "&:hover": { bgcolor: "primary.dark" },
-                                  }}
-                                />
-                              </>
-                            ) : relationshipFriend?.status === "Waiting" &&
-                              relationshipFriend?.createdBy !==
-                                userProfile?._id ? (
-                              <>
-                                <PopupMenu
-                                  ref={friendMenuRef}
-                                  open={isOpenFriendMenu}
-                                  onClose={handleToggleOpenFriendMenu}
-                                  placement="top-start"
-                                  onClick={() =>
-                                    handleDeleteFriendCustom(
-                                      relationshipFriend?._id,
-                                      false,
-                                      "Bạn đã chắc chắn muốn hủy yêu cầu kết bạn người này?"
-                                    )
-                                  }
-                                  lists={[
-                                    {
-                                      label: "Hủy yêu cầu",
-                                      value: "delete-friend",
-                                      icon: icons.PersonRemoveIcon,
-                                    },
-                                  ]}
-                                />
-
-                                <ButtonFriend
-                                  ref={friendMenuRef}
-                                  onClick={handleToggleOpenFriendMenu}
-                                  label="Đang chờ chấp nhận"
-                                  icon={icons.PersonIcon}
-                                  sx={{
-                                    bgcolor: "primary.main",
-                                    color: "common.white",
-                                    "&:hover": { bgcolor: "primary.dark" },
-                                  }}
-                                />
-                              </>
-                            ) : (
-                              <ActionFriend
-                                titleLeft="Chấp nhận lời mời"
-                                titleRight="Xóa lời mời"
-                                onAccept={() =>
-                                  handleUpdateStatusFriendCustom(
-                                    relationshipFriend?._id
-                                  )
-                                }
-                                onCancel={() =>
-                                  handleDeleteFriendCustom(
-                                    relationshipFriend?._id,
-                                    false,
-                                    "Bạn đã chắc chắn muốn gỡ yêu cầu kết bạn từ người này?"
-                                  )
-                                }
-                              />
-                            )}
-                          </Stack>
-                        )}
-
-                        <IconButton
-                          sx={{
-                            bgcolor: "primary.main",
-                            "&:hover": {
-                              bgcolor: "primary.dark",
-                            },
-                            "& .MuiIcon-root": { fontSize: 20 },
-                            "& img": {
-                              filter: `invert(100%)`,
-                            },
-                          }}
-                        >
-                          {icons.MessageIcon}
-                        </IconButton>
-                      </Stack>
                     ) : (
                       ""
                     )}

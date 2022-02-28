@@ -34,7 +34,7 @@ const SidebarHome = () => {
     <Box>
       <MenuList sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         <MenuItemStyle
-          onClick={() => navigate(`${PATH_PAGE.profile.link}/hoang.locchoc`)}
+          onClick={() => navigate(`${PATH_PAGE.profile.link}/posts`)}
         >
           <Avatar sx={{ width: 32, height: 32 }} src={user?.avatar?.url} />
           <Typography variant="subtitle2" sx={{ pl: 1 }}>

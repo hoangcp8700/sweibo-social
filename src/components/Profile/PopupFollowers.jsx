@@ -75,7 +75,6 @@ export default function PopupEditProfile(props) {
     },
     [paginate]
   );
-  console.log("paginate", paginate);
   return (
     <Dialog onClose={onClose} open={open} fullWidth maxWidth={"sm"}>
       <DialogTitle>Người theo dõi</DialogTitle>

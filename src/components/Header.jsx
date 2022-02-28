@@ -19,7 +19,8 @@ import { PATH_AUTH, PATH_PAGE } from "constants/paths";
 
 import MenuHeader from "components/Header/MenuMain";
 import MenuHeaderNotification from "components/Header/MenuNotification";
-import { useAuth } from "hooks";
+import PopupSearchResult from "components/Header/PopupSearchResult";
+import { useAuth, useUser } from "hooks";
 
 const IconButtonStyle = styled(IconButton)(({ theme }) => ({
   backgroundColor: theme.palette.grey[200],
@@ -30,24 +31,39 @@ const IconButtonStyle = styled(IconButton)(({ theme }) => ({
 }));
 
 const Header = () => {
-  const theme = useTheme();
   const navigate = useNavigate();
   const { handleLogout, user } = useAuth();
-
+  const { handleGetUserExeptToMe } = useUser();
   const isSettingRef = useRef(null);
-  const isNotificationRef = useRef(null);
+  const searchResultRef = useRef(null);
+
+  // const isNotificationRef = useRef(null);
   const [openMenu, setOpenMenu] = useState({
     isSetting: false,
     isNotification: false,
+    isSearchResult: false,
   });
-  const isMobileRes = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const handleToggleAction = (name) => {
-    setOpenMenu({
-      ...openMenu,
-      [name]: openMenu[name] === true ? false : true,
-    });
-  };
+  const [search, setSearch] = React.useState("");
+  const [searchResult, setSearchResult] = React.useState([]);
+
+  const handleGetUsersCustom = React.useCallback(
+    async (params) => {
+      const response = await handleGetUserExeptToMe(1, params);
+      return setSearchResult(response);
+    },
+    [search]
+  );
+
+  const handleToggleAction = React.useCallback(
+    (name) => {
+      setOpenMenu({
+        ...openMenu,
+        [name]: openMenu[name] === true ? false : true,
+      });
+    },
+    [openMenu]
+  );
 
   const handleRedirectProfile = (name) => {
     navigate(`${PATH_PAGE.profile.link}/posts`);
@@ -58,6 +74,21 @@ const Header = () => {
     await handleLogout();
     navigate(PATH_AUTH.login.path);
   };
+
+  let timer;
+  const handleChangeSearch = async (e) => {
+    const { value } = e.target;
+    if (timer) {
+      clearTimeout(timer);
+    }
+    setSearch(value);
+    if (!value) {
+      return setSearchResult([]);
+    }
+
+    timer = setTimeout(() => handleGetUsersCustom(`&search=${value}`), 1000);
+  };
+
   return (
     <>
       <Paper
@@ -98,51 +129,54 @@ const Header = () => {
             handleClose={handleToggleAction}
           />
 
+          <PopupSearchResult
+            anchor={searchResultRef}
+            open={openMenu.isSearchResult}
+            name="isSearchResult"
+            handleClose={handleToggleAction}
+            lists={searchResult}
+          />
+
           {/* content */}
           <Stack
             direction="row"
             alignItems="center"
             justifyContent="space-between"
           >
-            <Stack
-              direction="row"
-              alignItems="center"
-              sx={{ gap: !isMobileRes ? 2 : 1 }}
-            >
+            <Stack direction="row" alignItems="center" sx={{ gap: 2 }}>
               <Typography
                 variant="h6"
                 color="primary"
                 component={Link}
                 to={PATH_PAGE.home.path}
               >
-                WeiboSocial
+                Weibo
               </Typography>
 
               <Box>
-                {!isMobileRes ? (
-                  <TextField
-                    sx={{
-                      "& input": { py: 1, fontSize: 14 },
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: (theme) => theme.sizes.radius,
-                      },
-                    }}
-                    placeholder="Tìm kiếm trong Weibo"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <IconButton sx={{ "& svg": { fontSize: 20 } }}>
-                            {icons.SearchIcon}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                ) : (
-                  <IconButton sx={{ "& svg": { fontSize: 20 } }}>
-                    {icons.SearchIcon}
-                  </IconButton>
-                )}
+                <TextField
+                  autoComplete="off"
+                  onClick={() => handleToggleAction("isSearchResult")}
+                  ref={searchResultRef}
+                  sx={{
+                    "& input": { py: 1, fontSize: 14 },
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: (theme) => theme.sizes.radius,
+                    },
+                  }}
+                  placeholder="Tìm kiếm trong Weibo"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconButton sx={{ "& svg": { fontSize: 20 } }}>
+                          {icons.SearchIcon}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  value={search}
+                  onChange={handleChangeSearch}
+                />
               </Box>
             </Stack>
 
@@ -151,7 +185,7 @@ const Header = () => {
                 onClick={() => handleRedirectProfile()}
                 sx={[
                   (theme) => ({
-                    [theme.breakpoints.down("mobile")]: {
+                    [theme.breakpoints.down("sm")]: {
                       display: "none",
                     },
                   }),
@@ -186,14 +220,14 @@ const Header = () => {
                 </Typography>
               </Box>
 
-              <Badge badgeContent={4} color="primary">
+              {/* <Badge badgeContent={4} color="primary">
                 <IconButtonStyle
                   ref={isNotificationRef}
                   onClick={() => handleToggleAction("isNotification")}
                 >
                   {icons.NotificationIcon}
                 </IconButtonStyle>
-              </Badge>
+              </Badge> */}
               <IconButtonStyle
                 ref={isSettingRef}
                 onClick={() => handleToggleAction("isSetting")}

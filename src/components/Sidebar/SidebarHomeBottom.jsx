@@ -77,7 +77,7 @@ const SidebarHomeBottom = () => {
             </Typography>
           ))}
           <MenuItemStyle
-            onClick={() => navigate(`${PATH_PAGE.profile.link}/hoang.locchoc`)}
+            onClick={() => navigate(`${PATH_PAGE.profile.link}/posts`)}
             sx={{ flex: 1 }}
           >
             <Avatar sx={{ width: 32, height: 32 }} src={user?.avatar?.url} />

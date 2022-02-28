@@ -65,6 +65,8 @@ const PostProfile = () => {
   const isAuth = !parsed.email ? true : false;
 
   const handleGetPost = async () => {
+    console.log("paginate", paginate);
+
     if (!paginate.hasNextPage) return;
     const response = await handleGetPostUser(
       paginate.page,
@@ -80,8 +82,10 @@ const PostProfile = () => {
 
   React.useEffect(() => {
     handleGetPost();
-  }, []);
+    return () => setPaginate(initialize);
+  }, [isAuth]);
 
+  console.log("userProfile", userProfile);
   const handleSubmitPost = async (form) => {
     try {
       handleToggleIsLoading(true);
@@ -323,6 +327,8 @@ const PostProfile = () => {
           sx={[
             (theme) => ({
               maxWidth: { xs: "inherit", sm: 430 },
+              minWidth: { xs: "inherit", md: 430 },
+              width: "100%",
               gap: 2,
             }),
           ]}
@@ -333,8 +339,9 @@ const PostProfile = () => {
             handleSubmitEditProfile={handleSubmitEditProfileCustom}
             handleToggleShowFollowers={handleToggleShowFollowers}
           />
-          <AlbumFriends />
-          <AlbumImage />
+
+          {/* <AlbumFriends /> */}
+          {/* <AlbumImage /> */}
         </Stack>
 
         <Stack

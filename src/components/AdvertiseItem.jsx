@@ -4,7 +4,7 @@ import { Stack, Box, Typography } from "@mui/material";
 const AdvertiseItem = ({ item }) => {
   return (
     <Stack
-      direction="row"
+      direction={item?.reverse ? "row-reverse" : "row"}
       alignItems="center"
       spacing={2}
       sx={{

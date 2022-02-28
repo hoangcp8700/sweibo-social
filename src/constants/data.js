@@ -5,7 +5,7 @@ import pcVN from "pc-vn";
 const sidebarHome = [
   { ...PATH_PAGE.home, icon: icons.HomeOutlineIcon },
   { ...PATH_PAGE.chat, icon: icons.ChatIcon },
-  { ...PATH_PAGE.friend, icon: icons.PeopleAltIcon },
+  // { ...PATH_PAGE.friend, icon: icons.PeopleAltIcon },
 ];
 
 const sidebarFriend = [

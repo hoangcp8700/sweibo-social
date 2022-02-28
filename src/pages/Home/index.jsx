@@ -123,7 +123,7 @@ const Home = () => {
           </Box>
           <Divider />
 
-          <Box>
+          {/* <Box>
             <Stack
               direction="row"
               justifyContent="space-between"
@@ -158,7 +158,7 @@ const Home = () => {
                 </Stack>
               ))}
             </Stack>
-          </Box>
+          </Box> */}
         </StickySidebar>
       </Stack>
 
