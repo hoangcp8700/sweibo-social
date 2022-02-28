@@ -43,7 +43,7 @@ const HeaderChat = (props) => {
                 },
               }}
             >
-              {icons.ArrowLeftIcon}
+              {icons.ArrowRightIcon}
             </IconButton>
           ) : (
             ""

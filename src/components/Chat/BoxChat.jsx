@@ -13,8 +13,18 @@ const BoxChat = React.forwardRef((props, ref) => {
       onScroll={onScroll}
       ref={ref}
       sx={{
-        maxHeight: (theme) => `calc(100vh - ${theme.sizes.header}px - 125px)`,
-        minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px - 125px)`,
+        maxHeight: (theme) => ({
+          xs: `calc(100vh - ${
+            theme.sizes.header + theme.sizes.sidebarBottom
+          }px - 125px)`,
+          sm2: `calc(100vh - ${theme.sizes.header}px - 125px)`,
+        }),
+        minHeight: (theme) => ({
+          xs: `calc(100vh - ${
+            theme.sizes.header + theme.sizes.sidebarBottom
+          }px - 125px)`,
+          sm2: `calc(100vh - ${theme.sizes.header}px - 125px)`,
+        }),
         overflowY: "auto",
         overflowX: "hidden",
         "&::-webkit-scrollbar-track": {

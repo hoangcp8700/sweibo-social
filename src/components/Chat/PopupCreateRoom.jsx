@@ -12,8 +12,8 @@ import {
   TextField,
 } from "@mui/material";
 import { MButton } from "components/MUI";
-import { LoadingEllipsisElement, LoadingEllipsis } from "components";
-import { useChat, useUser } from "hooks";
+import { LoadingEllipsis } from "components";
+import { useUser } from "hooks";
 
 import { icons } from "constants";
 

@@ -9,6 +9,7 @@ import {
   styled,
 } from "@mui/material";
 import { icons } from "constants";
+import { lineClampStyle } from "utils/lineClampStyle";
 
 const FriendSuggestionItem = ({ item }) => {
   return (
@@ -30,7 +31,7 @@ const FriendSuggestionItem = ({ item }) => {
       <Stack direction="row" alignItems="center" spacing={2}>
         <Avatar alt={item?.name} src={item?.avatar} />
 
-        <Typography variant="subtitle2" sx={{}}>
+        <Typography variant="subtitle2" sx={lineClampStyle(1)}>
           {item?.name}{" "}
         </Typography>
       </Stack>

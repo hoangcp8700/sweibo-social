@@ -1,9 +1,13 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Header from "../Header";
-import { Paper, Box } from "@mui/material";
+import { Box, useTheme, useMediaQuery } from "@mui/material";
+
+import SidebarHomeBottom from "../Sidebar/SidebarHomeBottom";
 
 const Main = () => {
+  const theme = useTheme();
+  const matches700 = useMediaQuery(theme.breakpoints.down("700"));
   return (
     <Box>
       <Header />
@@ -16,6 +20,14 @@ const Main = () => {
       >
         <Outlet />
       </Box>
+      {matches700 ? (
+        <>
+          <Box sx={{ height: (theme) => theme.sizes.sidebarBottom }} />
+          <SidebarHomeBottom />
+        </>
+      ) : (
+        ""
+      )}
     </Box>
   );
 };

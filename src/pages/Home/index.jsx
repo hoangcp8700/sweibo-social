@@ -55,7 +55,7 @@ const Home = () => {
                 xs: theme.sizes.sidebar - 100,
                 lg: theme.sizes.sidebar,
               },
-              [theme.breakpoints.down("md")]: {
+              [theme.breakpoints.down("700")]: {
                 display: "none",
               },
             }),
@@ -63,6 +63,7 @@ const Home = () => {
           contentStyle={{ px: 1, pb: 2 }}
         >
           <SidebarHome />
+
           <Divider sx={{ my: 1 }} />
           <FriendSuggestion lists={users} />
         </StickySidebar>
@@ -83,12 +84,12 @@ const Home = () => {
             ]}
           >
             <Stack spacing={3}>
-              <History
+              {/* <History
                 isHistory={true}
                 handleClick={(item) => console.log("seen history", item)}
                 users={users}
                 maxWidth="calc(100vw - 65px)"
-              />
+              /> */}
               <Box>
                 <Outlet />
               </Box>

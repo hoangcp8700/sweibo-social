@@ -11,7 +11,6 @@ import {
   InputAdornment,
   Paper,
   Typography,
-  Drawer,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
@@ -32,7 +31,7 @@ import {
 } from "components";
 import { icons } from "constants";
 import { useChat, useAuth } from "hooks";
-
+import { MDrawer } from "components/MUI";
 const initialize = {
   page: 1,
   hasNextPage: true,
@@ -141,6 +140,19 @@ const Chat = () => {
   React.useEffect(() => {
     if (!socket || !user) return;
     socket.current.emit("addUser", user?._id);
+    socket.current.on("getRoom", ({ room, participants }) => {
+      const connectRoom = participants.includes(user?._id);
+      console.log("getRoom", room, participants, user?.email);
+
+      if (connectRoom) {
+        socket.current.emit("joinRoom", { user, roomID: room?._id });
+        setPaginateRoom((prev) => ({
+          ...prev,
+          data: [room, ...prev.data],
+          totalLength: prev.totalLength + 1,
+        }));
+      }
+    });
     socket.current.on("getUsers", (data) => console.log("getUsers", data));
     socket.current.on("getUpdateRoom", ({ room }) => {
       console.log("getUpdateRoom", room);
@@ -230,10 +242,9 @@ const Chat = () => {
   const handleSubmitCreateRoomCustom = async (form) => {
     const response = await handleAddRoom(form);
     if (response) {
-      setPaginateRoom({
-        ...paginateRoom,
-        data: [response, ...paginateRoom.data],
-        totalLength: paginateRoom.totalLength + 1,
+      socket.current.emit("createRoom", {
+        room: response,
+        participants: [...form.participants, user?._id],
       });
     }
   };
@@ -327,7 +338,17 @@ const Chat = () => {
   };
 
   return (
-    <Box sx={{ overflowX: "hidden" }}>
+    <Box
+      sx={{
+        overflowX: "hidden",
+        height: (theme) => ({
+          xs: `calc(100vh - ${
+            theme.sizes.sidebarBottom + theme.sizes.header
+          }px)`,
+          sm2: `inherit`,
+        }),
+      }}
+    >
       <PopupShowParticipants
         roomID={room?._id}
         open={isShowPariticipants}
@@ -375,11 +396,12 @@ const Chat = () => {
         direction="row"
         sx={{
           gap: { xs: 0, md: 1 },
+          height: "100%",
         }}
         alignItems="flex-start"
       >
         {matchesSM ? (
-          <Drawer
+          <MDrawer
             anchor="left"
             open={isSidebarLeft}
             onClose={handleToggleSidebarLeft}
@@ -387,13 +409,16 @@ const Chat = () => {
             <Paper
               sx={{
                 maxWidth: theme.sizes.sidebar - 100,
-                height: "100%",
-                bgcolor: "background.navbar",
                 pb: 3,
-                minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
+                // minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
               }}
             >
-              <Stack sx={{ p: (theme) => theme.spacing(1, 1, 2), gap: 1 }}>
+              <Stack
+                sx={{
+                  p: (theme) => theme.spacing(1, 1, 2),
+                  gap: 1,
+                }}
+              >
                 <SidebarHeader
                   title="Tin nhắn"
                   handleToggleSidebar={handleToggleSidebarLeft}
@@ -445,7 +470,7 @@ const Chat = () => {
                 />
               ))}
             </Paper>
-          </Drawer>
+          </MDrawer>
         ) : (
           <StickySidebar
             sx={{
@@ -453,13 +478,26 @@ const Chat = () => {
               transform: isSidebarLeft
                 ? `translate3d(0px, 0px, 0px)`
                 : `translate3d(-100%, 0px, 0px)`,
+              bgcolor: "background.navbar",
+              "& .content-scroll": {
+                maxHeight: (theme) => ({
+                  xs: `calc(100vh - ${
+                    theme.sizes.sidebarBottom + theme.sizes.header
+                  }px)!important`,
+                  sm2: `calc(100vh - ${theme.sizes.header}px)!important`,
+                }),
+              },
             }}
           >
-            <Paper
+            <Box
               sx={{
-                bgcolor: "background.navbar",
                 pb: 3,
-                minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
+                minHeight: (theme) => ({
+                  xs: `calc(100vh - ${
+                    theme.sizes.header + theme.sizes.sidebarBottom
+                  }px)`,
+                  sm2: `calc(100vh - ${theme.sizes.header}px)`,
+                }),
               }}
             >
               <Stack sx={{ p: (theme) => theme.spacing(1, 1, 2), gap: 1 }}>
@@ -511,7 +549,7 @@ const Chat = () => {
                   active={(room && room?._id === item?._id) || false}
                 />
               ))}
-            </Paper>
+            </Box>
           </StickySidebar>
         )}
 
@@ -529,7 +567,7 @@ const Chat = () => {
                   xs: `translateX(0px)`,
                   sm: isSidebarLeft ? `translateX(0px)` : `translateX(-250px)`,
                 },
-                minWidth: !isSidebarLeft ? `100%` : `inherit`,
+                minWidth: !isSidebarLeft ? `100%` : 350,
               }),
             ]}
           >
@@ -569,7 +607,7 @@ const Chat = () => {
             </Stack>
 
             {matchesMD ? (
-              <Drawer
+              <MDrawer
                 anchor="right"
                 open={isSidebarContent}
                 onClose={handleToggleSidebarContent}
@@ -594,7 +632,7 @@ const Chat = () => {
                     }
                   />
                 </Stack>
-              </Drawer>
+              </MDrawer>
             ) : (
               <Stack
                 sx={{
@@ -634,7 +672,12 @@ const Chat = () => {
               justifyContent: "center",
               alignItems: "center",
               flexGrow: 1,
-              height: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
+              height: (theme) => ({
+                xs: `calc(100vh - ${
+                  theme.sizes.header + theme.sizes.sidebarBottom
+                }px)`,
+                sm2: `calc(100vh - ${theme.sizes.header}px)`,
+              }),
             }}
           >
             <Typography onClick={handleToggleSidebarLeft}>
