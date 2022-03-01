@@ -120,6 +120,7 @@ const Chat = () => {
   React.useEffect(() => {
     handleGetRoomsCustom();
     socket.current = io(process.env.REACT_APP_API_URL_SOCKET);
+    console.log("socket realtime", socket);
   }, []);
 
   // get messages of room

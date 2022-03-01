@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const ENDPOINT = "http://localhost:5000/api";
+const ENDPOINT = `${process.env.REACT_APP_API_URL}api`;
 
 const axiosInstance = axios.create({
   baseURL: ENDPOINT,
