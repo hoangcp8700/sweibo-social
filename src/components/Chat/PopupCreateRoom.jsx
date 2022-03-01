@@ -126,7 +126,7 @@ export default function PopupCreateRoom(props) {
         <Stack spacing={2}>
           <Stack spacing={1}>
             <Typography variant="subtitle2">
-              Tên nhóm ( Không băt buộc )
+              Tên nhóm ( Không bắt buộc )
             </Typography>
 
             <TextField
@@ -157,6 +157,10 @@ export default function PopupCreateRoom(props) {
                 "& .searchWrapper ": { minHeight: 100 },
                 "& .chip": { bgcolor: "primary.main" },
                 "& .searchBox": { color: "text.primary", px: 1 },
+                "& input::placeholder": {
+                  color: "grey.300",
+                  fontSize: 14,
+                },
               }}
             >
               <Multiselect

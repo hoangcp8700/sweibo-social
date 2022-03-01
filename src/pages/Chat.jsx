@@ -102,7 +102,6 @@ const Chat = () => {
         roomID
       );
 
-      console.log("get message", response);
       setPaginateMessage({
         page: response.next,
         hasNextPage: response.hasNextPage,
@@ -119,10 +118,7 @@ const Chat = () => {
 
   React.useEffect(() => {
     handleGetRoomsCustom();
-    socket.current = io(process.env.REACT_APP_API_URL, {
-      path: process.env.REACT_APP_API_URL_SOCKET,
-    });
-    console.log("socket realtime", socket);
+    socket.current = io(process.env.REACT_APP_API_URL_SOCKET);
   }, []);
 
   // get messages of room
@@ -145,7 +141,6 @@ const Chat = () => {
     socket.current.emit("addUser", user?._id);
     socket.current.on("getRoom", ({ room, participants }) => {
       const connectRoom = participants.includes(user?._id);
-      console.log("getRoom", room, participants, user?.email);
 
       if (connectRoom) {
         socket.current.emit("joinRoom", { user, roomID: room?._id });
@@ -156,9 +151,9 @@ const Chat = () => {
         }));
       }
     });
-    socket.current.on("getUsers", (data) => console.log("getUsers", data));
+    // socket.current.on("getUsers", (data) => console.log("getUsers", data));
     socket.current.on("getUpdateRoom", ({ room }) => {
-      console.log("getUpdateRoom", room);
+      // console.log("getUpdateRoom", room);
 
       setPaginateRoom((prev) => {
         const newRoom = prev.data.map((item) => {
@@ -188,7 +183,7 @@ const Chat = () => {
     });
 
     socket.current.on("getMessage", (data) => {
-      console.log("getMessage", data);
+      // console.log("getMessage", data);
 
       setPaginateMessage((prev) => ({
         ...prev,
@@ -568,7 +563,7 @@ const Chat = () => {
                 transition: "all 0.5s ease 0s",
                 transform: {
                   xs: `translateX(0px)`,
-                  sm: isSidebarLeft ? `translateX(0px)` : `translateX(-250px)`,
+                  sm: isSidebarLeft ? `translateX(0px)` : `translateX(-235px)`,
                 },
                 minWidth: !isSidebarLeft ? `100%` : 350,
               }),

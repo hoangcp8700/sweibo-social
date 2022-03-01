@@ -6,7 +6,7 @@ const useChat = () => {
     try {
       const link = `?page=${page}`;
       const response = await axios.get(`${routes.rooms().get}${link}`);
-      console.log("handleGetRooms", response);
+      // console.log("handleGetRooms", response);
       return response.data;
     } catch (error) {
       console.log("err", error);
@@ -26,7 +26,7 @@ const useChat = () => {
   const handleAddRoom = async (form) => {
     try {
       const response = await axios.post(routes.rooms().get, form);
-      console.log("handleAddRoom", response);
+      // console.log("handleAddRoom", response);
       return response.data.data;
     } catch (error) {
       console.log("err", error);
@@ -37,7 +37,7 @@ const useChat = () => {
   const handleUpdateRoom = async (form, roomID) => {
     try {
       const response = await axios.put(routes.rooms(roomID).getByID, form);
-      console.log("handleUpdateRoom", response);
+      // console.log("handleUpdateRoom", response);
       return response.data;
     } catch (error) {
       console.log("err", error);
@@ -48,7 +48,7 @@ const useChat = () => {
   const handleDeleteRoom = async (roomID) => {
     try {
       const response = await axios.delete(routes.rooms(roomID).getByID);
-      console.log("handleDeleteRoom", response);
+      // console.log("handleDeleteRoom", response);
       return response.data;
     } catch (error) {
       console.log("err", error);
@@ -70,7 +70,7 @@ const useChat = () => {
   const handleAddMessage = async (form, roomID) => {
     try {
       const response = await axios.post(routes.messages(roomID).get, form);
-      console.log("handleAddMessage", response);
+      // console.log("handleAddMessage", response);
       return response.data;
     } catch (error) {
       console.log("err", error);

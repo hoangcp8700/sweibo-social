@@ -44,7 +44,11 @@ const InputCreatePost = (props) => {
               },
             },
           }}
-          placeholder="Hoàng ơi, bạn đang nghĩ gì thế"
+          placeholder={`${
+            user?.firstName && user?.lastName
+              ? `${user?.firstName} ${user?.lastName}`
+              : "Bạn"
+          } ơi, bạn đang nghĩ gì thế`}
         />
       </Stack>
     </Paper>

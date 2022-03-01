@@ -48,11 +48,11 @@ const BoxChat = React.forwardRef((props, ref) => {
       <Stack sx={{ p: 1, gap: 1, flexDirection: "column-reverse" }}>
         {paginateMessage?.totalLength > 0
           ? paginateMessage?.data?.map((item, index) => {
-              userBefore = paginateMessage.data[index - 1];
+              userBefore = paginateMessage?.data[index - 1];
               let isGroup;
               if (
-                item.sender._id === userBefore?.sender?._id &&
-                !item.isNotification &&
+                item?.sender?._id === userBefore?.sender?._id &&
+                !item?.isNotification &&
                 !userBefore?.isNotification
               ) {
                 isGroup = true;
