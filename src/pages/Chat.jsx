@@ -117,6 +117,7 @@ const Chat = () => {
   );
 
   React.useEffect(() => {
+    if (!user) return;
     handleGetRoomsCustom();
     socket.current = io(process.env.REACT_APP_API_URL_SOCKET);
 
