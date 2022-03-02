@@ -60,20 +60,24 @@ const AvatarGroupComponent = ({
         styleContainer,
       ]}
     >
-      {images?.length
-        ? images.map((item) => (
-            <Avatar
-              key={item._id}
-              src={
-                item?.userID?.avatar?.url ||
-                `${process.env.PUBLIC_URL}/weibo32.png`
-              }
-            >
-              {item?.userID?.firstName.charAt(0)}{" "}
-              {item?.userID?.lastName.charAt(0)}
-            </Avatar>
-          ))
-        : ""}
+      {images?.length ? (
+        images.map((item) => (
+          <Avatar
+            key={item._id}
+            src={
+              item?.userID?.avatar?.url ||
+              `${process.env.PUBLIC_URL}/weibo64.png`
+            }
+          >
+            {item?.userID?.firstName.charAt(0)}{" "}
+            {item?.userID?.lastName.charAt(0)}
+          </Avatar>
+        ))
+      ) : (
+        <Box sx={{ bgcolor: "common.white", borderRadius: "50%" }}>
+          <Avatar src={`${process.env.PUBLIC_URL}/weibo64.png`} />
+        </Box>
+      )}
     </AvatarGroup>
   );
 };

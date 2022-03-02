@@ -404,76 +404,80 @@ const Chat = () => {
         alignItems="flex-start"
       >
         {matchesSM ? (
-          <MDrawer
-            anchor="left"
-            open={isSidebarLeft}
-            onClose={handleToggleSidebarLeft}
-          >
-            <Paper
-              sx={{
-                maxWidth: theme.sizes.sidebar - 100,
-                pb: 3,
-                // minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
-              }}
+          <>
+            <MDrawer
+              anchor="left"
+              open={isSidebarLeft}
+              onClose={handleToggleSidebarLeft}
             >
-              <Stack
+              <Paper
                 sx={{
-                  p: (theme) => theme.spacing(1, 1, 2),
-                  gap: 1,
+                  maxWidth: theme.sizes.sidebar - 100,
+                  pb: 3,
+                  height: "100%",
+                  bgcolor: "background.navbar",
+                  // minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
                 }}
               >
-                <SidebarHeader
-                  title="Tin nhắn"
-                  handleToggleSidebar={handleToggleSidebarLeft}
+                <Stack
+                  sx={{
+                    p: (theme) => theme.spacing(1, 1, 2),
+                    gap: 1,
+                  }}
                 >
-                  <IconButton
-                    sx={{
-                      bgcolor: "background.opacity",
-                      "& svg": { fontSize: 18 },
-                    }}
-                    onClick={() => handleActions("create-room")}
+                  <SidebarHeader
+                    title="Tin nhắn"
+                    handleToggleSidebar={handleToggleSidebarLeft}
                   >
-                    {icons.AddIcon}
-                  </IconButton>
-                </SidebarHeader>
+                    <IconButton
+                      sx={{
+                        bgcolor: "background.opacity",
+                        "& svg": { fontSize: 18 },
+                      }}
+                      onClick={() => handleActions("create-room")}
+                    >
+                      {icons.AddIcon}
+                    </IconButton>
+                  </SidebarHeader>
 
-                <Box>
-                  <TextField
-                    sx={{
-                      width: "100%",
-                      "& input": { py: 1, fontSize: 14 },
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: (theme) => theme.sizes.radius,
-                      },
-                    }}
-                    placeholder="Tìm kiếm tin nhắn"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <IconButton sx={{ "& svg": { fontSize: 20 } }}>
-                            {icons.SearchIcon}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
+                  <Box>
+                    <TextField
+                      sx={{
+                        width: "100%",
+                        "& input": { py: 1, fontSize: 14 },
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: (theme) => theme.sizes.radius,
+                        },
+                      }}
+                      placeholder="Tìm kiếm tin nhắn"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <IconButton sx={{ "& svg": { fontSize: 20 } }}>
+                              {icons.SearchIcon}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Box>
+                </Stack>
+
+                <Divider />
+
+                {paginateRoom?.data?.map((item) => (
+                  <RoomItem
+                    key={item._id}
+                    item={item}
+                    handleGetRoomById={(roomID) =>
+                      handleGetRoomByIdCustom(roomID, true)
+                    }
+                    active={(room && room?._id === item?._id) || false}
                   />
-                </Box>
-              </Stack>
-
-              <Divider />
-
-              {paginateRoom?.data?.map((item) => (
-                <RoomItem
-                  key={item._id}
-                  item={item}
-                  handleGetRoomById={(roomID) =>
-                    handleGetRoomByIdCustom(roomID, true)
-                  }
-                  active={(room && room?._id === item?._id) || false}
-                />
-              ))}
-            </Paper>
-          </MDrawer>
+                ))}
+              </Paper>
+            </MDrawer>
+          </>
         ) : (
           <StickySidebar
             sx={{
@@ -565,11 +569,15 @@ const Chat = () => {
                 height: "100%",
                 maxHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
                 overflow: "hidden",
-                transition: "all 0.5s ease 0s",
-                transform: {
-                  xs: `translateX(0px)`,
-                  sm: isSidebarLeft ? `translateX(0px)` : `translateX(-200px)`,
-                },
+                // transition: "all 0.5s ease 0s",
+                // transform: {
+                //   xs: `translateX(0px)`,
+                //   sm: isSidebarLeft ? `translateX(0px)` : `translateX(-200px)`,
+                // },
+                transform:
+                  isSidebarLeft || matchesSM
+                    ? `translateX(0px)`
+                    : `translateX(-240px)`,
                 minWidth: !isSidebarLeft ? `100%` : 350,
               }),
             ]}
@@ -683,7 +691,13 @@ const Chat = () => {
               }),
             }}
           >
-            <Typography onClick={handleToggleSidebarLeft}>
+            <Typography
+              onClick={handleToggleSidebarLeft}
+              sx={{
+                cursor: "pointer",
+                "&:hover": { textDecoration: "underline" },
+              }}
+            >
               Chọn một ai đó để trò chuyện
             </Typography>
           </Stack>

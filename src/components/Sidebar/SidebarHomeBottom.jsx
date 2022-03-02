@@ -22,7 +22,7 @@ const MenuItemStyle = styled(MenuItem)(({ active, theme }) => ({
   borderRadius: theme.sizes.base,
   justifyContent: "center",
   backgroundColor:
-    active === "true" ? theme.palette.background.opacity : "none",
+    active === "true" ? theme.palette.background.opacity : "transparent",
   "&:hover": {
     backgroundColor: theme.palette.background.opacity,
   },
@@ -49,35 +49,45 @@ const SidebarHomeBottom = () => {
         <MenuList
           sx={{ display: "flex", flexDirection: "row", p: 0, gap: 0.2 }}
         >
-          {data.sidebarHome.map((item, index) => (
-            <Typography
-              key={`${item.label}-${index}`}
-              component={Link}
-              to={item.path}
-              sx={{ flex: 1 }}
-            >
-              <MenuItemStyle
-                active={location.pathname === item.path ? "true" : "false"}
+          {data.sidebarHome.map((item, index) => {
+            const match = location.pathname === item.path;
+
+            return (
+              <Typography
+                key={`${item.label}-${index}`}
+                component={Link}
+                to={item.path}
+                sx={{ flex: 1 }}
               >
-                <ListItemIcon
-                  sx={{ "& svg": { fontSize: 26 }, minWidth: "26px!important" }}
-                >
-                  {item.icon}
-                </ListItemIcon>
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    color: "text.primary",
-                    display: { xs: "none", mobile: "block" },
-                  }}
-                >
-                  {item?.title}{" "}
-                </Typography>
-              </MenuItemStyle>
-            </Typography>
-          ))}
+                <MenuItemStyle active={match ? "true" : "false"}>
+                  <ListItemIcon
+                    sx={{
+                      "& svg": { fontSize: 26 },
+                      minWidth: "26px!important",
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      color: "text.primary",
+                      display: { xs: "none", mobile: "block" },
+                    }}
+                  >
+                    {item?.title}{" "}
+                  </Typography>
+                </MenuItemStyle>
+              </Typography>
+            );
+          })}
           <MenuItemStyle
-            onClick={() => navigate(`${PATH_PAGE.profile.link}/posts`)}
+            active={
+              location.pathname.includes(`/${PATH_PAGE.profile.link}`)
+                ? "true"
+                : "false"
+            }
+            onClick={() => navigate(`/${PATH_PAGE.profile.link}/posts`)}
             sx={{ flex: 1 }}
           >
             <Avatar sx={{ width: 32, height: 32 }} src={user?.avatar?.url} />
