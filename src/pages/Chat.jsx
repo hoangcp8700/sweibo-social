@@ -568,7 +568,7 @@ const Chat = () => {
                 transition: "all 0.5s ease 0s",
                 transform: {
                   xs: `translateX(0px)`,
-                  sm: isSidebarLeft ? `translateX(0px)` : `translateX(-235px)`,
+                  sm: isSidebarLeft ? `translateX(0px)` : `translateX(-200px)`,
                 },
                 minWidth: !isSidebarLeft ? `100%` : 350,
               }),
