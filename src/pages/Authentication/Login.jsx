@@ -120,6 +120,7 @@ const Login = () => {
 
           <Stack spacing={2} sx={{ mt: 3 }}>
             <TextFieldStyle
+              autoComplete="off"
               value={values.userName}
               {...getFieldProps("userName")}
               error={Boolean(touched.userName && errors.userName)}
