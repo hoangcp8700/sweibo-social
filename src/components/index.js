@@ -63,3 +63,4 @@ export { default as Masonry } from "./Masonry";
 export { default as ImageLightBox } from "./ImageLightBox";
 export { default as PopupMenu } from "./PopupMenu";
 export { default as PopupAgainDelete } from "./PopupAgainDelete";
+export { default as PopupAccountTest } from "./PopupAccountTest";

@@ -20,15 +20,23 @@ import { icons } from "constants";
 import { Link, useNavigate } from "react-router-dom";
 import { PATH_AUTH, PATH_PAGE } from "constants/paths";
 import { useAuth } from "hooks";
+import { PopupAccountTest } from "components";
 
 const TextFieldStyle = styled(TextField)(({ theme }) => ({
   width: "100%",
   "& input": { padding: theme.spacing(1.5, 3), fontSize: 14 },
 }));
 
-const ButtonSocial = ({ icon, title, ...props }) => {
+const ButtonSocial = ({ icon, title, img, ...props }) => {
   return (
     <MButton startIcon={icon} sx={{ py: 1.5 }} {...props}>
+      {img ? (
+        <Box sx={{ width: 24, height: 24, mr: 1 }}>
+          <img src={img} alt="icon" />
+        </Box>
+      ) : (
+        ""
+      )}
       <Typography variant="subtitle2" sx={{ color: "common.black" }}>
         {title}
       </Typography>
@@ -41,6 +49,13 @@ const initialize = {
   password: "",
 };
 
+const accountsTest = [
+  { id: 1, userName: "test1@gmail.com", password: "123123" },
+  { id: 2, userName: "test2@gmail.com", password: "123123" },
+  { id: 3, userName: "test3@gmail.com", password: "123123" },
+  { id: 4, userName: "test4@gmail.com", password: "123123" },
+  { id: 5, userName: "test5@gmail.com", password: "123123" },
+];
 const schema = Yup.object().shape({
   userName: Yup.string().required("Yêu cầu nhập nhập email hoặc số điện thoại"),
   password: Yup.string().required("Yêu cầu nhập mật khẩu"),
@@ -54,6 +69,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const { handleLogin } = useAuth();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [openAccountTest, setOpenAccountTest] = React.useState(false);
 
   const formik = useFormik({
     initialValues: initialize,
@@ -79,14 +95,40 @@ const Login = () => {
     },
   });
 
-  const { errors, values, touched, handleSubmit, getFieldProps } = formik;
+  const {
+    errors,
+    values,
+    touched,
+    handleSubmit,
+    getFieldProps,
+    setFieldValue,
+  } = formik;
 
   const handleLoginSocial = (name) => {
     window.open(`${process.env.REACT_APP_API_URL}/auth/${name}`, "_self");
   };
 
+  const handleShowAccountTest = () => setOpenAccountTest(!openAccountTest);
+
+  const handleSubmitAccountTest = async (accountID) => {
+    const getAccount = accountsTest.filter((item) => item?.id === accountID);
+    if (getAccount.length) {
+      await setFieldValue("userName", getAccount[0].userName);
+      await setFieldValue("password", getAccount[0].password);
+      await handleSubmit();
+      return handleShowAccountTest();
+    }
+  };
+
   return (
     <Box sx={{ px: 5, pb: 5, pt: 3 }}>
+      <PopupAccountTest
+        open={openAccountTest}
+        onClose={handleShowAccountTest}
+        accounts={accountsTest}
+        onClick={handleSubmitAccountTest}
+      />
+
       <Stack>
         <Box sx={{ width: "fit-content" }}>
           <Typography variant="h4" sx={{ mb: -0.5 }}>
@@ -139,17 +181,22 @@ const Login = () => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      sx={{
-                        "& svg": {
-                          fontSize: 20,
-                          fill: (theme) => theme.palette.background.opacity3,
-                        },
-                      }}
-                    >
-                      {showPassword ? icons.EyeOnIcon : icons.EyeOffIcon}
-                    </IconButton>
+                    {values.password ? (
+                      <IconButton
+                        disabled={isSubmitting}
+                        onClick={() => setShowPassword(!showPassword)}
+                        sx={{
+                          "& svg": {
+                            fontSize: 20,
+                            fill: (theme) => theme.palette.background.opacity3,
+                          },
+                        }}
+                      >
+                        {showPassword ? icons.EyeOnIcon : icons.EyeOffIcon}
+                      </IconButton>
+                    ) : (
+                      ""
+                    )}
                   </InputAdornment>
                 ),
               }}
@@ -194,6 +241,11 @@ const Login = () => {
       </Divider>
 
       <Stack sx={{ justifyContent: "flex-start", mt: 1 }}>
+        <ButtonSocial
+          onClick={handleShowAccountTest}
+          img={`${process.env.PUBLIC_URL}/weibo64.png`}
+          title={`Tài khoản trải nghiệm`}
+        />
         <ButtonSocial
           onClick={() => handleLoginSocial("google")}
           icon={icons.GoogleIcon}
