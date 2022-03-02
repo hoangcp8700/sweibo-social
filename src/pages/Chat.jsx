@@ -122,8 +122,7 @@ const Chat = () => {
     socket.current = io(process.env.REACT_APP_API_URL_SOCKET);
 
     return () => {
-      io.disconnect()
-      socket.current = null
+      socket.current.disconnect();
     };
   }, [user]);
 
