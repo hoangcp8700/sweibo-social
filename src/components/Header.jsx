@@ -150,7 +150,7 @@ const Header = () => {
                 component={Link}
                 to={PATH_PAGE.home.path}
               >
-                Weibo
+                {process.env.REACT_APP_LOGO_NAME}
               </Typography>
 
               <Box>

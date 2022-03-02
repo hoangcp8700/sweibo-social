@@ -1,0 +1,55 @@
+.error__wrapper {
+  background: #000000;
+  text-align: center;
+  color: #e0e0e0;
+  font-family: "Fira Mono", monospace;
+}
+.error__wrapper h1 {
+  font-size: 2.5rem;
+  font-family: "Permanent Marker", cursive;
+}
+.error__wrapper div {
+  transform-style: preserve-3d;
+}
+.error__wrapper svg {
+  width: clamp(300px, 70%, 600px);
+  height: 500px;
+}
+.error__wrapper #rocket {
+  transform: translateY(750px);
+  animation: launch 2s ease-out forwards;
+}
+
+@keyframes launch {
+  from {
+    transform: translateY(750px);
+  }
+  to {
+    perspective: 500px;
+    transform: translateY(0px);
+  }
+}
+.error__wrapper #stars {
+  animation: twinkling 2s linear;
+}
+@keyframes twinkling {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.error__wrapper .text {
+  opacity: 0;
+  animation: appear 1s ease-in forwards;
+  animation-delay: 1.8s;
+}
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
