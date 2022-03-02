@@ -21,7 +21,7 @@ const OAuth2 = () => {
 
     setTimeout(() => {
       navigate(PATH_PAGE.home.path);
-    }, 1000);
+    }, 3000);
   }, [params, location, navigate, setSession]);
 
   return (
