@@ -36,6 +36,7 @@ import CakeIcon from "@mui/icons-material/Cake";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
+import DoneIcon from "@mui/icons-material/Done";
 
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PersonIcon from "@mui/icons-material/Person";
@@ -197,4 +198,5 @@ export default {
   DonutSmallIcon: <DonutSmallIcon />,
   FaceIcon: <FaceIcon />,
   DeleteSweepIcon: <DeleteSweepIcon />,
+  DoneIcon: <DoneIcon />,
 };
