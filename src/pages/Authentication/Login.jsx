@@ -128,6 +128,7 @@ const Login = () => {
             />
 
             <TextFieldStyle
+              autoComplete="current-password"
               value={values.password}
               {...getFieldProps("password")}
               error={Boolean(touched.password && errors.password)}
