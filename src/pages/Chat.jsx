@@ -119,7 +119,11 @@ const Chat = () => {
   React.useEffect(() => {
     handleGetRoomsCustom();
     socket.current = io(process.env.REACT_APP_API_URL_SOCKET);
-  }, []);
+
+    return () => {
+      socket.current.emit("disconnect");
+    };
+  }, [user]);
 
   // get messages of room
   React.useEffect(() => {
