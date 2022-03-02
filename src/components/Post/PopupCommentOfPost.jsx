@@ -27,7 +27,6 @@ const initialize = {
   hasNextPage: true,
   data: [],
   totalLength: 0,
-  isLoading: false,
 };
 
 export default function PopupCommentOfPost(props) {
@@ -35,6 +34,8 @@ export default function PopupCommentOfPost(props) {
   const { user } = useAuth();
 
   const [paginate, setPaginate] = React.useState(initialize); // COMMENTS
+  const [loading, setLoading] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false);
   const [form, setForm] = React.useState({ comment: "" });
   const [editCommentID, setEditCommentID] = React.useState(null);
 
@@ -47,16 +48,15 @@ export default function PopupCommentOfPost(props) {
 
   const handleGetCommentsCustom = React.useCallback(async () => {
     if (!paginate.hasNextPage) return;
-    setPaginate({ ...paginate, isLoading: true });
+    setLoading(true);
     const response = await handleGetComments(paginate.page, postID);
-    console.log("handleGetCommentsCustom", response);
     setPaginate({
       page: response.next,
       hasNextPage: response.hasNextPage,
       data: [...response.data, ...paginate.data],
       totalLength: response.totalLength,
-      isLoading: false,
     });
+    setLoading(false);
   }, [paginate, postID]);
 
   React.useEffect(() => {
@@ -72,7 +72,12 @@ export default function PopupCommentOfPost(props) {
 
   const handleSubmitComment = React.useCallback(async () => {
     if (!form.comment) return;
+    if (submitting) return;
+
+    setSubmitting(true);
     const response = await handleCreateComment(form.comment, postID);
+    setSubmitting(false);
+
     if (response) {
       setPaginate({
         ...paginate,
@@ -86,7 +91,11 @@ export default function PopupCommentOfPost(props) {
   }, [form, paginate, postID]);
 
   const handleSubmitEditCommentCustom = async (content, commentID) => {
+    if (submitting) return;
+    setSubmitting(true);
     const response = await handleSubmitEditComment(content, postID, commentID);
+    setSubmitting(false);
+
     const newPaginate = {
       ...paginate,
       data: paginate.data.map((item) => {
@@ -154,6 +163,7 @@ export default function PopupCommentOfPost(props) {
         <DialogContent
           sx={{
             maxHeight: 580,
+            minHeight: 400,
             "&::-webkit-scrollbar-track": {
               // boxShadow: "inset 0 0 6px rgba(0,0,0,0.3)",
               borderRadius: "10px",
@@ -171,7 +181,20 @@ export default function PopupCommentOfPost(props) {
             },
           }}
         >
-          {paginate?.hasNextPage ? (
+          {loading ? (
+            <Box
+              sx={{
+                "& .lds-ellipsis": {
+                  width: 30,
+                  height: 30,
+                  pr: 9,
+                  "& div": { width: 8, height: 8, top: 15 },
+                },
+              }}
+            >
+              <LoadingEllipsisElement />
+            </Box>
+          ) : paginate?.hasNextPage ? (
             <Box sx={{ mt: 2 }}>
               <Typography
                 onClick={handleGetCommentsCustom}
@@ -186,26 +209,10 @@ export default function PopupCommentOfPost(props) {
             </Box>
           ) : paginate?.totalLength > 0 ? (
             <Typography variant="body2">
-              Tổng cộng có {paginate?.totalLength} bình luận
+              Có tất cả {paginate?.totalLength} bình luận
             </Typography>
           ) : (
             <Typography variant="body2">Chưa có bình luận nào</Typography>
-          )}
-
-          {paginate?.isLoading ? (
-            <Box
-              sx={{
-                "& .lds-ellipsis": {
-                  width: 30,
-                  height: 30,
-                  "& div": { width: 8, height: 8, top: 15 },
-                },
-              }}
-            >
-              <LoadingEllipsisElement />
-            </Box>
-          ) : (
-            ""
           )}
           <Stack spacing={2} sx={{ pt: 2, pb: 8 }}>
             {paginate?.data?.length
@@ -236,6 +243,7 @@ export default function PopupCommentOfPost(props) {
 
         {/* // input create comment */}
         <InputCreateComment
+          submitting={submitting}
           form={form}
           user={user}
           onKeyDown={(e) => e.key === "Enter" && handleSubmitComment(postID)}

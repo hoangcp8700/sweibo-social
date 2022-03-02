@@ -27,20 +27,19 @@ import {
   PopupMenu,
 } from "components";
 
-const AvatarGroupStyle = styled(AvatarGroup)(() => ({
-  "& .MuiAvatar-root": {
-    width: 32,
-    height: 32,
-    fontSize: 12,
-    fontWeight: 700,
-  },
-}));
-
 const ButtonFriend = React.forwardRef((props, ref) => {
-  const { icon = icons.PersonIcon, sx, label, ...restProps } = props;
+  const {
+    icon = icons.PersonIcon,
+    submitting,
+    sx,
+    label,
+    ...restProps
+  } = props;
   return (
     <MButton
       ref={ref}
+      loading={submitting}
+      disabled={submitting}
       startIcon={icon}
       variant="contained"
       sx={{
@@ -59,10 +58,12 @@ const ButtonFriend = React.forwardRef((props, ref) => {
 });
 
 const ActionFriend = (props) => {
-  const { titleLeft, titleRight, onAccept, onCancel } = props;
+  const { titleLeft, titleRight, subbmitting, onAccept, onCancel } = props;
   return (
     <Stack direction="row-reverse" sx={{ flexWrap: "wrap", gap: 1 }}>
       <MButton
+        loading={subbmitting}
+        disabled={subbmitting}
         variant="contained"
         color="primary"
         sx={{ py: 0.5 }}
@@ -70,13 +71,20 @@ const ActionFriend = (props) => {
       >
         {titleLeft}
       </MButton>
-      <MButton variant="cancel" sx={{ py: 0.5 }} onClick={onCancel}>
+      <MButton
+        loading={subbmitting}
+        disabled={subbmitting}
+        variant="cancel"
+        sx={{ py: 0.5 }}
+        onClick={onCancel}
+      >
         {titleRight}
       </MButton>
     </Stack>
   );
 };
 
+let userProfile;
 const Profile = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -108,6 +116,7 @@ const Profile = () => {
   const [thumbnaiLoading, setThumbnaiLoading] = React.useState(false);
   const [isOpenAvatar, setIsOpenAvatar] = React.useState(false);
   const [isOpenFriendMenu, setIsOpenFriendMenu] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false);
 
   const [relationshipFriend, setRelationshipFriend] = React.useState(null);
   const [openAgainDelete, setOpenAgainDelete] = React.useState({
@@ -116,32 +125,36 @@ const Profile = () => {
     message: "",
   });
 
-  // const [userProfile, setUserProfile] = React.useState(null);
-  const userProfile = userClient || user;
-
   const parsed = queryString.parse(location?.search);
   const isAuth = parsed?.email && parsed?.email !== user?.email ? false : true;
+  userProfile = userClient || user;
 
   React.useEffect(() => {
     const getProfile = async () => {
-      if (isAuth) return setPageLoading(false);
-      if (userClient) return setPageLoading(false);
+      if (isAuth) return;
+      if (userClient?.email === parsed?.email) return;
+      console.log("reload profile");
 
+      setPageLoading(true);
       const response = await handleGetUserByEmail(parsed?.email);
+      setPageLoading(false);
       if (!response) return navigate("/404");
 
       const getRelationship = await handleGetFriendRelationship(response?._id);
-      if (!getRelationship.success) return setPageLoading(false);
+      if (!getRelationship.success) return;
       setRelationshipFriend(getRelationship.data);
-      setPageLoading(false);
     };
 
     getProfile();
     return () => {
-      setPageLoading(true);
-      handleUpdateUserClient(null);
-      setRelationshipFriend(null);
+      // setPageLoading(true);
+      if (userClient && userClient?.email !== parsed?.email) {
+        userProfile = null;
+        handleUpdateUserClient(null);
+        setRelationshipFriend(null);
+      }
     };
+    // }, [location]);
   }, [location]);
 
   if (pageLoading) {
@@ -218,7 +231,10 @@ const Profile = () => {
     setOpenAgainDelete({ open: !openAgainDelete.open, id, message });
 
   const handleAddFriendCustom = async (targetID) => {
+    setSubmitting(true);
     const response = await handleAddFriend(targetID);
+    setSubmitting(false);
+
     if (response) {
       setRelationshipFriend(response.data);
       enqueueSnackbar(response.message, { variant: "success" });
@@ -227,7 +243,10 @@ const Profile = () => {
 
   const handleDeleteFriendCustom = async (friendID, isAccept, message) => {
     if (!isAccept) return handleOpenAgainDelete(friendID, message);
+    setSubmitting(true);
     const response = await handleDeleteFriend(friendID);
+    setSubmitting(false);
+
     if (response) {
       setRelationshipFriend(null);
       enqueueSnackbar(response.message, { variant: "success" });
@@ -236,7 +255,10 @@ const Profile = () => {
   };
 
   const handleUpdateStatusFriendCustom = async (friendID) => {
+    setSubmitting(true);
     const response = await handleUpdateStatusFriend(friendID);
+    setSubmitting(false);
+
     if (response) {
       setRelationshipFriend(response.data);
       enqueueSnackbar(response.message, { variant: "success" });
@@ -245,6 +267,7 @@ const Profile = () => {
   return (
     <Box>
       <AvatarDetail
+        isAuth={isAuth}
         open={isOpenAvatar}
         avatar={
           userProfile?.avatar?.detail?.custom[0] || userProfile?.avatar?.url
@@ -310,7 +333,7 @@ const Profile = () => {
                 ) : (
                   ""
                 )}
-                {!user?.coverImage?.url ? (
+                {!userProfile?.coverImage?.url ? (
                   <Paper
                     elevation={0}
                     sx={[
@@ -326,7 +349,7 @@ const Profile = () => {
                   />
                 ) : (
                   <img
-                    src={user?.coverImage?.url}
+                    src={userProfile?.coverImage?.url}
                     alt="banner"
                     style={{
                       width: "100%",
@@ -485,6 +508,117 @@ const Profile = () => {
                       ""
                     )}
                   </Stack>
+                  {/* // friends */}
+                  {!isAuth ? (
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      {!relationshipFriend ? (
+                        <ButtonFriend
+                          submitting={submitting}
+                          onClick={() => handleAddFriendCustom(userClient?._id)}
+                          label="Kết bạn"
+                          icon={icons.PersonAddIcon}
+                        />
+                      ) : (
+                        <Stack>
+                          {relationshipFriend?.status === "Active" ? (
+                            <>
+                              <PopupMenu
+                                ref={friendMenuRef}
+                                open={isOpenFriendMenu}
+                                onClose={handleToggleOpenFriendMenu}
+                                placement="top-start"
+                                onClick={() =>
+                                  handleDeleteFriendCustom(
+                                    relationshipFriend?._id,
+                                    false,
+                                    "Bạn đã chắc chắn muốn hủy kết bạn người này chưa?"
+                                  )
+                                }
+                                lists={[
+                                  {
+                                    label: "Hủy kết bạn",
+                                    value: "delete-friend",
+                                    icon: icons.PersonRemoveIcon,
+                                  },
+                                ]}
+                              />
+
+                              <ButtonFriend
+                                submitting={submitting}
+                                ref={friendMenuRef}
+                                onClick={handleToggleOpenFriendMenu}
+                                label="Bạn bè"
+                                icon={icons.PersonIcon}
+                                sx={{
+                                  bgcolor: "primary.main",
+                                  color: "common.white",
+                                  "&:hover": { bgcolor: "primary.dark" },
+                                }}
+                              />
+                            </>
+                          ) : relationshipFriend?.status === "Waiting" &&
+                            relationshipFriend?.createdBy !==
+                              userProfile?._id ? (
+                            <>
+                              <PopupMenu
+                                ref={friendMenuRef}
+                                open={isOpenFriendMenu}
+                                onClose={handleToggleOpenFriendMenu}
+                                placement="top-start"
+                                onClick={() =>
+                                  handleDeleteFriendCustom(
+                                    relationshipFriend?._id,
+                                    false,
+                                    "Bạn đã chắc chắn muốn hủy yêu cầu kết bạn người này?"
+                                  )
+                                }
+                                lists={[
+                                  {
+                                    label: "Hủy yêu cầu",
+                                    value: "delete-friend",
+                                    icon: icons.PersonRemoveIcon,
+                                  },
+                                ]}
+                              />
+
+                              <ButtonFriend
+                                submitting={submitting}
+                                ref={friendMenuRef}
+                                onClick={handleToggleOpenFriendMenu}
+                                label="Đang chờ chấp nhận"
+                                icon={icons.PersonIcon}
+                                sx={{
+                                  bgcolor: "primary.main",
+                                  color: "common.white",
+                                  "&:hover": { bgcolor: "primary.dark" },
+                                }}
+                              />
+                            </>
+                          ) : (
+                            <ActionFriend
+                              submitting={submitting}
+                              titleLeft="Chấp nhận lời mời"
+                              titleRight="Xóa lời mời"
+                              onAccept={() =>
+                                handleUpdateStatusFriendCustom(
+                                  relationshipFriend?._id
+                                )
+                              }
+                              onCancel={() =>
+                                handleDeleteFriendCustom(
+                                  relationshipFriend?._id,
+                                  false,
+                                  "Bạn đã chắc chắn muốn gỡ yêu cầu kết bạn từ người này?"
+                                )
+                              }
+                            />
+                          )}
+                        </Stack>
+                      )}
+                    </Stack>
+                  ) : (
+                    ""
+                  )}
                 </Stack>
               </Stack>
             </Stack>

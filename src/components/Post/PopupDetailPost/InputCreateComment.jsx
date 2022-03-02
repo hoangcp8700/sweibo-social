@@ -15,6 +15,7 @@ const InputCreateComment = ({
   form,
   onChangeForm,
   user,
+  submitting = false,
   ...props
 }) => {
   const [openEmoji, setOpenEmoji] = React.useState(false);
@@ -55,6 +56,7 @@ const InputCreateComment = ({
         >
           <Avatar sx={{ width: 28, height: 28 }} src={user?.avatar?.url} />
           <TextField
+            disabled={submitting}
             autoComplete="off"
             {...props}
             value={form?.comment}

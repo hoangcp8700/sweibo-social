@@ -83,6 +83,7 @@ export default function PopupDetailPost(props) {
 
   const [form, setForm] = React.useState({ comment: "" });
   const [openMenu, setOpenMenu] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false);
   const [paginate, setPaginate] = React.useState(initialize); // COMMENTS
   const [editCommentID, setEditCommentID] = React.useState(null);
   const [actionPost, setActionPost] = React.useState({
@@ -124,7 +125,10 @@ export default function PopupDetailPost(props) {
 
   const handleSubmitComment = React.useCallback(async () => {
     if (!form.comment) return;
+    if (submitting) return;
+    setSubmitting(true);
     const response = await handleCreateComment(form.comment, postID);
+    setSubmitting(false);
     if (response) {
       setPaginate({
         ...paginate,
@@ -320,6 +324,7 @@ export default function PopupDetailPost(props) {
                       "& .lds-ellipsis": {
                         width: 30,
                         height: 30,
+                        pr: 9,
                         "& div": { width: 8, height: 8, top: 15 },
                       },
                     }}
@@ -361,6 +366,7 @@ export default function PopupDetailPost(props) {
 
               {/* // input create comment */}
               <InputCreateComment
+                submitting={submitting}
                 widthDefault={widthDefault}
                 form={form}
                 user={user}

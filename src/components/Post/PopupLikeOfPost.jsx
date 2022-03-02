@@ -13,6 +13,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { LoadingEllipsisElement } from "components";
 import { icons } from "constants";
 import { Link } from "react-router-dom";
 import { PATH_PAGE } from "constants/paths";
@@ -65,26 +66,26 @@ const initialize = {
   hasNextPage: true,
   data: [],
   totalLength: 0,
-  isLoading: false,
 };
 
 export default function PopupLikeOfPost(props) {
   const { open, postID, onClose } = props;
   const { handleGetLikes } = usePost();
 
+  const [loading, setLoading] = React.useState(false);
   const [paginate, setPaginate] = React.useState(initialize); // likes
 
   const handleGetLikesCustom = React.useCallback(async () => {
     if (!paginate.hasNextPage) return;
-    setPaginate({ ...paginate, isLoading: true });
+    setLoading(true);
     const response = await handleGetLikes(paginate.page, postID);
     setPaginate({
       page: response.next,
       hasNextPage: response.hasNextPage,
       data: [...response.data, ...paginate.data],
       totalLength: response.totalLength,
-      isLoading: false,
     });
+    setLoading(false);
   }, [paginate, postID]);
 
   React.useEffect(() => {
@@ -137,30 +138,45 @@ export default function PopupLikeOfPost(props) {
         </Box>
         <DialogContent>
           <Stack spacing={2}>
-            {paginate?.totalLength > 0 ? (
-              <InfiniteScroll
-                hasNextPage={paginate?.hasNextPage}
-                data={paginate?.data}
-                fetch={handleGetLikes}
-                handleRefresh={() => console.log("refreshh")}
-                endMessage={`Tổng: ${paginate?.totalLength} người thích`}
-              >
-                {paginate?.data?.map((item) => (
-                  <UserItem
-                    key={item._id}
-                    item={item}
-                    containerStyle={{ mt: 2 }}
-                  />
-                ))}
-              </InfiniteScroll>
+            {!loading ? (
+              paginate?.totalLength > 0 ? (
+                <InfiniteScroll
+                  hasNextPage={paginate?.hasNextPage}
+                  data={paginate?.data}
+                  fetch={handleGetLikes}
+                  handleRefresh={() => console.log("refreshh")}
+                  endMessage={`${paginate?.totalLength} người thích`}
+                >
+                  {paginate?.data?.map((item) => (
+                    <UserItem
+                      key={item._id}
+                      item={item}
+                      containerStyle={{ mt: 2 }}
+                    />
+                  ))}
+                </InfiniteScroll>
+              ) : (
+                <Typography
+                  variant="subtitle2"
+                  align="center"
+                  sx={{ color: "text.secondary", my: 5 }}
+                >
+                  Hiện chưa bài viết chưa có người nào yêu thích!
+                </Typography>
+              )
             ) : (
-              <Typography
-                variant="subtitle2"
-                align="center"
-                sx={{ color: "text.secondary", my: 5 }}
+              <Box
+                sx={{
+                  "& .lds-ellipsis": {
+                    width: 30,
+                    height: 30,
+                    pr: 9,
+                    "& div": { width: 8, height: 8, top: 15 },
+                  },
+                }}
               >
-                Hiện chưa bài viết chưa có người nào yêu thích!
-              </Typography>
+                <LoadingEllipsisElement />
+              </Box>
             )}
           </Stack>
         </DialogContent>

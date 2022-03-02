@@ -20,6 +20,7 @@ export default function AvatarDetail(props) {
     handleUploadAvatar,
     handleRemoveAvatar,
     isLoading,
+    isAuth,
   } = props;
 
   return (
@@ -50,32 +51,35 @@ export default function AvatarDetail(props) {
             />
           )}
         </Paper>
-
-        <Stack
-          alignItems="center"
-          direction="row"
-          justifyContent="center"
-          spacing={1}
-          sx={{ mt: 1 }}
-        >
-          <MButton variant="contained" onClick={handleUploadAvatar}>
-            Đổi ảnh đại diện
-          </MButton>
-          <MButton
-            onClick={handleRemoveAvatar}
-            variant="contained"
-            sx={{
-              bgcolor: "background.opacity2",
-              color: "text.primary",
-              "&:hover": {
+        {isAuth ? (
+          <Stack
+            alignItems="center"
+            direction="row"
+            justifyContent="center"
+            spacing={1}
+            sx={{ mt: 1 }}
+          >
+            <MButton variant="contained" onClick={handleUploadAvatar}>
+              Đổi ảnh đại diện
+            </MButton>
+            <MButton
+              onClick={handleRemoveAvatar}
+              variant="contained"
+              sx={{
                 bgcolor: "background.opacity2",
                 color: "text.primary",
-              },
-            }}
-          >
-            Xóa ảnh
-          </MButton>
-        </Stack>
+                "&:hover": {
+                  bgcolor: "background.opacity2",
+                  color: "text.primary",
+                },
+              }}
+            >
+              Xóa ảnh
+            </MButton>
+          </Stack>
+        ) : (
+          ""
+        )}
 
         <Paper
           elevation={5}

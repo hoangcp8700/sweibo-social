@@ -104,6 +104,7 @@ const AllPost = () => {
       try {
         handleToggleIsLoading(true);
         const response = await handleCreateOrEditPost(form);
+        console.log("handleSubmitPost", response);
         handleToggleIsLoading(false);
         if (response.success) {
           // create post

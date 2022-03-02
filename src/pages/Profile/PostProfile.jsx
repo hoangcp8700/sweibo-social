@@ -65,8 +65,6 @@ const PostProfile = () => {
   const isAuth = !parsed.email ? true : false;
 
   const handleGetPost = async () => {
-    console.log("paginate", paginate);
-
     if (!paginate.hasNextPage) return;
     const response = await handleGetPostUser(
       paginate.page,
@@ -85,7 +83,6 @@ const PostProfile = () => {
     return () => setPaginate(initialize);
   }, [isAuth]);
 
-  console.log("userProfile", userProfile);
   const handleSubmitPost = async (form) => {
     try {
       handleToggleIsLoading(true);
