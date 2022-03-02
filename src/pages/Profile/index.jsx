@@ -131,11 +131,10 @@ const Profile = () => {
 
   React.useEffect(() => {
     const getProfile = async () => {
-      if (isAuth) return;
+      if (isAuth) return setPageLoading(false);
       if (userClient?.email === parsed?.email) return;
       console.log("reload profile");
 
-      setPageLoading(true);
       const response = await handleGetUserByEmail(parsed?.email);
       setPageLoading(false);
       if (!response) return navigate("/404");
