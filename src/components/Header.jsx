@@ -150,7 +150,13 @@ const Header = () => {
                 component={Link}
                 to={PATH_PAGE.home.path}
               >
-                {process.env.REACT_APP_LOGO_NAME}
+                <Stack direction="row" alignItems="flex-end" sx={{ gap: 1 }}>
+                  <img src={`${process.env.PUBLIC_URL}/weibo32.png`} />
+                  <Typography variant="h6" color="primary">
+                    {process.env.REACT_APP_LOGO_NAME}
+                  </Typography>
+                  <Box sx={{ mb: 0.25 }}></Box>
+                </Stack>
               </Typography>
 
               <Box>

@@ -1,7 +1,7 @@
 import React from "react";
 import "./style.css";
 import { Link } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 
 const Error404 = () => {
   return (
@@ -324,7 +324,17 @@ const Error404 = () => {
         </svg>
       </div>
       <div class="text">
-        <h1>404</h1>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="center"
+          spacing={1}
+        >
+          <h1>404</h1>
+          <Box sx={{ width: 64, height: 64 }}>
+            <img src={`${process.env.PUBLIC_URL}/weibo64.png`} />
+          </Box>
+        </Stack>
         <h3>
           Không tìm thấy trang!!! -{" "}
           <Typography
