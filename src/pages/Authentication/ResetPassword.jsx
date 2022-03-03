@@ -195,8 +195,23 @@ const ResetPassword = () => {
               }}
             />
           </Stack>
-
+          <Stack alignItems="flex-end" sx={{ mt: 1 }}>
+            <Typography
+              component={Link}
+              to={PATH_AUTH.forgotPassword.path}
+              variant="body2"
+              sx={{
+                color: "grey.600",
+                cursor: "pointer",
+                textAlign: "right",
+                "&:hover": { textDecoration: "underline" },
+              }}
+            >
+              Trở về đăng nhập?
+            </Typography>
+          </Stack>
           <MButton
+            fullWidth
             disabled={isSubmitting}
             loading={isSubmitting}
             type="submit"

@@ -5,7 +5,7 @@ import { useSnackbar } from "notistack";
 
 import { Box, Stack, TextField, Typography, styled, Chip } from "@mui/material";
 import { MButton } from "components/MUI";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { PATH_AUTH } from "constants/paths";
 import { useAuth } from "hooks";
 
@@ -114,20 +114,40 @@ const VerifyCode = () => {
               helperText={touched.code && errors.code}
               placeholder="Địa chỉ code"
             />
-            <Typography
-              onClick={() =>
-                handleForgotPassword({ email: location?.state?.email })
-              }
-              variant="body2"
-              color="secondary"
-              sx={{
-                cursor: "pointer",
-                textAlign: "right",
-                "&:hover": { textDecoration: "underline" },
-              }}
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              spacing={1}
             >
-              Gửi lại mã code?
-            </Typography>
+              <Typography
+                onClick={() =>
+                  handleForgotPassword({ email: location?.state?.email })
+                }
+                variant="body2"
+                color="primary"
+                sx={{
+                  cursor: "pointer",
+                  textAlign: "right",
+                  "&:hover": { textDecoration: "underline" },
+                }}
+              >
+                Gửi lại mã code?
+              </Typography>
+              <Typography
+                component={Link}
+                to={PATH_AUTH.forgotPassword.path}
+                variant="body2"
+                sx={{
+                  color: "grey.600",
+                  cursor: "pointer",
+                  textAlign: "right",
+                  "&:hover": { textDecoration: "underline" },
+                }}
+              >
+                Quay về?
+              </Typography>
+            </Stack>
             <MButton
               variant="contained"
               disabled={isSubmitting}
