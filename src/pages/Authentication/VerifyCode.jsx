@@ -80,11 +80,25 @@ const VerifyCode = () => {
     return handleSubmit();
   };
 
+  const handleForgotPasswordCustom = async () => {
+    const response = await handleForgotPassword({ email: email });
+
+    enqueueSnackbar(response.message, {
+      variant: response.success ? "success" : "error",
+    });
+    if (!response.success) {
+      return navigate(PATH_AUTH.forgotPassword.path);
+    }
+  };
+
   React.useEffect(() => {
     if (!location?.state?.email && !parsed?.email)
       return navigate(PATH_AUTH.forgotPassword.path);
     setIsVerify(true);
 
+    if (parsed.email) {
+      handleForgotPasswordCustom();
+    }
     if (parsed?.code) {
       handleSetCode();
     }
@@ -94,13 +108,6 @@ const VerifyCode = () => {
   if (!isVerify) {
     return <div></div>;
   }
-
-  const handleForgotPasswordCustom = async () => {
-    const response = await handleForgotPassword({ email: email });
-    return enqueueSnackbar(response.message, {
-      variant: response.success ? "success" : "error",
-    });
-  };
 
   return (
     <Box sx={{ px: 5, pb: 5, pt: 3 }}>
