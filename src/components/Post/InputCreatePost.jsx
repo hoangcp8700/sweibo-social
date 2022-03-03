@@ -32,7 +32,7 @@ const InputCreatePost = (props) => {
           sx={{
             "& input": {
               py: 1,
-              fontSize: 16,
+              fontSize: 14,
               cursor: "pointer",
             },
             "& .MuiOutlinedInput-root": {

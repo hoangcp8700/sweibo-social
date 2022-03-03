@@ -59,7 +59,8 @@ const ActionFriend = (props) => {
   );
 };
 const FriendItem = (props) => {
-  const { item, user, handleUpdateStatusFriend, handleDeleteFriend } = props;
+  const { item, user, isAuth, handleUpdateStatusFriend, handleDeleteFriend } =
+    props;
   const nameFriend = checkCreatedByFriend(user, item?.createdBy);
 
   return (
@@ -101,52 +102,55 @@ const FriendItem = (props) => {
             </Typography>
 
             {/* // type */}
-
-            {item?.status === "Active" ? (
-              <ActionFriend
-                leftIcon={icons.DoneIcon}
-                rightIcon={icons.CloseIcon}
-                titleLeft="Bạn bè"
-                titleRight="Hủy kết bạn"
-                onAccept={() => {}}
-                onCancel={() =>
-                  handleDeleteFriend(
-                    item?._id,
-                    false,
-                    "Bạn đã chắc chắn muốn hủy kết bạn người này chưa?"
-                  )
-                }
-              />
-            ) : nameFriend === "targetID" ? (
-              <ActionFriend
-                leftIcon={icons.DoneIcon}
-                rightIcon={icons.CloseIcon}
-                titleLeft="Chờ chấp nhận"
-                titleRight="Gỡ"
-                onAccept={() => {}}
-                onCancel={() =>
-                  handleDeleteFriend(
-                    item?._id,
-                    false,
-                    "Bạn đã chắc chắn muốn hủy yêu cầu kết bạn người này?"
-                  )
-                }
-              />
+            {isAuth ? (
+              item?.status === "Active" ? (
+                <ActionFriend
+                  leftIcon={icons.DoneIcon}
+                  rightIcon={icons.CloseIcon}
+                  titleLeft="Bạn bè"
+                  titleRight="Hủy kết bạn"
+                  onAccept={() => {}}
+                  onCancel={() =>
+                    handleDeleteFriend(
+                      item?._id,
+                      false,
+                      "Bạn đã chắc chắn muốn hủy kết bạn người này chưa?"
+                    )
+                  }
+                />
+              ) : nameFriend === "targetID" ? (
+                <ActionFriend
+                  leftIcon={icons.DoneIcon}
+                  rightIcon={icons.CloseIcon}
+                  titleLeft="Chờ chấp nhận"
+                  titleRight="Gỡ"
+                  onAccept={() => {}}
+                  onCancel={() =>
+                    handleDeleteFriend(
+                      item?._id,
+                      false,
+                      "Bạn đã chắc chắn muốn hủy yêu cầu kết bạn người này?"
+                    )
+                  }
+                />
+              ) : (
+                <ActionFriend
+                  leftIcon={icons.DoneIcon}
+                  rightIcon={icons.CloseIcon}
+                  titleLeft="Chấp nhận"
+                  titleRight="Gỡ"
+                  onAccept={() => handleUpdateStatusFriend(item?._id)}
+                  onCancel={() =>
+                    handleDeleteFriend(
+                      item?._id,
+                      false,
+                      "Bạn đã chắc chắn muốn gỡ yêu cầu kết bạn từ người này?"
+                    )
+                  }
+                />
+              )
             ) : (
-              <ActionFriend
-                leftIcon={icons.DoneIcon}
-                rightIcon={icons.CloseIcon}
-                titleLeft="Chấp nhận"
-                titleRight="Gỡ"
-                onAccept={() => handleUpdateStatusFriend(item?._id)}
-                onCancel={() =>
-                  handleDeleteFriend(
-                    item?._id,
-                    false,
-                    "Bạn đã chắc chắn muốn gỡ yêu cầu kết bạn từ người này?"
-                  )
-                }
-              />
+              ""
             )}
           </Stack>
         </Stack>

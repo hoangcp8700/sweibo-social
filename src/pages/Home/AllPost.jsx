@@ -337,7 +337,6 @@ const AllPost = () => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            gap: 2,
             my: 2,
           }}
         >

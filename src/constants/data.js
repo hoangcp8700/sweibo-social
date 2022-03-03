@@ -15,6 +15,15 @@ const sidebarFriend = [
   { title: "Sinh nhật", path: "/friends/birthday", icon: icons.CakeIcon },
 ];
 
+const sidebarSettings = [
+  { title: "Thông tin cá nhân", path: "/settings", icon: icons.PersonIcon },
+  {
+    title: "Đổi mật khẩu",
+    path: "/settings/change-password",
+    icon: icons.PeopleAltIcon,
+  },
+];
+
 const sidebarSave = [
   {
     title: "Tất cả bài viết đã lưu",
@@ -118,4 +127,5 @@ export default {
   relationshipStatus,
   provinces,
   menuFriends,
+  sidebarSettings,
 };

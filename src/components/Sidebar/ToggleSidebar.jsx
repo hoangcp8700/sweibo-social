@@ -3,7 +3,7 @@ import { Box, IconButton } from "@mui/material";
 import { icons } from "constants";
 
 const ToggleSidebar = (props) => {
-  const { handleToggleSidebar, isShowSidebar } = props;
+  const { handleToggleSidebar, isHiddenMobile = true, isShowSidebar } = props;
   return (
     <Box
       sx={[
@@ -13,10 +13,14 @@ const ToggleSidebar = (props) => {
           left: !isShowSidebar ? 0 : `-100%`,
           transition: "left .4s ease",
           zIndex: 2,
-          [theme.breakpoints.down("sm")]: {
-            display: "none",
-          },
         }),
+        isHiddenMobile
+          ? (theme) => ({
+              [theme.breakpoints.down("sm")]: {
+                display: "none",
+              },
+            })
+          : "",
       ]}
     >
       <IconButton

@@ -79,7 +79,7 @@ export default function PopupEditProfile(props) {
     [paginate]
   );
   return (
-    <Dialog onClose={onClose} open={open} fullWidth maxWidth={"sm"}>
+    <Dialog onClose={onClose} open={open} fullWidth maxWidth={"mobile"}>
       <DialogTitle>Người theo dõi</DialogTitle>
       <Divider />
       <DialogContent>

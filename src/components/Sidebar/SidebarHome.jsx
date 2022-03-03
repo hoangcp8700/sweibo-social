@@ -51,7 +51,14 @@ const SidebarHome = () => {
             <MenuItemStyle
               active={location.pathname === item.path ? "true" : "false"}
             >
-              <ListItemIcon sx={{ "& svg": { fontSize: 28 } }}>
+              <ListItemIcon
+                sx={{
+                  "& svg": {
+                    fontSize: 28,
+                    fill: (theme) => theme.palette.text.primary,
+                  },
+                }}
+              >
                 {item.icon}
               </ListItemIcon>
               <Typography variant="subtitle2" sx={{ color: "text.primary" }}>

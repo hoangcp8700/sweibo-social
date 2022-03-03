@@ -36,7 +36,9 @@ const RootStyle = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: theme.palette.background.default,
+  // backgroundColor: theme.palette.background.default,
+  backgroundColor: "transparent",
+
   position: "fixed",
   top: "0",
 }));

@@ -23,10 +23,14 @@ import PopupSearchResult from "components/Header/PopupSearchResult";
 import { useAuth, useUser } from "hooks";
 
 const IconButtonStyle = styled(IconButton)(({ theme }) => ({
-  backgroundColor: theme.palette.grey[200],
+  // backgroundColor: theme.palette.grey[200],
+  backgroundColor: "transparent",
   "& svg": {
     fontSize: 18,
-    fill: theme.palette.grey[600],
+    fill: theme.palette.text.primary,
+    "&:hover": {
+      backgroundColor: "transparent",
+    },
   },
 }));
 
@@ -66,8 +70,12 @@ const Header = () => {
   );
 
   const handleRedirectProfile = (name) => {
-    navigate(`${PATH_PAGE.profile.link}/posts`);
+    navigate(`/${PATH_PAGE.profile.link}/posts`);
     name && handleToggleAction(name);
+  };
+  const handleRedirectSettings = () => {
+    navigate(`/${PATH_PAGE.setting.link}`);
+    handleToggleAction("isSetting");
   };
 
   const handleLogoutCustom = async () => {
@@ -121,6 +129,7 @@ const Header = () => {
             handleClose={handleToggleAction}
             handleRedirectProfile={handleRedirectProfile}
             handleLogout={handleLogoutCustom}
+            handleRedirectSettings={handleRedirectSettings}
           />
           <MenuHeaderNotification
             anchor={isSettingRef}
@@ -142,20 +151,32 @@ const Header = () => {
             direction="row"
             alignItems="center"
             justifyContent="space-between"
+            sx={{ gap: 1 }}
           >
-            <Stack direction="row" alignItems="center" sx={{ gap: 2 }}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              sx={{ gap: { xs: 1, mobile: 2 } }}
+            >
               <Typography
                 variant="h6"
                 color="primary"
                 component={Link}
                 to={PATH_PAGE.home.path}
               >
-                <Stack direction="row" alignItems="flex-end" sx={{ gap: 1 }}>
-                  <img src={`${process.env.PUBLIC_URL}/weibo32.png`} />
-                  <Typography variant="h6" color="primary">
-                    {process.env.REACT_APP_LOGO_NAME}
-                  </Typography>
-                  <Box sx={{ mb: 0.25 }}></Box>
+                <Stack direction="row" alignItems="flex-end" sx={{ gap: 0.75 }}>
+                  <Box sx={{ width: 42, height: 42 }}>
+                    <img
+                      src={`${process.env.PUBLIC_URL}/weibo256.png`}
+                      alt="logo"
+                    />
+                  </Box>
+
+                  <Box sx={{ mb: 0.5, display: { xs: "none", sm: "block" } }}>
+                    <Typography variant="h6" color="primary">
+                      {process.env.REACT_APP_LOGO_NAME}
+                    </Typography>
+                  </Box>
                 </Stack>
               </Typography>
 
@@ -165,7 +186,7 @@ const Header = () => {
                   onClick={() => handleToggleAction("isSearchResult")}
                   ref={searchResultRef}
                   sx={{
-                    "& input": { py: 1, fontSize: 14 },
+                    "& input": { py: 1.375, fontSize: 14 },
                     "& .MuiOutlinedInput-root": {
                       borderRadius: (theme) => theme.sizes.radius,
                     },
@@ -188,42 +209,55 @@ const Header = () => {
 
             <Stack direction="row" alignItems="center" spacing={1}>
               <Box
-                onClick={() => handleRedirectProfile()}
-                sx={[
-                  (theme) => ({
-                    [theme.breakpoints.down("sm")]: {
-                      display: "none",
+                onClick={() => handleToggleAction("isSetting")}
+                ref={isSettingRef}
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 1,
+                  py: { xs: 0, sm: 0.5 },
+                  px: { xs: 0, sm: 2 },
+                  cursor: "pointer",
+                  transition: "background 150ms ease",
+                  borderRadius: (theme) => theme.sizes.radius,
+                  "&:hover": {
+                    bgcolor: "grey.200",
+                    "& .MuiTypography-root": {
+                      color: (theme) =>
+                        theme.palette.mode === "dark"
+                          ? "background.navbar"
+                          : "text.primary",
                     },
-                  }),
-                  {
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 1,
-                    py: 0.5,
-                    px: 2,
-                    cursor: "pointer",
-                    transition: "background 300ms",
-                    borderRadius: (theme) => theme.sizes.radius,
-                    "&:hover": {
-                      bgcolor: "grey.200",
-                      "& .MuiTypography-root": {
-                        color: (theme) =>
-                          theme.palette.mode === "dark"
-                            ? "background.navbar"
-                            : "text.primary",
-                      },
+                    "& .MuiSvgIcon-root": {
+                      fill: (theme) => theme.palette.text.reverse,
                     },
                   },
-                ]}
+                }}
               >
-                <Avatar
-                  sx={{ width: 32, height: 32 }}
-                  src={user?.avatar?.url}
-                />
-                <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
-                  {user?.lastName}
-                </Typography>
+                <Paper sx={{ borderRadius: "50%" }} elevation={5}>
+                  <Avatar
+                    sx={{ width: 32, height: 32 }}
+                    src={user?.avatar?.url}
+                  />
+                </Paper>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  sx={{ display: { xs: "none", sm: "flex" } }}
+                >
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      color: "text.primary",
+                    }}
+                  >
+                    {user?.lastName}
+                  </Typography>
+                  <IconButtonStyle disableRipple={true}>
+                    {icons.ArrowDropDownIcon}
+                  </IconButtonStyle>
+                </Stack>
               </Box>
 
               {/* <Badge badgeContent={4} color="primary">
@@ -234,12 +268,6 @@ const Header = () => {
                   {icons.NotificationIcon}
                 </IconButtonStyle>
               </Badge> */}
-              <IconButtonStyle
-                ref={isSettingRef}
-                onClick={() => handleToggleAction("isSetting")}
-              >
-                {icons.ArrowDropDownIcon}
-              </IconButtonStyle>
             </Stack>
           </Stack>
         </Stack>

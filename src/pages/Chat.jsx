@@ -569,11 +569,7 @@ const Chat = () => {
                 height: "100%",
                 maxHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
                 overflow: "hidden",
-                // transition: "all 0.5s ease 0s",
-                // transform: {
-                //   xs: `translateX(0px)`,
-                //   sm: isSidebarLeft ? `translateX(0px)` : `translateX(-200px)`,
-                // },
+                transition: "all 0.5s ease 0s",
                 transform:
                   isSidebarLeft || matchesSM
                     ? `translateX(0px)`

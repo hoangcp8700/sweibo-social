@@ -162,14 +162,24 @@ const Home = () => {
         </StickySidebar>
       </Stack>
 
-      <Box sx={{ position: "fixed", bottom: 20, right: 20 }}>
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: { xs: 90, sm2: 20 },
+          right: 20,
+          zIndex: 2,
+        }}
+      >
         <IconButton
           onClick={handleScrollToTop}
           sx={{
             bgcolor: "primary.main",
+            opacity: 0.5,
+            transition: "opacity 150ms ease-in",
             "& svg": { fill: (theme) => theme.palette.common.white },
             "&:hover": {
-              bgcolor: "primary.dark",
+              bgcolor: "primary.main",
+              opacity: 1,
             },
           }}
         >

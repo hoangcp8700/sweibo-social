@@ -108,7 +108,7 @@ const CommentItem = (props) => {
           <Typography
             sx={{ mt: 1 }}
             component={Link}
-            to={`/${PATH_PAGE.profile.link}/posts?email=hoangcp219@gmail.com`}
+            to={`/${PATH_PAGE.profile.link}/posts?email=${item?.createdBy?.email}`}
           >
             <Avatar
               src={item?.createdBy?.avatar?.url}
@@ -145,11 +145,11 @@ const CommentItem = (props) => {
                     },
                   }}
                   component={Link}
-                  to={`/${PATH_PAGE.profile.link}/posts?email=hoangcp219@gmail.com`}
+                  to={`/${PATH_PAGE.profile.link}/posts?email=${item?.createdBy?.email}`}
                 >
                   {item?.createdBy?.firstName} {item?.createdBy?.lastName}
                 </Typography>
-                {!editCommentID ? (
+                {!editCommentID && user?._id === item?.createdBy?._id ? (
                   <IconButton
                     className="dot"
                     ref={menuRef}
@@ -219,7 +219,7 @@ const CommentItem = (props) => {
               )}
             </Box>
 
-            <Stack direction="row" spacing={2} sx={{ ml: 2, mt: 0.25 }}>
+            <Stack direction="row" spacing={2} sx={{ ml: 1, mt: 0.25 }}>
               {/* <TypographyStyle
                 label={"Thích"}
                 onClick={handleLikeCommentCustom}
@@ -236,6 +236,7 @@ const CommentItem = (props) => {
               ) : (
                 ""
               )}
+              {item?.isEdit ? <TypographyStyle label={"Đã chỉnh sửa"} /> : ""}
             </Stack>
           </Stack>
         </Stack>

@@ -214,6 +214,7 @@ const FriendProfile = () => {
                 key={item.id}
                 item={item}
                 user={userProfile}
+                isAuth={user?._id === userProfile?._id}
                 handleUpdateStatusFriend={handleUpdateStatusFriendCustom}
                 handleDeleteFriend={handleDeleteFriendCustom}
               />

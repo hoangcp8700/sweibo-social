@@ -102,7 +102,7 @@ export default function PopupDetailPost(props) {
     setPaginate({
       page: response.next,
       hasNextPage: response.hasNextPage,
-      data: [...response.data, ...paginate.data],
+      data: [...paginate.data, ...response.data],
       totalLength: response.totalLength,
     });
   }, [paginate, postID]);
@@ -134,7 +134,7 @@ export default function PopupDetailPost(props) {
       setPaginate({
         ...paginate,
         totalLength: paginate.totalLength + 1,
-        data: [...paginate.data, response],
+        data: [response, ...paginate.data],
       });
       setForm({ comment: "" });
       handleCommentLength(postID, true);
@@ -269,7 +269,7 @@ export default function PopupDetailPost(props) {
                 maxWidth: { xs: "auto", md: widthDefault },
                 minWidth: { xs: "auto", md: widthDefault },
                 py: 2,
-                minHeight: "100vh",
+                minHeight: { xs: "auto", md: "100vh" },
                 width: "100%",
               }}
             >
@@ -333,7 +333,9 @@ export default function PopupDetailPost(props) {
                   ""
                 )}
 
-                <Stack spacing={2} sx={{ pt: 2, pb: 8 }}>
+                <Stack
+                  sx={{ pt: 2, pb: 8, flexDirection: "column-reverse", gap: 2 }}
+                >
                   {paginate?.data?.length
                     ? paginate?.data.map((item) => (
                         <CommentItem

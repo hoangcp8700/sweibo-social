@@ -33,6 +33,7 @@ const SidebarHomeBottom = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  console.log("location", location);
   return (
     <Box
       sx={{
@@ -62,7 +63,11 @@ const SidebarHomeBottom = () => {
                 <MenuItemStyle active={match ? "true" : "false"}>
                   <ListItemIcon
                     sx={{
-                      "& svg": { fontSize: 26 },
+                      "& svg": {
+                        fontSize: 26,
+                        fill: (theme) => theme.palette.text.primary,
+                      },
+
                       minWidth: "26px!important",
                     }}
                   >
@@ -83,7 +88,8 @@ const SidebarHomeBottom = () => {
           })}
           <MenuItemStyle
             active={
-              location.pathname.includes(`/${PATH_PAGE.profile.link}`)
+              location.pathname.includes(`/${PATH_PAGE.profile.link}`) &&
+              !location.search
                 ? "true"
                 : "false"
             }

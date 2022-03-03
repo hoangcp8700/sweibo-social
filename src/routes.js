@@ -40,6 +40,14 @@ const routes = () => {
         },
 
         {
+          path: PATH_PAGE.setting.link,
+          element: <SettingPage />,
+          children: [
+            { path: "", element: <GeneralSettingPage /> },
+            { path: "change-password", element: <ChangePasswordPage /> },
+          ],
+        },
+        {
           path: PATH_PAGE.friend.link,
           element: <FriendPage />,
           children: [
@@ -145,6 +153,15 @@ export default function Router() {
 // -------------------------------import--------------------------
 const HomePage = Loadable(lazy(() => import("pages/Home/")));
 const AllPostPage = Loadable(lazy(() => import("pages/Home/AllPost")));
+
+// setting
+const SettingPage = Loadable(lazy(() => import("pages/Setting/")));
+const GeneralSettingPage = Loadable(
+  lazy(() => import("pages/Setting/GeneralSetting"))
+);
+const ChangePasswordPage = Loadable(
+  lazy(() => import("pages/Setting/ChangePassword"))
+);
 
 const ChatPage = Loadable(lazy(() => import("pages/Chat")));
 

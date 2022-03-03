@@ -53,7 +53,7 @@ export default function PopupCommentOfPost(props) {
     setPaginate({
       page: response.next,
       hasNextPage: response.hasNextPage,
-      data: [...response.data, ...paginate.data],
+      data: [...paginate.data, ...response.data],
       totalLength: response.totalLength,
     });
     setLoading(false);
@@ -82,7 +82,7 @@ export default function PopupCommentOfPost(props) {
       setPaginate({
         ...paginate,
         totalLength: paginate.totalLength + 1,
-        data: [...paginate.data, response],
+        data: [response, ...paginate.data],
       });
       setForm({ comment: "" });
       handleCommentLength(postID, true);
@@ -214,7 +214,7 @@ export default function PopupCommentOfPost(props) {
           ) : (
             <Typography variant="body2">Chưa có bình luận nào</Typography>
           )}
-          <Stack spacing={2} sx={{ pt: 2, pb: 8 }}>
+          <Stack sx={{ pt: 2, pb: 8, flexDirection: "column-reverse", gap: 2 }}>
             {paginate?.data?.length
               ? paginate?.data.map((item) => (
                   <CommentItem

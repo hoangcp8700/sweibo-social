@@ -9,7 +9,6 @@ const useUser = () => {
   const userClient = useSelector((state) => state.user.profile);
 
   const handleUpdateUserClient = (data = null) => {
-    console.log("handleUpdateUserClient", data);
     dispatch(SET_PROFILE(data));
   };
 
@@ -19,7 +18,7 @@ const useUser = () => {
         `${routes.users().users}?email=${email}`
       );
       console.log("handleGetUserByEmail", response);
-      dispatch(SET_PROFILE(response.data.data));
+
       return response.data.data;
     } catch (error) {
       console.log("err", error);

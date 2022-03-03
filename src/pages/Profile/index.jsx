@@ -118,7 +118,6 @@ const Profile = () => {
   const [isOpenFriendMenu, setIsOpenFriendMenu] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
 
-  const [relationshipFriend, setRelationshipFriend] = React.useState(null);
   const [openAgainDelete, setOpenAgainDelete] = React.useState({
     open: false,
     id: null,
@@ -131,32 +130,36 @@ const Profile = () => {
 
   React.useEffect(() => {
     const getProfile = async () => {
+      console.log(
+        "isAuth && userClient && !parsed?.email",
+        isAuth,
+        userClient,
+        !parsed?.email
+      );
+      if (isAuth && userClient && !parsed?.email) {
+        handleUpdateUserClient(null);
+      }
+      if (isAuth && parsed?.email === user?.email) {
+        return navigate(`/${PATH_PAGE.profile.link}/posts`);
+      }
       if (isAuth) return setPageLoading(false);
-      if (userClient?.email === parsed?.email) return;
+
       console.log("reload profile");
 
       const response = await handleGetUserByEmail(parsed?.email);
-      setPageLoading(false);
       if (!response) return navigate("/404");
-
       const getRelationship = await handleGetFriendRelationship(response?._id);
-      if (!getRelationship.success) return;
-      setRelationshipFriend(getRelationship.data);
+      handleUpdateUserClient({
+        ...response,
+        isFriend: getRelationship.data,
+      });
+      setPageLoading(false);
     };
 
     getProfile();
-    return () => {
-      // setPageLoading(true);
-      if (userClient && userClient?.email !== parsed?.email) {
-        userProfile = null;
-        handleUpdateUserClient(null);
-        setRelationshipFriend(null);
-      }
-    };
-    // }, [location]);
   }, [location]);
 
-  if (pageLoading) {
+  if ((pageLoading && !userClient) || userClient?.email !== parsed?.email) {
     return <LoadingEllipsis />;
   }
 
@@ -235,7 +238,11 @@ const Profile = () => {
     setSubmitting(false);
 
     if (response) {
-      setRelationshipFriend(response.data);
+      handleUpdateUserClient({
+        ...userClient,
+        isFriend: response.data,
+      });
+
       enqueueSnackbar(response.message, { variant: "success" });
     }
   };
@@ -247,7 +254,10 @@ const Profile = () => {
     setSubmitting(false);
 
     if (response) {
-      setRelationshipFriend(null);
+      handleUpdateUserClient({
+        ...userClient,
+        isFriend: null,
+      });
       enqueueSnackbar(response.message, { variant: "success" });
       handleOpenAgainDelete();
     }
@@ -259,7 +269,11 @@ const Profile = () => {
     setSubmitting(false);
 
     if (response) {
-      setRelationshipFriend(response.data);
+      handleUpdateUserClient({
+        ...userClient,
+        isFriend: response.data,
+      });
+
       enqueueSnackbar(response.message, { variant: "success" });
     }
   };
@@ -510,7 +524,7 @@ const Profile = () => {
                   {/* // friends */}
                   {!isAuth ? (
                     <Stack direction="row" alignItems="center" spacing={1}>
-                      {!relationshipFriend ? (
+                      {!userClient?.isFriend ? (
                         <ButtonFriend
                           submitting={submitting}
                           onClick={() => handleAddFriendCustom(userClient?._id)}
@@ -519,7 +533,7 @@ const Profile = () => {
                         />
                       ) : (
                         <Stack>
-                          {relationshipFriend?.status === "Active" ? (
+                          {userClient?.isFriend?.status === "Active" ? (
                             <>
                               <PopupMenu
                                 ref={friendMenuRef}
@@ -528,7 +542,7 @@ const Profile = () => {
                                 placement="top-start"
                                 onClick={() =>
                                   handleDeleteFriendCustom(
-                                    relationshipFriend?._id,
+                                    userClient?.isFriend?._id,
                                     false,
                                     "Bạn đã chắc chắn muốn hủy kết bạn người này chưa?"
                                   )
@@ -555,8 +569,8 @@ const Profile = () => {
                                 }}
                               />
                             </>
-                          ) : relationshipFriend?.status === "Waiting" &&
-                            relationshipFriend?.createdBy !==
+                          ) : userClient?.isFriend?.status === "Waiting" &&
+                            userClient?.isFriend?.createdBy !==
                               userProfile?._id ? (
                             <>
                               <PopupMenu
@@ -566,7 +580,7 @@ const Profile = () => {
                                 placement="top-start"
                                 onClick={() =>
                                   handleDeleteFriendCustom(
-                                    relationshipFriend?._id,
+                                    userClient?.isFriend?._id,
                                     false,
                                     "Bạn đã chắc chắn muốn hủy yêu cầu kết bạn người này?"
                                   )
@@ -600,12 +614,12 @@ const Profile = () => {
                               titleRight="Xóa lời mời"
                               onAccept={() =>
                                 handleUpdateStatusFriendCustom(
-                                  relationshipFriend?._id
+                                  userClient?.isFriend?._id
                                 )
                               }
                               onCancel={() =>
                                 handleDeleteFriendCustom(
-                                  relationshipFriend?._id,
+                                  userClient?.isFriend?._id,
                                   false,
                                   "Bạn đã chắc chắn muốn gỡ yêu cầu kết bạn từ người này?"
                                 )

@@ -315,20 +315,18 @@ const PostProfile = () => {
       {/* // ------------------------------------- */}
       <Stack
         sx={{
-          flexDirection: { xs: "column", sm: "row" },
+          flexDirection: { xs: "column", sm2: "row" },
           gap: 2,
         }}
         alignItems="flex-start"
       >
         <Stack
-          sx={[
-            (theme) => ({
-              maxWidth: { xs: "inherit", sm: 430 },
-              minWidth: { xs: "inherit", md: 430 },
-              width: "100%",
-              gap: 2,
-            }),
-          ]}
+          sx={{
+            maxWidth: { xs: "inherit", sm2: 430 },
+            minWidth: { xs: "inherit", md: 430 },
+            width: "100%",
+            gap: 2,
+          }}
         >
           <InfomationUser
             isAuth={isAuth}
