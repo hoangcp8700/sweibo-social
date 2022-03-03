@@ -127,6 +127,11 @@ const routes = () => {
           element: <VerifyCodePage />,
         },
         {
+          path: `${PATH_AUTH.verify.path}/:email`,
+          element: <VerifyCodePage />,
+        },
+
+        {
           path: `${PATH_AUTH.resetPassword.path}/:token`,
           element: <ResetPasswordPage />,
         },
