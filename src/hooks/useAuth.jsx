@@ -70,10 +70,9 @@ const useAuth = () => {
         routes.authentication().forgotPassword,
         form
       );
-
-      return { success: response.data };
+      return { ...response.data, success: true };
     } catch (error) {
-      return { error: error.response.data };
+      return { ...error.response.data, success: false };
     }
   };
 

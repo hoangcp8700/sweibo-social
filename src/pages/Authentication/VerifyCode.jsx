@@ -1,11 +1,12 @@
 import React from "react";
 import * as Yup from "yup";
+import queryString from "query-string";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useFormik, Form, FormikProvider } from "formik";
 import { useSnackbar } from "notistack";
 
 import { Box, Stack, TextField, Typography, styled, Chip } from "@mui/material";
 import { MButton } from "components/MUI";
-import { useNavigate, useLocation, Link } from "react-router-dom";
 import { PATH_AUTH } from "constants/paths";
 import { useAuth } from "hooks";
 
@@ -26,18 +27,10 @@ const VerifyCode = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
+  const { handleVerifyCode, handleForgotPassword } = useAuth();
 
   const [isVerify, setIsVerify] = React.useState(false);
-
-  React.useEffect(() => {
-    if (!location?.state?.email) return navigate(PATH_AUTH.forgotPassword.path);
-    setIsVerify(true);
-    return () => setIsVerify(false);
-  }, [location]);
-
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-
-  const { handleVerifyCode, handleForgotPassword } = useAuth();
 
   const formik = useFormik({
     initialValues: initialize,
@@ -47,7 +40,7 @@ const VerifyCode = () => {
         setIsSubmitting(true);
         const response = await handleVerifyCode({
           ...values,
-          email: location?.state?.email,
+          email: email,
         });
         setIsSubmitting(false);
 
@@ -60,7 +53,7 @@ const VerifyCode = () => {
         });
         formik.resetForm({ values: initialize });
         navigate(`${PATH_AUTH.resetPassword.path}/${response.success.data}`, {
-          state: { email: location?.state?.email },
+          state: { email: email },
         });
       } catch (error) {
         console.log("err 123", error);
@@ -68,10 +61,47 @@ const VerifyCode = () => {
     },
   });
 
-  const { errors, values, touched, handleSubmit, getFieldProps } = formik;
+  const {
+    errors,
+    values,
+    touched,
+    handleSubmit,
+    getFieldProps,
+    setFieldValue,
+    setErrors,
+  } = formik;
+
+  const parsed = queryString.parse(location?.search);
+  const email = parsed?.email || location?.state?.email;
+
+  const handleSetCode = async () => {
+    await setFieldValue("code", parsed?.code);
+    await setErrors({});
+    return handleSubmit();
+  };
+
+  React.useEffect(() => {
+    if (!location?.state?.email && !parsed?.email)
+      return navigate(PATH_AUTH.forgotPassword.path);
+    setIsVerify(true);
+
+    if (parsed?.code) {
+      handleSetCode();
+    }
+    return () => setIsVerify(false);
+  }, [location]);
+
   if (!isVerify) {
     return <div></div>;
   }
+
+  const handleForgotPasswordCustom = async () => {
+    const response = await handleForgotPassword({ email: email });
+    return enqueueSnackbar(response.message, {
+      variant: response.success ? "success" : "error",
+    });
+  };
+
   return (
     <Box sx={{ px: 5, pb: 5, pt: 3 }}>
       <Stack>
@@ -85,7 +115,7 @@ const VerifyCode = () => {
               Chúng tôi đã gửi một mã code về email{" "}
             </Typography>
             <Typography variant="subtitle2" component="span">
-              {location.state.email}.{" "}
+              {email}.{" "}
             </Typography>
             <Typography variant="body2" component="span">
               Vui lòng kiểm tra email để xác nhận code bên dưới:
@@ -121,9 +151,7 @@ const VerifyCode = () => {
               spacing={1}
             >
               <Typography
-                onClick={() =>
-                  handleForgotPassword({ email: location?.state?.email })
-                }
+                onClick={handleForgotPasswordCustom}
                 variant="body2"
                 color="primary"
                 sx={{
