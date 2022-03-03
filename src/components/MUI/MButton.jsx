@@ -62,9 +62,9 @@ const MButton = forwardRef(
       <ButtonStyle
         ref={ref}
         variant={variant}
+        sx={sx}
         styleProps={{ color, variant }}
         {...others}
-        sx={sx}
       >
         {loading ? (
           <CircularProgress

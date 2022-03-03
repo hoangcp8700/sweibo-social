@@ -8,7 +8,6 @@ import { vi } from "date-fns/locale";
 
 const MDataPicker = (props) => {
   const { value, onChange, inputProps, ...restProps } = props;
-
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
       <DatePicker
@@ -18,8 +17,6 @@ const MDataPicker = (props) => {
         onChange={(newValue) => onChange(newValue)}
         renderInput={(params) => (
           <TextField
-            {...inputProps}
-            {...params}
             sx={{
               width: "100%",
               "& input": { py: 1.5, px: 3, fontSize: 14 },
@@ -29,6 +26,8 @@ const MDataPicker = (props) => {
                 pl: 1.5,
               },
             }}
+            {...params}
+            {...inputProps}
           />
         )}
         PaperProps={{

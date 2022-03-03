@@ -418,7 +418,7 @@ const Profile = () => {
                   gap: 2,
                   // flexWrap: "wrap",
                   justifyContent: { xs: "center", sm: "flex-start" },
-                  alignItems: "center",
+                  alignItems: { xs: "center", sm: "flex-end" },
                   flexDirection: { xs: "column", sm: "row" },
                 }}
               >
@@ -506,15 +506,28 @@ const Profile = () => {
                 <Stack
                   sx={{
                     flexGrow: 1,
+                    zIndex: 5,
+                    mb: { xs: 0, sm: isAuth ? 3 : "" },
                     alignItems: { xs: "center", sm: "flex-start" },
                   }}
                 >
                   <Stack>
-                    <Typography variant="h3">
+                    <Typography
+                      variant="h3"
+                      sx={{ textAlign: { xs: "center", sm: "inherit" } }}
+                    >
                       {userProfile?.firstName} {userProfile?.lastName}
                     </Typography>
                     {userProfile?.nickName ? (
-                      <Typography variant="h4" sx={{ fontWeight: 400 }}>
+                      <Typography
+                        variant="h4"
+                        sx={{
+                          fontWeight: 400,
+                          mt: -0.5,
+                          mb: 0.5,
+                          textAlign: { xs: "center", sm: "inherit" },
+                        }}
+                      >
                         ({userProfile?.nickName})
                       </Typography>
                     ) : (
@@ -523,7 +536,12 @@ const Profile = () => {
                   </Stack>
                   {/* // friends */}
                   {!isAuth ? (
-                    <Stack direction="row" alignItems="center" spacing={1}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={1}
+                      sx={{ mb: userClient?.nickName ? 1 : 3 }}
+                    >
                       {!userClient?.isFriend ? (
                         <ButtonFriend
                           submitting={submitting}

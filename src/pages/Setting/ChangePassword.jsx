@@ -1,7 +1,6 @@
 import React from "react";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
-
 import { useFormik, Form, FormikProvider } from "formik";
 import {
   Box,
@@ -13,12 +12,9 @@ import {
   styled,
   Chip,
   Divider,
-  Paper,
 } from "@mui/material";
 import { MButton } from "components/MUI";
 import { icons } from "constants";
-import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
-import { PATH_AUTH } from "constants/paths";
 
 import { useAuth } from "hooks";
 
@@ -34,22 +30,19 @@ const initialize = {
 };
 
 const schema = Yup.object().shape({
+  passwordOld: Yup.string().required("Yêu cầu nhập mật khẩu hiện tại"),
   password: Yup.string()
     .required("Yêu cầu nhập mật khẩu")
     .min(6, "Mật khẩu ít nhất 6 kí tự")
     .max(50, "Mật khẩu tối đa 50 kí tự"),
-  passwordOld: Yup.string().required("Yêu cầu nhập mật khẩu"),
   passwordConfirmation: Yup.string()
     .required("Yêu cầu nhập lại mật khẩu")
     .oneOf([Yup.ref("password"), null], "Mật khẩu không trùng khớp"),
 });
 
 const ChangePassword = () => {
-  const navigate = useNavigate();
-  const params = useParams();
   const { enqueueSnackbar } = useSnackbar();
-  const location = useLocation();
-  const { handleResetPassword } = useAuth();
+  const { handleChangePassword } = useAuth();
 
   const [showPassword, setShowPassword] = React.useState(false);
   const [showPassword2, setShowPassword2] = React.useState(false);
@@ -65,25 +58,20 @@ const ChangePassword = () => {
         const { setErrors } = actions;
         const { passwordConfirmation, ...restForm } = values;
 
-        const response = await handleResetPassword({
+        const response = await handleChangePassword({
           ...restForm,
-          email: location?.state?.email,
-          token: params?.token,
         });
 
         setIsSubmitting(false);
 
         if (response.error) {
-          formik.resetForm({
-            values: { ...values, password: "", passwordConfirmation: "" },
-          });
+          formik.resetForm({ values: initialize });
           return setErrors({ afterSubmit: response.error });
         }
         enqueueSnackbar("Đổi mật khẩu thành công", {
           variant: "success",
         });
         formik.resetForm({ values: initialize });
-        navigate(PATH_AUTH.login.path);
       } catch (error) {
         console.log("err 123", error);
       }
@@ -99,7 +87,7 @@ const ChangePassword = () => {
         m: "0 auto",
       }}
     >
-      <Box>
+      <Box sx={{ mb: 1 }}>
         <Typography variant="h4" sx={{ mb: 1 }}>
           Đổi mật khẩu
         </Typography>

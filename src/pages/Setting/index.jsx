@@ -20,7 +20,7 @@ import { icons, data } from "constants";
 import { useAuth } from "hooks";
 import { MDrawer } from "components/MUI";
 
-const sidebarWidth = 250;
+const sidebarWidth = 300;
 
 const MenuItemStyle = styled(MenuItem)(({ active, theme }) => ({
   gap: theme.spacing(1),
@@ -99,7 +99,6 @@ const Setting = () => {
       <Stack
         direction="row"
         sx={{
-          gap: { xs: 0, md: 1 },
           height: "100%",
         }}
         alignItems="flex-start"
@@ -118,7 +117,6 @@ const Setting = () => {
                   pb: 3,
                   height: "100%",
                   bgcolor: "background.navbar",
-                  // minHeight: (theme) => `calc(100vh - ${theme.sizes.header}px)`,
                 }}
               >
                 <Stack
@@ -200,14 +198,14 @@ const Setting = () => {
               transform:
                 isSidebarLeft || matchesSM
                   ? `translateX(0px)`
-                  : `translateX(-260px)`,
+                  : `translateX(-${sidebarWidth + 20}px)`,
               minWidth: !isSidebarLeft ? `100%` : 350,
             }),
           ]}
         >
           <Box
             sx={{
-              px: 5,
+              px: { xs: 2, sm2: 5 },
               pb: 5,
               pt: 3,
               overflowY: "auto",
@@ -217,7 +215,11 @@ const Setting = () => {
                 xs: `calc(100vh - ${
                   theme.sizes.header + theme.sizes.sidebarBottom
                 }px)`,
-                sm: `calc(100vh - ${theme.sizes.header}px)`,
+                sm2: `calc(100vh - ${theme.sizes.header}px)`,
+              }),
+              minHeight: (theme) => ({
+                xs: "inherit",
+                sm2: `calc(100vh - ${theme.sizes.header}px)`,
               }),
               "&::-webkit-scrollbar-track": {
                 // boxShadow: "inset 0 0 6px rgba(0,0,0,0.3)",

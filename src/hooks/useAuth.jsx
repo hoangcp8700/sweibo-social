@@ -104,6 +104,27 @@ const useAuth = () => {
     }
   };
 
+  const handleChangePassword = async (form) => {
+    try {
+      const response = await axios.post(
+        `${routes.authentication().changePassword}`,
+        form
+      );
+      console.log("handleChangePassword", response);
+      return response.data;
+    } catch (error) {
+      return { error: error.response.data };
+    }
+  };
+  const handleUpdatUser = async (userID, form) => {
+    try {
+      const response = await axios.put(`${routes.users(userID).edit}`, form);
+      dispatch(handleUpdateAuth({ ...user, ...form }));
+      return response.data;
+    } catch (error) {
+      return error;
+    }
+  };
   const handleToggleDarkMode = async () => {
     try {
       const newSettings = {
@@ -174,7 +195,6 @@ const useAuth = () => {
   };
 
   const handleUpdateAuth = (data) => {
-    console.log("handleUpdateAuth", data);
     dispatch(SUCCESS_AUTH(data));
   };
 
@@ -197,6 +217,8 @@ const useAuth = () => {
     handleRemoveAvatar,
     handleUploadThumnail,
     handleUpdateAuth,
+    handleChangePassword,
+    handleUpdatUser,
   };
 };
 

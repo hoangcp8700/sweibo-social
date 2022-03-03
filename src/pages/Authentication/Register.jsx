@@ -21,8 +21,12 @@ import { useAuth } from "hooks";
 
 const TextFieldStyle = styled(TextField)(({ theme }) => ({
   width: "100%",
-  textTransform: "lowercase",
-  "& input": { padding: theme.spacing(1.5, 3), fontSize: 14 },
+
+  "& input": {
+    padding: theme.spacing(1.5, 3),
+    fontSize: 14,
+    textTransform: "lowercase",
+  },
 }));
 
 const genders = [

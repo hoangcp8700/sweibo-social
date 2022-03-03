@@ -24,31 +24,43 @@ const StyledFormControlLabel = styled((props) => (
 }));
 
 function MyFormControlLabel(props) {
+  const { value, checked = false } = props;
+
+  let checkPropp = checked;
   const radioGroup = useRadioGroup();
-
-  let checked = false;
-
   if (radioGroup) {
-    checked = radioGroup.value === props.value;
+    checkPropp = radioGroup.value === value;
   }
 
-  return <StyledFormControlLabel checked={checked} {...props} />;
+  return <StyledFormControlLabel checked={checkPropp} {...props} />;
 }
 
 export default function UseRadioGroup(props) {
-  const { radioGroupProps, label, radioProps, lists } = props;
+  const {
+    radioGroupProps,
+    labelStyle,
+    label,
+    radioProps,
+    lists,
+    ...restProps
+  } = props;
   return (
     <FormControl variant="standard">
       {label ? (
         <FormLabel
-          sx={{ color: "common.black", fontSize: 14, fontWeight: 700 }}
+          sx={{
+            color: "text.primary",
+            fontSize: 14,
+            fontWeight: 700,
+            ...labelStyle,
+          }}
         >
           {label}
         </FormLabel>
       ) : (
         ""
       )}
-      <RadioGroup {...radioGroupProps}>
+      <RadioGroup {...radioGroupProps} {...restProps}>
         {lists.map((item) => (
           <MyFormControlLabel
             value={item.value}

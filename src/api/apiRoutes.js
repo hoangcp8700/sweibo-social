@@ -8,6 +8,7 @@ const authentication = () => {
     forgotPassword: "/auth/forgot-password",
     verifyCode: "/auth/verify-code",
     resetPassword: "/auth/reset-password",
+    changePassword: "/auth/change-password",
     logout: "/auth/logout",
     updateAvatar: "/users/avatar/update",
     deleteAvatar: "/users/avatar/delete",
