@@ -49,9 +49,9 @@ const FriendSuggestion = ({ lists }) => {
         direction="row"
         justifyContent="space-between"
         alignItems="center"
-        sx={{ mb: 1 }}
+        sx={{ mb: 2, mx: 1 }}
       >
-        <Typography variant="h6" sx={{ color: "text.secondary" }}>
+        <Typography variant="subtitle1" sx={{ color: "text.secondary" }}>
           Gợi ý kết bạn
         </Typography>
         <Typography

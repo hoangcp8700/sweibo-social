@@ -21,18 +21,17 @@ const Home = () => {
   const [advertises, setAdvertises] = React.useState([]);
 
   React.useEffect(() => {
-    const getUsers = async () => {
-      const reponse = await fakeData.GET_USERS();
-      setUsers(reponse);
-    };
-
     const getAdvertises = () => {
       const resposne = fakeData.GET_ADVERTISE();
       setAdvertises(resposne);
     };
+    const getFriendSuggestion = async () => {
+      const reponse = await fakeData.GET_USERS();
+      setUsers(reponse);
+    };
 
+    getFriendSuggestion();
     getAdvertises();
-    getUsers();
   }, []);
 
   const handleScrollToTop = () => {
@@ -55,16 +54,28 @@ const Home = () => {
                 xs: theme.sizes.sidebar - 100,
                 lg: theme.sizes.sidebar,
               },
+              height: "100%",
+
               [theme.breakpoints.down("700")]: {
                 display: "none",
               },
             }),
           ]}
-          contentStyle={{ px: 1, pb: 2 }}
+          contentStyle={{
+            px: 1,
+            pb: 2,
+            minHeight: (theme) => ({
+              xs: `calc(100vh - ${
+                theme.sizes.sidebarBottom + theme.sizes.header
+              }px)!important`,
+              sm2: `calc(100vh - ${theme.sizes.header}px)!important`,
+            }),
+          }}
         >
           <SidebarHome />
 
           <Divider sx={{ my: 1 }} />
+
           <FriendSuggestion lists={users} />
         </StickySidebar>
 
@@ -109,7 +120,6 @@ const Home = () => {
         >
           <BirthdayToday />
           <Divider sx={{ pt: 1 }} />
-          {/* advertise */}
 
           <Box>
             <Typography variant="h6" sx={{ color: "text.secondary" }}>
