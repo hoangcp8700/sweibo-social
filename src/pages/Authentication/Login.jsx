@@ -253,6 +253,7 @@ const Login = () => {
         />
         <ButtonSocial
           icon={icons.FacebookIcon}
+          onClick={() => handleLoginSocial("facebook")}
           title={`${!matches ? "Đăng nhập với tài khoản" : ""} Facebook`}
         />
         <ButtonSocial
