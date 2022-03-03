@@ -21,6 +21,7 @@ import { useAuth } from "hooks";
 
 const TextFieldStyle = styled(TextField)(({ theme }) => ({
   width: "100%",
+  textTransform: "lowercase",
   "& input": { padding: theme.spacing(1.5, 3), fontSize: 14 },
 }));
 
@@ -189,6 +190,7 @@ const Register = () => {
           {step === 0 ? (
             <Stack spacing={2} sx={{ mt: 3 }}>
               <TextFieldStyle
+                autoComplete="email"
                 value={values.email}
                 placeholder="Địa chỉ email"
                 {...getFieldProps("email")}
@@ -198,6 +200,7 @@ const Register = () => {
 
               <TextFieldStyle
                 value={values.phone}
+                autoComplete="phone"
                 placeholder="Số điện thoại"
                 {...getFieldProps("phone")}
                 error={Boolean(touched.phone && errors.phone)}
@@ -205,6 +208,7 @@ const Register = () => {
               />
 
               <TextFieldStyle
+                autoComplete="current-password"
                 value={values.password}
                 name="password"
                 type={showPassword ? "string" : "password"}
@@ -232,6 +236,7 @@ const Register = () => {
               />
 
               <TextFieldStyle
+                autoComplete="off"
                 value={values.passwordConfirmation}
                 type={showPassword2 ? "string" : "password"}
                 placeholder="Nhập lại mật khẩu"
@@ -270,6 +275,7 @@ const Register = () => {
             <Stack spacing={2} sx={{ mt: 3 }}>
               <Stack direction="row" spacing={2}>
                 <TextFieldStyle
+                  autoComplete="off"
                   value={values.firstName}
                   placeholder="Họ và tên lót"
                   {...getFieldProps("firstName")}
@@ -278,6 +284,7 @@ const Register = () => {
                 />
 
                 <TextFieldStyle
+                  autoComplete="off"
                   value={values.lastName}
                   placeholder="Tên"
                   {...getFieldProps("lastName")}
@@ -287,6 +294,7 @@ const Register = () => {
               </Stack>
 
               <TextFieldStyle
+                autoComplete="off"
                 value={values.nickName}
                 placeholder="Tên khác (nếu có)"
                 {...getFieldProps("nickName")}
@@ -295,6 +303,7 @@ const Register = () => {
               />
 
               <MDataPicker
+                autoComplete="off"
                 value={values?.dOB}
                 onChange={(value) => setFieldValue("dOB", value)}
                 label="Sinh nhật"
