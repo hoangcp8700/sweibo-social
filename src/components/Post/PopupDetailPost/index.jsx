@@ -59,7 +59,6 @@ const initialize = {
   hasNextPage: true,
   data: [],
   length: 0,
-  isLoading: false,
 };
 
 export default function PopupDetailPost(props) {
@@ -83,6 +82,7 @@ export default function PopupDetailPost(props) {
 
   const [form, setForm] = React.useState({ comment: "" });
   const [openMenu, setOpenMenu] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
   const [paginate, setPaginate] = React.useState(initialize); // COMMENTS
   const [editCommentID, setEditCommentID] = React.useState(null);
@@ -95,14 +95,15 @@ export default function PopupDetailPost(props) {
 
   const handleGetCommentsCustom = React.useCallback(async () => {
     if (!paginate.hasNextPage) return;
-    setPaginate({ ...paginate, isLoading: true });
+    setLoading(true);
     const response = await handleGetComments(paginate.page, postID);
+    setLoading(false);
+
     setPaginate({
       page: response.next,
       hasNextPage: response.hasNextPage,
       data: [...response.data, ...paginate.data],
       totalLength: response.totalLength,
-      isLoading: false,
     });
   }, [paginate, postID]);
 
@@ -238,6 +239,7 @@ export default function PopupDetailPost(props) {
               flexDirection: { xs: "column", md: "row" },
               alignItems: "flex-start",
               height: "100vh",
+              bgcolor: "background.navbar",
 
               overflowY: "auto",
               "&::-webkit-scrollbar-track": {
@@ -261,14 +263,14 @@ export default function PopupDetailPost(props) {
             <SlideImage images={post?.images} />
 
             {/* content */}
-            <Paper
+            <Box
               sx={{
                 flex: 1,
                 maxWidth: { xs: "auto", md: widthDefault },
                 minWidth: { xs: "auto", md: widthDefault },
                 py: 2,
-                bgcolor: "background.navbar",
                 minHeight: "100vh",
+                width: "100%",
               }}
             >
               <Header
@@ -301,24 +303,7 @@ export default function PopupDetailPost(props) {
               <Box sx={{ px: 2 }}>
                 <Divider />
 
-                {paginate?.hasNextPage ? (
-                  <Box sx={{ mt: 2 }}>
-                    <Typography
-                      onClick={handleGetCommentsCustom}
-                      variant="body2"
-                      sx={{
-                        cursor: "pointer",
-                        "&:hover": { textDecoration: "underline" },
-                      }}
-                    >
-                      Xem thêm bình luận
-                    </Typography>
-                  </Box>
-                ) : (
-                  ""
-                )}
-
-                {paginate?.isLoading ? (
+                {loading ? (
                   <Box
                     sx={{
                       "& .lds-ellipsis": {
@@ -330,6 +315,19 @@ export default function PopupDetailPost(props) {
                     }}
                   >
                     <LoadingEllipsisElement />
+                  </Box>
+                ) : paginate?.hasNextPage ? (
+                  <Box sx={{ mt: 2 }}>
+                    <Typography
+                      onClick={handleGetCommentsCustom}
+                      variant="body2"
+                      sx={{
+                        cursor: "pointer",
+                        "&:hover": { textDecoration: "underline" },
+                      }}
+                    >
+                      Xem thêm bình luận
+                    </Typography>
                   </Box>
                 ) : (
                   ""
@@ -377,7 +375,7 @@ export default function PopupDetailPost(props) {
                   setForm({ ...form, [name]: value })
                 }
               />
-            </Paper>
+            </Box>
           </Stack>
         </DialogContent>
       </Box>

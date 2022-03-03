@@ -90,13 +90,17 @@ const CommentItem = (props) => {
   };
   return (
     <Box sx={{ position: "relative" }}>
-      <PopupMenu
-        open={openMenu}
-        onClose={handleToggleOpenMenu}
-        onClick={(action) => handleActions(action, item?._id)}
-        ref={menuRef}
-        lists={menus}
-      />
+      {openMenu ? (
+        <PopupMenu
+          open={openMenu}
+          onClose={handleToggleOpenMenu}
+          onClick={(action) => handleActions(action, item?._id)}
+          ref={menuRef}
+          lists={menus}
+        />
+      ) : (
+        ""
+      )}
 
       <Box sx={{ position: "relative" }}>
         <Stack direction="row" spacing={2}>

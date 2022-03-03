@@ -95,6 +95,7 @@ const PostItem = (props) => {
         <FooterInfo
           likeLength={post?.likes?.length}
           commentLength={post?.commentCount}
+          shareLength={0}
           handleGetLikes={() => handleActionPost("like", post?._id)}
           handleGetComments={() => handleActionPost("comment", post?._id)}
         />

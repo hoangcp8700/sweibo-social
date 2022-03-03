@@ -15,19 +15,45 @@ import checkCreatedByFriend from "utils/checkCreatedByFriend";
 import { PATH_PAGE } from "constants/paths";
 
 const ActionFriend = (props) => {
-  const { children, titleLeft, titleRight, onAccept, onCancel } = props;
+  const { leftIcon, rightIcon, titleLeft, titleRight, onAccept, onCancel } =
+    props;
   return (
     <Stack direction="row" sx={{ flexWrap: "wrap", gap: 1 }}>
       <MButton
+        startIcon={leftIcon}
         variant="contained"
         color="primary"
-        sx={{ py: 0.5 }}
+        sx={{
+          py: 0.5,
+          "& .MuiButton-startIcon": { mr: { xs: 0, mobile: 1 } },
+        }}
         onClick={onAccept}
       >
-        {titleLeft}
+        <Typography
+          variant="subtitle2"
+          sx={{
+            fontSize: { xs: 12, mobile: 14 },
+            display: { xs: "none", mobile: "block" },
+          }}
+        >
+          {titleLeft}
+        </Typography>
       </MButton>
-      <MButton variant="cancel" sx={{ py: 0.5 }} onClick={onCancel}>
-        {titleRight}
+      <MButton
+        startIcon={rightIcon}
+        variant="cancel"
+        sx={{ py: 0.5, "& .MuiButton-startIcon": { mr: { xs: 0, mobile: 1 } } }}
+        onClick={onCancel}
+      >
+        <Typography
+          variant="subtitle2"
+          sx={{
+            fontSize: { xs: 12, mobile: 14 },
+            display: { xs: "none", mobile: "block" },
+          }}
+        >
+          {titleRight}
+        </Typography>
       </MButton>
     </Stack>
   );
@@ -44,7 +70,7 @@ const FriendItem = (props) => {
         spacing={2}
         justifyContent="space-between"
       >
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack direction="row" alignItems="center" spacing={1}>
           <Typography
             component={Link}
             to={`/${PATH_PAGE.profile.link}/posts?email=${
@@ -78,6 +104,8 @@ const FriendItem = (props) => {
 
             {item?.status === "Active" ? (
               <ActionFriend
+                leftIcon={icons.DoneIcon}
+                rightIcon={icons.CloseIcon}
                 titleLeft="Bạn bè"
                 titleRight="Hủy kết bạn"
                 onAccept={() => {}}
@@ -91,6 +119,8 @@ const FriendItem = (props) => {
               />
             ) : nameFriend === "targetID" ? (
               <ActionFriend
+                leftIcon={icons.DoneIcon}
+                rightIcon={icons.CloseIcon}
                 titleLeft="Chờ chấp nhận"
                 titleRight="Gỡ"
                 onAccept={() => {}}
@@ -104,6 +134,8 @@ const FriendItem = (props) => {
               />
             ) : (
               <ActionFriend
+                leftIcon={icons.DoneIcon}
+                rightIcon={icons.CloseIcon}
                 titleLeft="Chấp nhận"
                 titleRight="Gỡ"
                 onAccept={() => handleUpdateStatusFriend(item?._id)}

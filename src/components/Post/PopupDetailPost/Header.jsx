@@ -17,7 +17,7 @@ const Header = React.forwardRef((props, ref) => {
       <Stack direction="row" alignItems="center" spacing={1}>
         <Typography
           component={Link}
-          to={`${PATH_PAGE.profile.link}/posts?email=${post?.createdBy?.email}`}
+          to={`/${PATH_PAGE.profile.link}/posts?email=${post?.createdBy?.email}`}
         >
           <Avatar
             sx={{ width: 36, height: 36 }}
@@ -30,7 +30,7 @@ const Header = React.forwardRef((props, ref) => {
             variant="subtitle2"
             sx={{ color: "text.primary" }}
             component={Link}
-            to={`${PATH_PAGE.profile.link}/posts?email=${post?.createdBy?.email}`}
+            to={`/${PATH_PAGE.profile.link}/posts?email=${post?.createdBy?.email}`}
           >
             {post?.createdBy?.firstName} {post?.createdBy?.lastName}
           </Typography>

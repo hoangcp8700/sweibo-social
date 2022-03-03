@@ -44,21 +44,25 @@ const SlideImage = (props) => {
         width: "100%",
         bgcolor: "common.black",
         "& .slick-slider": {
-          width: "50vw",
+          width: { xs: "100vw", mobile: "50vw" },
           height: { xs: "50vh", md: "100vh" },
           m: "0 auto",
           "& .slick-list": {
             height: "100%",
           },
           "& .slick-arrow": {
+            zIndex: 2,
             "&:before": {
               fontSize: { xs: 30, sm: 40 },
             },
             "&.slick-prev": {
-              left: { xs: -50, sm: -60 },
+              left: { xs: 10, mobile: -45 },
             },
             "&.slick-next": {
-              right: -45,
+              right: {
+                xs: `calc(10px - -20px)`,
+                mobile: `calc(-45px - -20px)`,
+              },
             },
           },
         },

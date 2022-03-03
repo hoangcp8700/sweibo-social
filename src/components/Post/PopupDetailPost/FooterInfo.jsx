@@ -35,8 +35,13 @@ const EmojiButtonStyle = styled(IconButton)(({ theme }) => ({
 }));
 
 const FooterInfo = (props) => {
-  const { commentLength, likeLength, handleGetLikes, handleGetComments } =
-    props;
+  const {
+    commentLength,
+    shareLength,
+    likeLength,
+    handleGetLikes,
+    handleGetComments,
+  } = props;
   const theme = useTheme();
   const isMobileRes = theme.breakpoints.down("sm");
 
@@ -70,7 +75,7 @@ const FooterInfo = (props) => {
           <TypographyCustom
           // onClick={() => handleActionPost("share", post?._id)}
           >
-            22 chia sẻ
+            {shareLength || 0} chia sẻ
           </TypographyCustom>
         </Stack>
       </Stack>

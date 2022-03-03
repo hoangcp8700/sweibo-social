@@ -5,12 +5,12 @@ import {
   DialogTitle,
   DialogContent,
   Box,
+  Stack,
   Typography,
   Divider,
 } from "@mui/material";
 import { useUser } from "hooks";
-import { InfiniteScroll } from "providers";
-import { FriendItem } from "components";
+import { FriendItem, LoadingEllipsisElement } from "components";
 
 const initialize = {
   page: 1,
@@ -26,10 +26,13 @@ export default function PopupEditProfile(props) {
     useUser();
 
   const [paginate, setPaginate] = React.useState(initialize); // friends
+  const [loading, setLoading] = React.useState(false);
 
   const handleGetFriendsCustom = async () => {
     if (!paginate.hasNextPage) return;
+    setLoading(true);
     const response = await handleGetFriends(paginate.page, "accept", user?._id);
+    setLoading(false);
 
     setPaginate({
       page: response.next,
@@ -89,17 +92,40 @@ export default function PopupEditProfile(props) {
                 md: "repeat(auto-fill, minmax(400px, 1fr) )",
               },
               gap: 2,
-              px: 2,
             },
           }}
         >
-          {paginate?.totalLength > 0 ? (
-            <InfiniteScroll
-              hasNextPage={paginate?.hasNextPage}
-              data={paginate?.data}
-              fetch={handleGetFriendsCustom}
-              // endMessage={`Tổng cộng ${paginate?.totalLength} bài viết`}
+          {loading ? (
+            <Box
+              sx={{
+                "& .lds-ellipsis": {
+                  width: 30,
+                  height: 30,
+                  pr: 9,
+                  "& div": { width: 8, height: 8, top: 15 },
+                },
+              }}
             >
+              <LoadingEllipsisElement />
+            </Box>
+          ) : paginate?.hasNextPage ? (
+            <Box sx={{ mt: 2 }}>
+              <Typography
+                onClick={handleGetFriendsCustom}
+                variant="body2"
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": { textDecoration: "underline" },
+                }}
+              >
+                Xem thêm
+              </Typography>
+            </Box>
+          ) : (
+            ""
+          )}
+          {paginate?.data?.length ? (
+            <Stack>
               {paginate?.data?.map((item) => (
                 <FriendItem
                   key={item.id}
@@ -109,7 +135,7 @@ export default function PopupEditProfile(props) {
                   handleDeleteFriend={handleDeleteFriendCustom}
                 />
               ))}
-            </InfiniteScroll>
+            </Stack>
           ) : (
             ""
           )}
