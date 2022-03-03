@@ -15,13 +15,14 @@ const OAuth2 = () => {
 
   React.useEffect(() => {
     const parsed = queryString.parse(location.search);
-    if (!parsed?.token || !params?.provider || parsed.token.length < 150)
-      return navigate(PATH_AUTH.login.path);
-    setSession(parsed?.token);
+    console.log('parsed', parsed)
+    // if (!parsed?.token || !params?.provider || parsed.token.length < 150)
+    //   return navigate(PATH_AUTH.login.path);
+    // setSession(parsed?.token);
 
-    setTimeout(() => {
-      navigate(PATH_PAGE.home.path);
-    }, 3000);
+    // setTimeout(() => {
+    //   navigate(PATH_PAGE.home.path);
+    // }, 3000);
   }, [params, location, navigate, setSession]);
 
   return (
