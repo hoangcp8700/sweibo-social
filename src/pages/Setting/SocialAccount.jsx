@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Stack,
-  Paper,
-  IconButton,
-  Typography,
-  Divider,
-} from "@mui/material";
-import { MButton } from "components/MUI";
+import { Box, Stack, IconButton, Typography, Divider } from "@mui/material";
 import { icons } from "constants";
 
 import { useAuth } from "hooks";
@@ -41,7 +33,6 @@ const SocialAccount = () => {
 
   const handleGetSocialCustom = async () => {
     const response = await handleGetSocial();
-    console.log("responseresponse", response);
     if (response) {
       setSocials(response);
     }
