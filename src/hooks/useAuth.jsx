@@ -215,7 +215,7 @@ const useAuth = () => {
   const handleGetSocial = async () => {
     try {
       const response = await axios.get(routes.authentication().getSocial);
-      return response.data;
+      return response.data.data;
     } catch (error) {
       return false;
     }
