@@ -246,7 +246,7 @@ export default function PopupDetailPost(props) {
             sx={{
               flexDirection: { xs: "column", md: "row" },
               alignItems: "flex-start",
-              // height: "100vh",
+              height: "100vh",
               bgcolor: "background.navbar",
 
               overflowY: "auto",
@@ -277,7 +277,7 @@ export default function PopupDetailPost(props) {
                 maxWidth: { xs: "auto", md: widthDefault },
                 minWidth: { xs: "auto", md: widthDefault },
                 py: 2,
-                minHeight: { xs: "auto", md: "100vh" },
+                height: "100vh",
                 width: "100%",
               }}
             >
