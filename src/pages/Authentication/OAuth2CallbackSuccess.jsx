@@ -22,8 +22,8 @@ const OAuth2 = () => {
   const handleLoginCustom = async ({ uID, email, pId, provider, cd }) => {
     const response = await handleLoginSocial({ uID, email, pId, provider, cd });
     if (response) {
+      setLoading(false);
       return setTimeout(() => {
-        setLoading(false);
         handleRedirecHome();
       }, 3000);
     }

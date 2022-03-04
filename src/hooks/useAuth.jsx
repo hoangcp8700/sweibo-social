@@ -74,7 +74,6 @@ const useAuth = () => {
         code: cd,
         email,
       });
-      console.log("login social", response);
       setSession(response.data.accessToken);
       const auth = await handleAuthenticated();
       return auth;
@@ -170,7 +169,6 @@ const useAuth = () => {
         newForm
       );
       const newAvatar = { ...user, avatar: response.data.data.avatar };
-      // dispatch(SUCCESS_AUTH(newAvatar));
       return newAvatar;
     } catch (error) {
       console.log("err", error);

@@ -10,6 +10,7 @@ const OAuth2 = () => {
   const navigate = useNavigate();
 
   const handleRedirecLogin = () => navigate(PATH_AUTH.login.path);
+
   React.useEffect(() => {
     setTimeout(() => {
       navigate(PATH_AUTH.login.path);
