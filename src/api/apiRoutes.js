@@ -15,6 +15,7 @@ const authentication = () => {
     deleteAvatar: "/users/avatar/delete",
     updateThumbnail: "/users/thumbnail/update",
     deleteThumbnail: "/users/thumbnail/delete",
+    getSocial: "/auth/social",
   };
 };
 

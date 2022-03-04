@@ -6,7 +6,18 @@ import { icons } from "constants";
 import { useAuth } from "hooks";
 
 const SocialAccount = () => {
-  const { handleChangePassword } = useAuth();
+  const { handleGetSocial, user } = useAuth();
+
+  const [socials, setSocials] = React.useState([]);
+
+  const handleGetSocialCustom = async () => {
+    const response = await handleGetSocial();
+    console.log("responseresponse", response);
+  };
+  React.useEffect(() => {
+    if (!user?._id) return;
+    handleGetSocialCustom();
+  }, [user]);
 
   return (
     <Box

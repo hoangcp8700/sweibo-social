@@ -212,6 +212,14 @@ const useAuth = () => {
     dispatch(SUCCESS_AUTH(data));
   };
 
+  const handleGetSocial = async () => {
+    try {
+      const response = await axios.get(routes.authentication().getSocial);
+      return response.data;
+    } catch (error) {
+      return false;
+    }
+  };
   return {
     user,
     isLoading,
@@ -234,6 +242,7 @@ const useAuth = () => {
     handleChangePassword,
     handleUpdatUser,
     handleLoginSocial,
+    handleGetSocial,
   };
 };
 
