@@ -238,7 +238,7 @@ export default function PopupDetailPost(props) {
             sx={{
               flexDirection: { xs: "column", md: "row" },
               alignItems: "flex-start",
-              height: "100vh",
+              // height: "100vh",
               bgcolor: "background.navbar",
 
               overflowY: "auto",
