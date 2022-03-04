@@ -66,11 +66,11 @@ const useAuth = () => {
 
   const handleLoginSocial = async ({ uID, email, pId, provider, cd }) => {
     try {
-      dispatch(LOADING_AUTH);
+      // dispatch(LOADING_AUTH);
       const response = await axios.post(routes.authentication().loginSocial, {
         userID: uID,
         providerID: pId,
-        provider,
+        providerName: provider,
         code: cd,
         email,
       });
@@ -79,7 +79,7 @@ const useAuth = () => {
       const auth = await handleAuthenticated();
       return auth;
     } catch (error) {
-      return { error: error.response.data };
+      return false;
     }
   };
 

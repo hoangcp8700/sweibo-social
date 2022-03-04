@@ -9,6 +9,7 @@ const OAuth2 = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const handleRedirecLogin = () => navigate(PATH_AUTH.login.path);
   React.useEffect(() => {
     setTimeout(() => {
       navigate(PATH_AUTH.login.path);
@@ -150,6 +151,7 @@ const OAuth2 = () => {
       <div className="bubble" />
       <Box sx={{ textAlign: "center" }}>
         <IconButton
+          onClick={handleRedirecLogin}
           sx={{
             bgcolor: "error.main",
             "&:hover": {

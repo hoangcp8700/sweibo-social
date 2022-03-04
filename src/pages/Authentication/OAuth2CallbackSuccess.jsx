@@ -6,37 +6,39 @@ import { useAuth } from "hooks";
 import { PATH_AUTH, PATH_PAGE } from "constants/paths";
 import "components/Animation/bubble.css";
 import { icons } from "constants";
+import { LoadingEllipsisElement } from "components";
 
 const OAuth2 = () => {
   const params = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { setSession, handleLoginSocial } = useAuth();
+  const { handleLoginSocial } = useAuth();
+  const [loading, setLoading] = React.useState(true);
+
+  const handleRedirecHome = () => {
+    navigate(PATH_PAGE.home.path);
+  };
 
   const handleLoginCustom = async ({ uID, email, pId, provider, cd }) => {
     const response = await handleLoginSocial({ uID, email, pId, provider, cd });
-    if (!response) {
-      return console.log("saiii", response);
+    if (response) {
+      return setTimeout(() => {
+        setLoading(false);
+        handleRedirecHome();
+      }, 3000);
     }
-    console.log("okk,", response);
+    return navigate(`/auth/${provider}/failed${location.search}`);
   };
 
   React.useEffect(() => {
     const parsed = queryString.parse(location.search);
+    const { accessToken, uID, pId, provider, cd, email } = parsed;
 
-    const { acccessToken, uID, pId, provider, cd, email } = parsed;
-    if (!acccessToken || !uID || !pId || !provider || !cd || email) {
-      return console.log("thieu field");
+    if (!accessToken || !uID || !pId || !provider || !cd || !email) {
+      return navigate(`/auth/${provider}/failed${location.search}`);
     }
-    handleLoginCustom();
-    // if (!parsed?.token || !params?.provider || parsed.token.length < 150)
-    //   return navigate(PATH_AUTH.login.path);
-    // setSession(parsed?.token);
-
-    // setTimeout(() => {
-    //   navigate(PATH_PAGE.home.path);
-    // }, 3000);
-  }, [params, location, navigate, setSession]);
+    handleLoginCustom({ uID, email, pId, provider, cd });
+  }, []);
 
   return (
     <Box
@@ -171,29 +173,41 @@ const OAuth2 = () => {
       <div className="bubble" />
       <div className="bubble" />
       <div className="bubble" />
-      <Box sx={{ textAlign: "center" }}>
-        <IconButton
-          sx={{
-            bgcolor: "primary.main",
-            "&:hover": {
-              bgcolor: "primary.main",
-            },
-            "& svg": { fontSize: 64, fill: "#fff" },
-          }}
-        >
-          {icons.DoneIcon}
-        </IconButton>
 
-        <Typography
-          variant="h4"
-          align="center"
-          sx={{
-            fontFamily: `"Fira Mono", monospace`,
-            mt: 2,
-          }}
-        >
-          Đăng nhập thành công
-        </Typography>
+      <Box sx={{ textAlign: "center" }}>
+        {loading ? (
+          <Paper
+            sx={{ bgcolor: "common.white", borderRadius: "50%", p: 3 }}
+            elevation={10}
+          >
+            <LoadingEllipsisElement />
+          </Paper>
+        ) : (
+          <Box>
+            <IconButton
+              onClick={handleRedirecHome}
+              sx={{
+                bgcolor: "primary.main",
+                "&:hover": {
+                  bgcolor: "primary.main",
+                },
+                "& svg": { fontSize: 64, fill: "#fff" },
+              }}
+            >
+              {icons.DoneIcon}
+            </IconButton>
+            <Typography
+              variant="h4"
+              align="center"
+              sx={{
+                fontFamily: `"Fira Mono", monospace`,
+                mt: 2,
+              }}
+            >
+              Đăng nhập thành công
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Box>
   );
