@@ -45,6 +45,7 @@ const routes = () => {
           children: [
             { path: "", element: <GeneralSettingPage /> },
             { path: "change-password", element: <ChangePasswordPage /> },
+            { path: "socials", element: <SocialAccountPage /> },
           ],
         },
         {
@@ -166,6 +167,9 @@ const GeneralSettingPage = Loadable(
 );
 const ChangePasswordPage = Loadable(
   lazy(() => import("pages/Setting/ChangePassword"))
+);
+const SocialAccountPage = Loadable(
+  lazy(() => import("pages/Setting/SocialAccount"))
 );
 
 const ChatPage = Loadable(lazy(() => import("pages/Chat")));

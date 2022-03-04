@@ -16,7 +16,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { MButton } from "components/MUI";
-import { icons } from "constants";
+import { icons, fakeData } from "constants";
 import { Link, useNavigate } from "react-router-dom";
 import { PATH_AUTH, PATH_PAGE } from "constants/paths";
 import { useAuth } from "hooks";
@@ -49,13 +49,6 @@ const initialize = {
   password: "",
 };
 
-const accountsTest = [
-  { id: 1, userName: "test1@gmail.com", password: "123123" },
-  { id: 2, userName: "test2@gmail.com", password: "123123" },
-  { id: 3, userName: "test3@gmail.com", password: "123123" },
-  { id: 4, userName: "test4@gmail.com", password: "123123" },
-  { id: 5, userName: "test5@gmail.com", password: "123123" },
-];
 const schema = Yup.object().shape({
   userName: Yup.string().required("Yêu cầu nhập nhập email hoặc số điện thoại"),
   password: Yup.string().required("Yêu cầu nhập mật khẩu"),
@@ -111,7 +104,9 @@ const Login = () => {
   const handleShowAccountTest = () => setOpenAccountTest(!openAccountTest);
 
   const handleSubmitAccountTest = async (accountID) => {
-    const getAccount = accountsTest.filter((item) => item?.id === accountID);
+    const getAccount = fakeData.ACCOUNT_TEST.filter(
+      (item) => item?.id === accountID
+    );
     if (getAccount.length) {
       await setFieldValue("userName", getAccount[0].userName);
       await setFieldValue("password", getAccount[0].password);
@@ -125,7 +120,7 @@ const Login = () => {
       <PopupAccountTest
         open={openAccountTest}
         onClose={handleShowAccountTest}
-        accounts={accountsTest}
+        accounts={fakeData.ACCOUNT_TEST}
         onClick={handleSubmitAccountTest}
       />
 

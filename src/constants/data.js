@@ -22,6 +22,11 @@ const sidebarSettings = [
     path: "/settings/change-password",
     icon: icons.PeopleAltIcon,
   },
+  {
+    title: "Liên kết với mạng xã hội",
+    path: "/settings/socials",
+    icon: icons.PeopleAltIcon,
+  },
 ];
 
 const sidebarSave = [

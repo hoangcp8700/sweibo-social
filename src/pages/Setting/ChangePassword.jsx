@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import { useFormik, Form, FormikProvider } from "formik";
@@ -14,9 +15,9 @@ import {
   Divider,
 } from "@mui/material";
 import { MButton } from "components/MUI";
-import { icons } from "constants";
-
+import { icons, fakeData } from "constants";
 import { useAuth } from "hooks";
+import { PATH_PAGE } from "constants/paths";
 
 const TextFieldStyle = styled(TextField)(({ theme }) => ({
   width: "100%",
@@ -24,13 +25,13 @@ const TextFieldStyle = styled(TextField)(({ theme }) => ({
 }));
 
 const initialize = {
-  password: "",
   passwordOld: "",
+  password: "",
   passwordConfirmation: "",
 };
 
 const schema = Yup.object().shape({
-  passwordOld: Yup.string().required("Yêu cầu nhập mật khẩu hiện tại"),
+  // passwordOld: Yup.string().required("Yêu cầu nhập mật khẩu hiện tại"),
   password: Yup.string()
     .required("Yêu cầu nhập mật khẩu")
     .min(6, "Mật khẩu ít nhất 6 kí tự")
@@ -40,14 +41,32 @@ const schema = Yup.object().shape({
     .oneOf([Yup.ref("password"), null], "Mật khẩu không trùng khớp"),
 });
 
-const ChangePassword = () => {
-  const { enqueueSnackbar } = useSnackbar();
-  const { handleChangePassword } = useAuth();
+const emails = fakeData.ACCOUNT_TEST.map((item) => item.userName);
 
+const ChangePassword = () => {
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const { handleChangePassword, user } = useAuth();
+
+  const [isAccountTest, setIsAccountTest] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   const [showPassword2, setShowPassword2] = React.useState(false);
   const [showPassword3, setShowPassword3] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  React.useState(() => {
+    if (!user?._id) return;
+    const checkAccount = emails.includes(user?.email);
+    if (checkAccount) {
+      setIsAccountTest(true);
+      enqueueSnackbar("Tài khoản trải nghiệm không có quyền đổi mật khẩu", {
+        variant: "warning",
+      });
+    }
+    return () => {
+      setIsAccountTest(false);
+    };
+  }, [user?._id]);
 
   const formik = useFormik({
     initialValues: initialize,
@@ -192,7 +211,7 @@ const ChangePassword = () => {
           </Stack>
 
           <MButton
-            disabled={isSubmitting}
+            disabled={isSubmitting || isAccountTest}
             loading={isSubmitting}
             type="submit"
             variant="contained"

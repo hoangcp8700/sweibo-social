@@ -78,4 +78,12 @@ const GET_COLLECTION_SAVE = () => {
   ];
   return arr;
 };
-export default { GET_USERS, GET_ADVERTISE, GET_COLLECTION_SAVE };
+
+const ACCOUNT_TEST = [
+  { id: 1, userName: "test1@gmail.com", password: "123123" },
+  { id: 2, userName: "test2@gmail.com", password: "123123" },
+  { id: 3, userName: "test3@gmail.com", password: "123123" },
+  { id: 4, userName: "test4@gmail.com", password: "123123" },
+  { id: 5, userName: "test5@gmail.com", password: "123123" },
+];
+export default { GET_USERS, GET_ADVERTISE, GET_COLLECTION_SAVE, ACCOUNT_TEST };
