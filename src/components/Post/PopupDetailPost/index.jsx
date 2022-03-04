@@ -179,7 +179,15 @@ export default function PopupDetailPost(props) {
   };
 
   return (
-    <Dialog open={open} keepMounted onClose={onClose} fullScreen>
+    <Dialog
+      open={open}
+      keepMounted
+      onClose={onClose}
+      fullScreen
+      PaperProps={{
+        sx: { bgcolor: "background.navbar", backgroundImage: "inherit" },
+      }}
+    >
       <Box sx={{ overflow: "hidden" }}>
         <PopupMenu
           open={openMenu}
