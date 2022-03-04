@@ -4,6 +4,7 @@ const authentication = () => {
   return {
     user: "/auth/user",
     login: "/auth/login",
+    loginSocial: "/auth/login/social",
     register: "/auth/register",
     forgotPassword: "/auth/forgot-password",
     verifyCode: "/auth/verify-code",

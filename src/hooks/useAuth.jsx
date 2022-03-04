@@ -55,10 +55,29 @@ const useAuth = () => {
     try {
       dispatch(LOADING_AUTH);
       const response = await axios.post(routes.authentication().login, form);
-      dispatch(SUCCESS_AUTH(response.data.data));
+      // dispatch(SUCCESS_AUTH(response.data.data));
       setSession(response.data.accessToken);
       const auth = await handleAuthenticated();
       return { success: auth };
+    } catch (error) {
+      return { error: error.response.data };
+    }
+  };
+
+  const handleLoginSocial = async ({ uID, email, pId, provider, cd }) => {
+    try {
+      dispatch(LOADING_AUTH);
+      const response = await axios.post(routes.authentication().loginSocial, {
+        userID: uID,
+        providerID: pId,
+        provider,
+        code: cd,
+        email,
+      });
+      console.log("login social", response);
+      setSession(response.data.accessToken);
+      const auth = await handleAuthenticated();
+      return auth;
     } catch (error) {
       return { error: error.response.data };
     }
@@ -218,6 +237,7 @@ const useAuth = () => {
     handleUpdateAuth,
     handleChangePassword,
     handleUpdatUser,
+    handleLoginSocial,
   };
 };
 

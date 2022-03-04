@@ -11,11 +11,24 @@ const OAuth2 = () => {
   const params = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { setSession } = useAuth();
+  const { setSession, handleLoginSocial } = useAuth();
+
+  const handleLoginCustom = async ({ uID, email, pId, provider, cd }) => {
+    const response = await handleLoginSocial({ uID, email, pId, provider, cd });
+    if (!response) {
+      return console.log("saiii", response);
+    }
+    console.log("okk,", response);
+  };
 
   React.useEffect(() => {
     const parsed = queryString.parse(location.search);
-    console.log('parsed', parsed)
+
+    const { acccessToken, uID, pId, provider, cd, email } = parsed;
+    if (!acccessToken || !uID || !pId || !provider || !cd || email) {
+      return console.log("thieu field");
+    }
+    handleLoginCustom();
     // if (!parsed?.token || !params?.provider || parsed.token.length < 150)
     //   return navigate(PATH_AUTH.login.path);
     // setSession(parsed?.token);
