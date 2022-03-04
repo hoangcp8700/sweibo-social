@@ -45,10 +45,10 @@ const MainAuthenticationLayout = () => {
         >
           <Box sx={{ maxWidth: 500, display: { xs: "none", md: "block" } }}>
             <Typography variant="h1" color="primary">
-              weibo
+              sweibo
             </Typography>
             <Typography variant="h4">
-              Weibo giúp bạn kết nối và chia sẻ với mọi người trong cuộc sống
+              Sweibo giúp bạn kết nối và chia sẻ với mọi người trong cuộc sống
               của bạn.
             </Typography>
           </Box>

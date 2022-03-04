@@ -24,10 +24,8 @@ const useAuth = () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const id = accessToken && getIdByToken(accessToken);
-
       if (accessToken && id && isValidToken(accessToken)) {
         const response = await axios.get(routes.authentication().user);
-
         // console.log("authen", response);
         dispatch(SUCCESS_AUTH(response.data.data));
         return response.data.data;

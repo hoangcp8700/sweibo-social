@@ -1,8 +1,8 @@
 const filter = (file) => {
   const size = file.size / 1000 / 1000;
-  if (size > 2) {
+  if (size > 7) {
     return {
-      message: "Vì dung lượng có hạn vui lòng upload mỗi file tối đa 2mb",
+      message: "Vì dung lượng có hạn vui lòng upload mỗi file tối đa 7mb",
       error: true,
     };
   }
