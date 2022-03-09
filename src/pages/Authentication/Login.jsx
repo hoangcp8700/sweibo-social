@@ -70,6 +70,9 @@ const Login = () => {
     onSubmit: async (values, { setErrors }) => {
       try {
         setIsSubmitting(true);
+        alert(
+          "Nếu đăng nhập lâu thì vui lòng chờ chút xíu nha mọi người! Do xài đồ miễn phí :((("
+        );
         const response = await handleLogin(values);
         setIsSubmitting(false);
 

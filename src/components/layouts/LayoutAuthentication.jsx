@@ -14,6 +14,12 @@ const MainAuthenticationLayout = () => {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("sm"));
 
+  React.useEffect(() => {
+    alert(
+      "Nếu đăng nhập lâu thì vui lòng chờ chút xíu nha mọi người! Do xài đồ miễn phí :((("
+    );
+  }, []);
+
   return (
     <Paper
       sx={{
